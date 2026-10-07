@@ -144,7 +144,7 @@ class MainActivity : Activity() {
                 CodexUsageWidgetProvider.KEY_BACKGROUND_OPACITY,
                 CodexUsageWidgetProvider.DEFAULT_BACKGROUND_OPACITY
             )
-            text = "桌面组件背景透明度：$value%"
+            text = "桌面组件背景不透明度：$value%"
             textSize = 14f
             setTextColor(Color.DKGRAY)
             setPadding(0, dp(4), 0, 0)
@@ -160,7 +160,7 @@ class MainActivity : Activity() {
             ).coerceIn(30, 100)
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    opacityLabel.text = "桌面组件背景透明度：$progress%"
+                    opacityLabel.text = "桌面组件背景不透明度：$progress%"
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
