@@ -18,6 +18,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import java.text.DateFormat
@@ -134,8 +135,49 @@ class MainActivity : Activity() {
             setOnClickListener { pinCodexWidget() }
         }, fullWidth())
 
+        val widgetPrefs = getSharedPreferences(
+            CodexUsageWidgetProvider.PREFS_NAME,
+            Context.MODE_PRIVATE
+        )
+        val opacityLabel = TextView(this).apply {
+            val value = widgetPrefs.getInt(
+                CodexUsageWidgetProvider.KEY_BACKGROUND_OPACITY,
+                CodexUsageWidgetProvider.DEFAULT_BACKGROUND_OPACITY
+            )
+            text = "桌面组件背景透明度：$value%"
+            textSize = 14f
+            setTextColor(Color.DKGRAY)
+            setPadding(0, dp(4), 0, 0)
+        }
+        root.addView(opacityLabel, fullWidth())
+
+        root.addView(SeekBar(this).apply {
+            min = 30
+            max = 100
+            progress = widgetPrefs.getInt(
+                CodexUsageWidgetProvider.KEY_BACKGROUND_OPACITY,
+                CodexUsageWidgetProvider.DEFAULT_BACKGROUND_OPACITY
+            ).coerceIn(30, 100)
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    opacityLabel.text = "桌面组件背景透明度：$progress%"
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    val value = seekBar?.progress?.coerceIn(30, 100)
+                        ?: CodexUsageWidgetProvider.DEFAULT_BACKGROUND_OPACITY
+                    widgetPrefs.edit()
+                        .putInt(CodexUsageWidgetProvider.KEY_BACKGROUND_OPACITY, value)
+                        .apply()
+                    CodexUsageWidgetProvider.refreshAll(applicationContext)
+                }
+            })
+        }, fullWidth())
+
         root.addView(TextView(this).apply {
-            text = "说明：Codex 登录使用设备码授权；Token 加密保存在本机 Android Keystore 中。桌面组件默认约每 30 分钟刷新，也可手动刷新。"
+            text = "说明：桌面组件支持 2×1、2×2、2×3、2×4 等尺寸并自动精简内容；背景透明度可在这里调节。Codex Token 加密保存在本机 Android Keystore 中。"
             textSize = 13f
             setTextColor(Color.DKGRAY)
             setPadding(0, dp(6), 0, dp(18))

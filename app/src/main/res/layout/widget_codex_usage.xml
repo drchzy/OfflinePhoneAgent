@@ -1,65 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:background="#FFFFFFFF">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/widget_bg_cyber"
+        android:scaleType="fitXY"
+        android:contentDescription="@null" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingTop="9dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="9dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="CODEX"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                android:textSize="17sp"
+                android:textColor="#FFF4FAFF" />
+
+            <Button
+                android:id="@+id/widget_refresh"
+                android:layout_width="76dp"
+                android:layout_height="42dp"
+                android:background="@drawable/widget_refresh_bg"
+                android:gravity="center"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingStart="13dp"
+                android:paddingEnd="13dp"
+                android:text="刷新"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="#FFFFFFFF" />
+        </LinearLayout>
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/widget_compact_usage"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Codex 用量"
+            android:layout_marginTop="4dp"
+            android:singleLine="true"
+            android:text="5h --   ·   周 --"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="#FF111111" />
+            android:textSize="15sp"
+            android:textColor="#FFEAF8FF"
+            android:visibility="gone" />
 
-        <Button
-            android:id="@+id/widget_refresh"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/widget_usage_row"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:text="刷新"
-            android:textSize="12sp" />
+            android:layout_marginTop="7dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/widget_five_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="5 小时  --"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFFFF" />
+
+                <TextView
+                    android:id="@+id/widget_five_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:singleLine="true"
+                    android:text="重置 --"
+                    android:textSize="10sp"
+                    android:textColor="#FFA9C9DD" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="9dp"
+                android:background="#405EDBFF" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/widget_week_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="每周  --"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFFFF" />
+
+                <TextView
+                    android:id="@+id/widget_week_reset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:singleLine="true"
+                    android:text="重置 --"
+                    android:textSize="10sp"
+                    android:textColor="#FFA9C9DD" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:singleLine="true"
+            android:text="等待刷新"
+            android:textSize="10sp"
+            android:textColor="#FF8BA9BE" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/widget_five_hour"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="5小时：-- · 重置 --"
-        android:textSize="14sp"
-        android:textColor="#FF111111" />
-
-    <TextView
-        android:id="@+id/widget_weekly"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:text="每周：-- · 重置 --"
-        android:textSize="14sp"
-        android:textColor="#FF111111" />
-
-    <TextView
-        android:id="@+id/widget_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="等待刷新"
-        android:textSize="11sp"
-        android:textColor="#FF666666" />
-</LinearLayout>
+</FrameLayout>
