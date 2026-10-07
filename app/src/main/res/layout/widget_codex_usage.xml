@@ -3,65 +3,63 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="14dp"
+    android:orientation="vertical"
+    android:padding="12dp"
     android:background="#FFFFFFFF">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Codex 用量"
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="#FF111111" />
 
-        <TextView
-            android:id="@+id/widget_five_hour"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/widget_refresh"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="5小时：--"
-            android:textSize="17sp"
-            android:textColor="#FF111111" />
-
-        <TextView
-            android:id="@+id/widget_weekly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="每周：--"
-            android:textSize="17sp"
-            android:textColor="#FF111111" />
-
-        <TextView
-            android:id="@+id/widget_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="等待刷新"
-            android:textSize="12sp"
-            android:textColor="#FF666666" />
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="刷新"
+            android:textSize="12sp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/widget_refresh"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/widget_five_hour"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_gravity="center_vertical"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:text="刷新"
-        android:textSize="12sp" />
+        android:layout_marginTop="6dp"
+        android:text="5小时：-- · 重置 --"
+        android:textSize="14sp"
+        android:textColor="#FF111111" />
+
+    <TextView
+        android:id="@+id/widget_weekly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="每周：-- · 重置 --"
+        android:textSize="14sp"
+        android:textColor="#FF111111" />
+
+    <TextView
+        android:id="@+id/widget_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="等待刷新"
+        android:textSize="11sp"
+        android:textColor="#FF666666" />
 </LinearLayout>
