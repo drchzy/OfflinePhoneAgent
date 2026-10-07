@@ -8,15 +8,16 @@ import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
 object AppUpdater {
-    private const val LATEST_RELEASE_API =
-        "https://api.github.com/repos/drchzy/OfflinePhoneAgent/releases/latest"
+    private const val LATEST_RELEASE_URL =
+        "https://github.com/drchzy/OfflinePhoneAgent/releases/latest"
+    private const val RELEASE_DOWNLOAD_BASE =
+        "https://github.com/drchzy/OfflinePhoneAgent/releases/download"
 
     data class VersionInfo(
         val versionCode: Int,
@@ -65,38 +66,29 @@ object AppUpdater {
     }
 
     private fun fetchLatestRelease(): VersionInfo {
-        val connection = (URL(LATEST_RELEASE_API).openConnection() as HttpURLConnection).apply {
+        val connection = (URL(LATEST_RELEASE_URL).openConnection() as HttpURLConnection).apply {
             requestMethod = "GET"
             connectTimeout = 10_000
             readTimeout = 15_000
-            setRequestProperty("Accept", "application/vnd.github+json")
+            instanceFollowRedirects = true
             setRequestProperty("User-Agent", "OfflinePhoneAgent/" + BuildConfig.VERSION_NAME)
         }
 
         try {
             val code = connection.responseCode
-            if (code !in 200..299) throw IOException("GitHub 返回 HTTP " + code)
+            if (code !in 200..299) throw IOException("GitHub Release 返回 HTTP " + code)
 
-            val body = connection.inputStream.bufferedReader().use { it.readText() }
-            val json = JSONObject(body)
-            val tagName = json.getString("tag_name")
-            val cleanVersion = tagName.removePrefix("v")
+            val finalUrl = connection.url.toString()
+            val tagName = finalUrl.substringAfterLast("/tag/", "")
+            if (tagName.isBlank()) {
+                throw IOException("无法识别最新版地址：" + finalUrl)
+            }
+
+            val cleanVersion = tagName.removePrefix("v").substringBefore('?').substringBefore('#')
             val latestCode = cleanVersion.substringAfterLast('.').toIntOrNull()
                 ?: throw IOException("无法识别版本号：" + tagName)
-
-            val assets = json.getJSONArray("assets")
-            var downloadUrl = ""
-            var apkName = ""
-            for (i in 0 until assets.length()) {
-                val asset = assets.getJSONObject(i)
-                val name = asset.optString("name")
-                if (name.endsWith(".apk", ignoreCase = true)) {
-                    apkName = name
-                    downloadUrl = asset.optString("browser_download_url")
-                    break
-                }
-            }
-            if (downloadUrl.isBlank()) throw IOException("最新版 Release 没有找到 APK")
+            val apkName = "OfflinePhoneAgent-v" + cleanVersion + ".apk"
+            val downloadUrl = RELEASE_DOWNLOAD_BASE + "/v" + cleanVersion + "/" + apkName
 
             return VersionInfo(
                 versionCode = latestCode,
