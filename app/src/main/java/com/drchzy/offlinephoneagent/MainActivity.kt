@@ -43,6 +43,11 @@ class MainActivity : Activity() {
             setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
         }, fullWidth())
 
+        root.addView(Button(this).apply {
+            text = "检查更新"
+            setOnClickListener { AppUpdater.checkForUpdate(this@MainActivity, silent = false) }
+        }, fullWidth())
+
         commandInput = EditText(this).apply {
             hint = "例如：打开微信 然后 点击 通讯录"
             minLines = 3
@@ -67,6 +72,8 @@ class MainActivity : Activity() {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ))
         })
+
+        AppUpdater.checkForUpdate(this, silent = true)
     }
 
     override fun onResume() {
