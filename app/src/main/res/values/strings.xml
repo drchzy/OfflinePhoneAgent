@@ -3,4 +3,5 @@
     <string name="app_name">离线手机助手</string>
     <string name="service_name">离线手机助手控制服务</string>
     <string name="service_description">仅在用户主动输入命令时执行返回、主页、打开应用、点击、输入和滑动等操作。</string>
+    <string name="codex_widget_description">显示 Codex 5 小时和每周剩余用量。</string>
 </resources>
