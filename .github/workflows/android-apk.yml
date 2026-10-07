@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+env:
+  APP_VERSION_CODE: ${{ github.run_number }}
+  APP_VERSION_NAME: 1.0.${{ github.run_number }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,20 +39,20 @@ jobs:
         run: gradle :app:assembleDebug --stacktrace
 
       - name: Rename APK
-        run: cp app/build/outputs/apk/debug/app-debug.apk OfflinePhoneAgent.apk
+        run: cp app/build/outputs/apk/debug/app-debug.apk "OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: OfflinePhoneAgent-apk
-          path: OfflinePhoneAgent.apk
+          name: OfflinePhoneAgent-v${{ env.APP_VERSION_NAME }}-apk
+          path: OfflinePhoneAgent-v${{ env.APP_VERSION_NAME }}.apk
           if-no-files-found: error
 
       - name: Publish Release
         if: success()
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: OfflinePhoneAgent build ${{ github.run_number }}
-          files: OfflinePhoneAgent.apk
+          tag_name: v${{ env.APP_VERSION_NAME }}
+          name: OfflinePhoneAgent v${{ env.APP_VERSION_NAME }}
+          files: OfflinePhoneAgent-v${{ env.APP_VERSION_NAME }}.apk
           generate_release_notes: false
