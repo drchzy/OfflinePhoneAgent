@@ -46,18 +46,21 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Build APK
+      - name: Validate signing secrets
         shell: bash
         run: |
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
-            gradle :app:assembleRelease --stacktrace
-            cp app/build/outputs/apk/release/app-release.apk "OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
-          else
-            echo "Signing secrets are not configured; building a debug APK."
-            gradle :app:assembleDebug --stacktrace
-            cp app/build/outputs/apk/debug/app-debug.apk "OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
-          fi
+          test -n "$ANDROID_KEYSTORE_BASE64" || { echo "Missing ANDROID_KEYSTORE_BASE64"; exit 1; }
+          test -n "$ANDROID_KEYSTORE_PASSWORD" || { echo "Missing ANDROID_KEYSTORE_PASSWORD"; exit 1; }
+          test -n "$ANDROID_KEY_ALIAS" || { echo "Missing ANDROID_KEY_ALIAS"; exit 1; }
+          test -n "$ANDROID_KEY_PASSWORD" || { echo "Missing ANDROID_KEY_PASSWORD"; exit 1; }
+
+      - name: Build signed APK
+        shell: bash
+        run: |
+          trap 'rm -f "$ANDROID_KEYSTORE_PATH"' EXIT
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+          gradle :app:assembleRelease --stacktrace
+          cp app/build/outputs/apk/release/app-release.apk "OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
