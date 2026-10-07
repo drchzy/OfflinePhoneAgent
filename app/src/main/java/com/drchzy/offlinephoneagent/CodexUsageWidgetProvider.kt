@@ -50,19 +50,16 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
         }
 
         private fun usageViews(context: Context, usage: CodexUsage): RemoteViews {
-            val views = baseViews(context, "已更新")
-            views.setTextViewText(R.id.widget_five_hour, "5小时：" + formatRemaining(usage.fiveHour))
-            views.setTextViewText(R.id.widget_weekly, "每周：" + formatRemaining(usage.weekly))
-            val reset = usage.fiveHour?.resetAtSeconds?.takeIf { it > 0 }?.let {
-                DateFormat.getDateTimeInstance(
-                    DateFormat.SHORT,
-                    DateFormat.SHORT,
-                    Locale.getDefault()
-                ).format(Date(it * 1000L))
-            }
+            val views = baseViews(context, "刷新：" + formatTime(System.currentTimeMillis() / 1000L))
             views.setTextViewText(
-                R.id.widget_status,
-                if (reset != null) "5小时窗口重置：" + reset else "用量已刷新"
+                R.id.widget_five_hour,
+                "5小时：" + formatRemaining(usage.fiveHour) +
+                    " · 重置 " + formatReset(usage.fiveHour)
+            )
+            views.setTextViewText(
+                R.id.widget_weekly,
+                "每周：" + formatRemaining(usage.weekly) +
+                    " · 重置 " + formatReset(usage.weekly)
             )
             return views
         }
@@ -72,10 +69,23 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             return window.remainingPercent.roundToInt().toString() + "% 剩余"
         }
 
+        private fun formatReset(window: UsageWindow?): String {
+            val seconds = window?.resetAtSeconds?.takeIf { it > 0 } ?: return "--"
+            return formatTime(seconds)
+        }
+
+        private fun formatTime(epochSeconds: Long): String {
+            return DateFormat.getDateTimeInstance(
+                DateFormat.SHORT,
+                DateFormat.SHORT,
+                Locale.getDefault()
+            ).format(Date(epochSeconds * 1000L))
+        }
+
         private fun baseViews(context: Context, status: String): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_codex_usage)
-            views.setTextViewText(R.id.widget_five_hour, "5小时：--")
-            views.setTextViewText(R.id.widget_weekly, "每周：--")
+            views.setTextViewText(R.id.widget_five_hour, "5小时：-- · 重置 --")
+            views.setTextViewText(R.id.widget_weekly, "每周：-- · 重置 --")
             views.setTextViewText(R.id.widget_status, status)
 
             val refreshIntent = Intent(context, CodexUsageWidgetProvider::class.java).apply {
