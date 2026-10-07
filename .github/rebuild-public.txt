@@ -1,1 +1,1 @@
-Trigger a fresh GitHub Actions run after repository visibility changed to public.
+Trigger a signed Android build for the Codex widget layout and reset-time update.
