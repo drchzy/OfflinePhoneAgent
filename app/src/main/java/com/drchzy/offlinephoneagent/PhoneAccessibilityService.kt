@@ -14,10 +14,18 @@ class PhoneAccessibilityService : AccessibilityService() {
             private set
     }
 
-    override fun onServiceConnected() { instance = this }
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        instance = this
+    }
+
     override fun onAccessibilityEvent(event: AccessibilityEvent?) = Unit
     override fun onInterrupt() = Unit
-    override fun onDestroy() { if (instance === this) instance = null; super.onDestroy() }
+
+    override fun onDestroy() {
+        if (instance === this) instance = null
+        super.onDestroy()
+    }
 
     fun goBack() = performGlobalAction(GLOBAL_ACTION_BACK)
     fun goHome() = performGlobalAction(GLOBAL_ACTION_HOME)
@@ -76,7 +84,8 @@ class PhoneAccessibilityService : AccessibilityService() {
     fun tap(x: Float, y: Float, cb: (Boolean) -> Unit) {
         val path = Path().apply { moveTo(x, y) }
         val g = GestureDescription.Builder()
-            .addStroke(GestureDescription.StrokeDescription(path, 0, 80)).build()
+            .addStroke(GestureDescription.StrokeDescription(path, 0, 80))
+            .build()
         dispatchGesture(g, object : GestureResultCallback() {
             override fun onCompleted(d: GestureDescription?) = cb(true)
             override fun onCancelled(d: GestureDescription?) = cb(false)
@@ -95,9 +104,13 @@ class PhoneAccessibilityService : AccessibilityService() {
             "right" -> floatArrayOf(w * .18f, cy, w * .82f, cy)
             else -> return cb(false)
         }
-        val path = Path().apply { moveTo(p[0], p[1]); lineTo(p[2], p[3]) }
+        val path = Path().apply {
+            moveTo(p[0], p[1])
+            lineTo(p[2], p[3])
+        }
         val g = GestureDescription.Builder()
-            .addStroke(GestureDescription.StrokeDescription(path, 0, 420)).build()
+            .addStroke(GestureDescription.StrokeDescription(path, 0, 420))
+            .build()
         dispatchGesture(g, object : GestureResultCallback() {
             override fun onCompleted(d: GestureDescription?) = cb(true)
             override fun onCancelled(d: GestureDescription?) = cb(false)
