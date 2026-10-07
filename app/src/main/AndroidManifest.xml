@@ -19,7 +19,7 @@
         </activity>
         <service
             android:name=".PhoneAccessibilityService"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/service_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
