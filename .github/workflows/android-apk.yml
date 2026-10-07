@@ -12,6 +12,7 @@ permissions:
 env:
   APP_VERSION_CODE: ${{ github.run_number }}
   APP_VERSION_NAME: 1.0.${{ github.run_number }}
+  KEYSTORE_SET: ${{ secrets.KEYSTORE_SET }}
   ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
   ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
   ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -46,10 +47,31 @@ jobs:
         with:
           gradle-version: "8.9"
 
+      - name: Prepare signing secrets
+        shell: bash
+        run: |
+          if [ -n "$KEYSTORE_SET" ]; then
+            DECODED=$(printf '%s' "$KEYSTORE_SET" | base64 --decode)
+            ANDROID_KEYSTORE_BASE64=$(printf '%s' "$DECODED" | cut -d'|' -f1)
+            ANDROID_KEYSTORE_PASSWORD=$(printf '%s' "$DECODED" | cut -d'|' -f2)
+            ANDROID_KEY_ALIAS=$(printf '%s' "$DECODED" | cut -d'|' -f3)
+            ANDROID_KEY_PASSWORD=$(printf '%s' "$DECODED" | cut -d'|' -f4)
+
+            echo "::add-mask::$ANDROID_KEYSTORE_BASE64"
+            echo "::add-mask::$ANDROID_KEYSTORE_PASSWORD"
+            echo "::add-mask::$ANDROID_KEY_ALIAS"
+            echo "::add-mask::$ANDROID_KEY_PASSWORD"
+
+            echo "ANDROID_KEYSTORE_BASE64=$ANDROID_KEYSTORE_BASE64" >> "$GITHUB_ENV"
+            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD" >> "$GITHUB_ENV"
+          fi
+
       - name: Validate signing secrets
         shell: bash
         run: |
-          test -n "$ANDROID_KEYSTORE_BASE64" || { echo "Missing ANDROID_KEYSTORE_BASE64"; exit 1; }
+          test -n "$ANDROID_KEYSTORE_BASE64" || { echo "Missing signing data: set KEYSTORE_SET or ANDROID_KEYSTORE_BASE64"; exit 1; }
           test -n "$ANDROID_KEYSTORE_PASSWORD" || { echo "Missing ANDROID_KEYSTORE_PASSWORD"; exit 1; }
           test -n "$ANDROID_KEY_ALIAS" || { echo "Missing ANDROID_KEY_ALIAS"; exit 1; }
           test -n "$ANDROID_KEY_PASSWORD" || { echo "Missing ANDROID_KEY_PASSWORD"; exit 1; }
