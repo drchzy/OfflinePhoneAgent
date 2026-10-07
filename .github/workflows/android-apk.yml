@@ -11,6 +11,11 @@ permissions:
 env:
   APP_VERSION_CODE: ${{ github.run_number }}
   APP_VERSION_NAME: 1.0.${{ github.run_number }}
+  ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+  ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+  ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+  ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+  ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/app/offline-phone-agent.jks
 
 concurrency:
   group: android-apk-${{ github.ref }}
@@ -41,10 +46,17 @@ jobs:
           gradle-version: "8.9"
 
       - name: Build APK
-        run: gradle :app:assembleDebug --stacktrace
-
-      - name: Rename APK
-        run: cp app/build/outputs/apk/debug/app-debug.apk "OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
+        shell: bash
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+            gradle :app:assembleRelease --stacktrace
+            cp app/build/outputs/apk/release/app-release.apk "OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
+          else
+            echo "Signing secrets are not configured; building a debug APK."
+            gradle :app:assembleDebug --stacktrace
+            cp app/build/outputs/apk/debug/app-debug.apk "OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
