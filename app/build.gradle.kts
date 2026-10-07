@@ -2,6 +2,10 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
+
+val ciVersionCode = System.getenv("APP_VERSION_CODE")?.toIntOrNull()
+val ciVersionName = System.getenv("APP_VERSION_NAME")
+
 android {
     namespace = "com.drchzy.offlinephoneagent"
     compileSdk = 35
@@ -9,8 +13,8 @@ android {
         applicationId = "com.drchzy.offlinephoneagent"
         minSdk = 30
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = ciVersionCode ?: 1
+        versionName = ciVersionName ?: "1.0.0"
     }
     buildTypes {
         release { isMinifyEnabled = false }
