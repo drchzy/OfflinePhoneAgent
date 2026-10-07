@@ -17,12 +17,12 @@ import java.net.URL
 object AppUpdater {
     private const val LATEST_RELEASE_API =
         "https://api.github.com/repos/drchzy/OfflinePhoneAgent/releases/latest"
-    private const val APK_NAME = "OfflinePhoneAgent.apk"
 
     data class VersionInfo(
         val versionCode: Int,
         val versionName: String,
-        val downloadUrl: String
+        val downloadUrl: String,
+        val apkName: String
     )
 
     fun checkForUpdate(activity: Activity, silent: Boolean = false) {
@@ -80,28 +80,29 @@ object AppUpdater {
             val body = connection.inputStream.bufferedReader().use { it.readText() }
             val json = JSONObject(body)
             val tagName = json.getString("tag_name")
-            val latestCode = Regex("build-(\\d+)")
-                .find(tagName)
-                ?.groupValues
-                ?.getOrNull(1)
-                ?.toIntOrNull()
+            val cleanVersion = tagName.removePrefix("v")
+            val latestCode = cleanVersion.substringAfterLast('.').toIntOrNull()
                 ?: throw IOException("无法识别版本号：" + tagName)
 
             val assets = json.getJSONArray("assets")
             var downloadUrl = ""
+            var apkName = ""
             for (i in 0 until assets.length()) {
                 val asset = assets.getJSONObject(i)
-                if (asset.optString("name") == APK_NAME) {
+                val name = asset.optString("name")
+                if (name.endsWith(".apk", ignoreCase = true)) {
+                    apkName = name
                     downloadUrl = asset.optString("browser_download_url")
                     break
                 }
             }
-            if (downloadUrl.isBlank()) throw IOException("最新版没有找到 " + APK_NAME)
+            if (downloadUrl.isBlank()) throw IOException("最新版 Release 没有找到 APK")
 
             return VersionInfo(
                 versionCode = latestCode,
-                versionName = tagName,
-                downloadUrl = downloadUrl
+                versionName = cleanVersion,
+                downloadUrl = downloadUrl,
+                apkName = apkName
             )
         } finally {
             connection.disconnect()
@@ -135,7 +136,8 @@ object AppUpdater {
             try {
                 val baseDir = activity.externalCacheDir ?: activity.cacheDir
                 val updateDir = File(baseDir, "updates").apply { mkdirs() }
-                val apkFile = File(updateDir, APK_NAME)
+                val apkFile = File(updateDir, info.apkName.ifBlank { "OfflinePhoneAgent-update.apk" })
+                updateDir.listFiles()?.forEach { if (it != apkFile) it.delete() }
                 if (apkFile.exists()) apkFile.delete()
 
                 val connection = (URL(info.downloadUrl).openConnection() as HttpURLConnection).apply {
