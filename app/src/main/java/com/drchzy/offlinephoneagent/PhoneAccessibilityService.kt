@@ -14,7 +14,7 @@ class PhoneAccessibilityService : AccessibilityService() {
             private set
     }
 
-    override fun onServiceConnected() { instance = this }
+    override fun onServiceConnected() { super.onServiceConnected(); instance = this }
     override fun onAccessibilityEvent(event: AccessibilityEvent?) = Unit
     override fun onInterrupt() = Unit
     override fun onDestroy() { if (instance === this) instance = null; super.onDestroy() }
