@@ -1,4 +1,4 @@
-# Android APK CI 1791395234964
+# Android APK CI signed-update-test-2
 name: Build Android APK
 
 on:
