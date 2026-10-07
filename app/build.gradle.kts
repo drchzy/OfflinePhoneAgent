@@ -24,6 +24,9 @@ android {
         versionCode = ciVersionCode ?: 1
         versionName = ciVersionName ?: "1.0.0"
     }
+    buildFeatures {
+        buildConfig = true
+    }
     signingConfigs {
         if (hasReleaseSigning) {
             create("release") {
