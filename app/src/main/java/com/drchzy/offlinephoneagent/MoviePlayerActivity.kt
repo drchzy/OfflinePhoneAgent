@@ -674,6 +674,12 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
 
 @Composable
 private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modifier) {
+    // 每次切换播放线路都恢复折叠状态，避免长剧集列表占满页面。
+    var expanded by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
+        mutableStateOf(false)
+    }
+    val current = host.movieDetail?.lines?.getOrNull(host.browseLineIndex)
+    val episodes = current?.episodes.orEmpty()
     Column(modifier) {
         Column(Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 10.dp)) {
             Text(host.movieDetail?.movie?.name.orEmpty().ifBlank { "正在播放" } +
@@ -699,7 +705,17 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("全部剧集", color = Color.White,
                     fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("  " + episodes.size + " 集", color = HintPlayer, fontSize = 11.sp)
                 Spacer(Modifier.weight(1f))
+                if (episodes.size > 8) {
+                    TextButton(onClick = { expanded = !expanded }) {
+                        Icon(
+                            if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                            contentDescription = null, modifier = Modifier.size(17.dp)
+                        )
+                        Text(if (expanded) "收起" else "展开全部", fontSize = 11.sp)
+                    }
+                }
                 if (host.loadingList || host.changingEpisode) {
                     CircularProgressIndicator(Modifier.size(17.dp), strokeWidth = 2.dp)
                 } else if (host.movieDetail == null) {
@@ -726,39 +742,46 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
             }
             Spacer(Modifier.height(5.dp))
         }
-        val current = host.movieDetail?.lines?.getOrNull(host.browseLineIndex)
-        val episodes = current?.episodes.orEmpty()
         if (episodes.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(if (host.loadingList) "正在加载完整剧集…" else "该线路暂无可选剧集",
                     color = HintPlayer, fontSize = 12.sp)
             }
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(77.dp),
-                modifier = Modifier.fillMaxSize().padding(horizontal = 13.dp),
-                contentPadding = PaddingValues(bottom = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(7.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            // 适配手机/平板宽度：默认最多显示三行，展开后列表才独立滚动。
+            BoxWithConstraints(
+                modifier = if (expanded) Modifier.fillMaxWidth().weight(1f)
+                else Modifier.fillMaxWidth().height(153.dp)
             ) {
-                items(episodes.size) { index ->
-                    val ep = episodes[index]
-                    val selected = current?.code == host.lineCode &&
-                        ((ep.id.isNotBlank() && ep.id == host.episodeId) ||
-                            (ep.id.isBlank() && ep.name == host.episodeName))
-                    Surface(
-                        onClick = { host.choose(ep) },
-                        enabled = !host.changingEpisode,
-                        shape = RoundedCornerShape(11.dp),
-                        color = if (selected) AccentPlayer else SoftPlayer,
-                        contentColor = if (selected) InkPlayer else Color.White
-                    ) {
-                        Box(Modifier.fillMaxWidth().height(42.dp).padding(horizontal = 3.dp),
-                            contentAlignment = Alignment.Center) {
-                            Text(ep.name.ifBlank { "第 " + (index + 1) + " 集" },
-                                fontSize = 11.sp,
-                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                                maxLines = 1, overflow = TextOverflow.Ellipsis)
+                val columns = maxOf(2, (maxWidth.value / 83f).toInt())
+                val shown = if (expanded) episodes else episodes.take(columns * 3)
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 13.dp),
+                    userScrollEnabled = expanded,
+                    contentPadding = PaddingValues(bottom = if (expanded) 24.dp else 0.dp),
+                    horizontalArrangement = Arrangement.spacedBy(7.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(shown.size) { index ->
+                        val ep = shown[index]
+                        val selected = current?.code == host.lineCode &&
+                            ((ep.id.isNotBlank() && ep.id == host.episodeId) ||
+                                (ep.id.isBlank() && ep.name == host.episodeName))
+                        Surface(
+                            onClick = { host.choose(ep) },
+                            enabled = !host.changingEpisode,
+                            shape = RoundedCornerShape(11.dp),
+                            color = if (selected) AccentPlayer else SoftPlayer,
+                            contentColor = if (selected) InkPlayer else Color.White
+                        ) {
+                            Box(Modifier.fillMaxWidth().height(42.dp).padding(horizontal = 3.dp),
+                                contentAlignment = Alignment.Center) {
+                                Text(ep.name.ifBlank { "第 " + (index + 1) + " 集" },
+                                    fontSize = 11.sp,
+                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                                    maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            }
                         }
                     }
                 }
