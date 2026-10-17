@@ -698,16 +698,19 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         modifier = Modifier.align(Alignment.TopEnd).padding(end = 5.dp, top = 4.dp),
                         horizontalArrangement = Arrangement.spacedBy(1.dp)
                     ) {
-                        IconButton(onClick = { showCast = true }, modifier = Modifier.size(34.dp)) {
+                        IconButton(onClick = { showCast = true; controlReset++ }, modifier = Modifier.size(34.dp)) {
                             Icon(Icons.Outlined.Cast, "投屏", Modifier.size(19.dp), tint = Color.White)
                         }
-                        IconButton(onClick = host::minimizeToPiP, modifier = Modifier.size(34.dp)) {
+                        IconButton(onClick = { host.minimizeToPiP(); controlReset++ }, modifier = Modifier.size(34.dp)) {
                             Icon(Icons.Outlined.PictureInPictureAlt, "画中画",
                                 Modifier.size(19.dp), tint = Color.White)
                         }
                     }
                     IconButton(
-                        onClick = { if (host.playing) player?.pause() else player?.play() },
+                        onClick = {
+                                if (host.playing) player?.pause() else player?.play()
+                                controlReset++
+                            },
                         modifier = Modifier.align(Alignment.Center).size(39.dp)
                             .background(Color.Black.copy(alpha = 0.44f), RoundedCornerShape(20.dp))
                     ) {
@@ -723,7 +726,10 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         horizontalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         IconButton(
-                            onClick = { if (host.playing) player?.pause() else player?.play() },
+                            onClick = {
+                                if (host.playing) player?.pause() else player?.play()
+                                controlReset++
+                            },
                             modifier = Modifier.size(38.dp)
                         ) {
                             Icon(
@@ -788,7 +794,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         }
                         Box {
                             TextButton(
-                                onClick = { speedMenu = true },
+                                onClick = { speedMenu = true; controlReset++ },
                                 modifier = Modifier.height(34.dp).widthIn(min = 40.dp),
                                 contentPadding = PaddingValues(horizontal = 1.dp)
                             ) {
@@ -808,7 +814,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         }
                         Box {
                             IconButton(
-                                onClick = { lineMenu = true },
+                                onClick = { lineMenu = true; controlReset++ },
                                 modifier = Modifier.size(36.dp)
                             ) {
                                 Icon(Icons.Outlined.List, "切换线路",
@@ -842,7 +848,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                             Text("选集", fontSize = 12.sp, color = Color.White)
                         }
                         IconButton(
-                            onClick = host::toggleFullscreen,
+                            onClick = { host.toggleFullscreen(); controlReset++ },
                             modifier = Modifier.size(36.dp)
                         ) {
                             Icon(
@@ -1089,7 +1095,9 @@ private fun EpisodeBrowser(
                     state = gridState,
                     modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
                     userScrollEnabled = true,
-                    contentPadding = PaddingValues(bottom = 15.dp),
+                    contentPadding = PaddingValues(
+                        bottom = maxOf(15.dp, maxHeight - 58.dp)
+                    ),
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
