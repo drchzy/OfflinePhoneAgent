@@ -219,6 +219,10 @@ class MainActivity : ComponentActivity() {
                     movieLoading = false
                     startActivity(Intent(this, MoviePlayerActivity::class.java).apply {
                         putExtra(MoviePlayerActivity.EXTRA_URL, address.url)
+                        putExtra(MoviePlayerActivity.EXTRA_MOVIE_ID, detail?.movie?.id.orEmpty())
+                        putExtra(MoviePlayerActivity.EXTRA_EPISODE_ID, episode.id)
+                        putExtra(MoviePlayerActivity.EXTRA_LINE_CODE, episode.fromCode)
+                        putExtra(MoviePlayerActivity.EXTRA_EPISODE_NAME, episode.name)
                         putExtra(MoviePlayerActivity.EXTRA_TITLE, movieName + " · " + episode.name)
                         putExtra(MoviePlayerActivity.EXTRA_HEADERS, org.json.JSONObject(address.headers).toString())
                         putExtra(MoviePlayerActivity.EXTRA_AGENT, address.userAgent)
@@ -629,8 +633,11 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
         if (detail.lines.isEmpty()) {
             Text("当前暂无可用播放线路", color = Muted, fontSize = 13.sp)
         } else {
-            Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                detail.lines.take(3).forEachIndexed { index, source ->
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(9.dp)
+            ) {
+                detail.lines.forEachIndexed { index, source ->
                     FilterChip(
                         selected = lineIndex == index,
                         onClick = { lineIndex = index },
