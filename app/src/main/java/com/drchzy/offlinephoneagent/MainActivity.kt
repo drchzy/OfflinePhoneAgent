@@ -930,6 +930,14 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
     val line = detail.lines.getOrNull(lineIndex)
     var rangeIndex by remember(detail.movie.id, lineIndex) { mutableIntStateOf(0) }
     var episodesExpanded by remember(detail.movie.id, lineIndex, rangeIndex) { mutableStateOf(false) }
+    var skipSettingsVisible by remember(detail.movie.id) { mutableStateOf(false) }
+    val skipRevision by MovieSkipPreferences.revision.collectAsState()
+    val skipTimes = remember(detail.movie.id, skipRevision) {
+        MovieSkipPreferences.get(local, detail.movie.id)
+    }
+    if (skipSettingsVisible) {
+        MovieSkipSettingsDialog(detail.movie.id) { skipSettingsVisible = false }
+    }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 23.dp)) {
         TextButton(onClick = onBack) {
             Icon(Icons.Outlined.ArrowBack, null, Modifier.size(18.dp))
@@ -982,6 +990,29 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                     Icon(Icons.Outlined.ChevronRight, null,
                         Modifier.size(22.dp), tint = Muted)
                 }
+            }
+        }
+        Spacer(Modifier.height(13.dp))
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
+            color = MaterialTheme.colorScheme.surface,
+            onClick = { skipSettingsVisible = true }
+        ) {
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.Outlined.Tune, "设置片头和片尾", Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.primary)
+                Spacer(Modifier.width(10.dp))
+                Column(Modifier.weight(1f)) {
+                    Text("跳过片头 / 片尾", fontSize = 14.sp, fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface)
+                    Text("片头 ${skipTimes.introSeconds}秒 · 片尾 ${skipTimes.outroSeconds}秒 · 独立保存",
+                        fontSize = 11.sp, color = Muted)
+                }
+                Icon(Icons.Outlined.ChevronRight, null, Modifier.size(19.dp), tint = Muted)
             }
         }
         Spacer(Modifier.height(24.dp))
