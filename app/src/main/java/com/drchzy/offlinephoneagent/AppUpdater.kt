@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.os.SystemClock
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 import java.util.zip.ZipFile
 import androidx.core.content.FileProvider
 import java.io.File
@@ -165,6 +166,7 @@ object AppUpdater {
             return
         }
         val cancelled = AtomicBoolean(false)
+        val activeConnection = AtomicReference<HttpURLConnection?>(null)
         val dp = activity.resources.displayMetrics.density
         fun dip(value: Int): Int = (value * dp + .5f).toInt()
 
@@ -195,7 +197,10 @@ object AppUpdater {
         val dialog = AlertDialog.Builder(activity)
             .setTitle("正在下载 · " + info.versionName)
             .setView(container)
-            .setNegativeButton("取消下载") { _, _ -> cancelled.set(true) }
+            .setNegativeButton("取消下载") { _, _ ->
+                cancelled.set(true)
+                activeConnection.get()?.disconnect()
+            }
             .setCancelable(false)
             .create()
         dialog.show()
@@ -219,6 +224,7 @@ object AppUpdater {
                     instanceFollowRedirects = true
                     setRequestProperty("User-Agent", "OfflinePhoneAgent/" + BuildConfig.VERSION_NAME)
                 }
+                activeConnection.set(connection)
                 val response = connection.responseCode
                 if (response !in 200..299) throw IOException("下载失败 HTTP $response")
                 val expectedBytes = connection.contentLengthLong.takeIf { it > 0 }
@@ -309,6 +315,7 @@ object AppUpdater {
                 }
             } finally {
                 connection?.disconnect()
+                activeConnection.set(null)
                 partial?.delete()
                 downloading.set(false)
             }
