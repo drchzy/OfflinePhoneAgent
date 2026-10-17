@@ -493,6 +493,8 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     var showControls by remember { mutableStateOf(true) }
     var controlReset by remember { mutableIntStateOf(0) }
     var episodePickerOpen by remember { mutableStateOf(false) }
+    var skipDialogOpen by remember { mutableStateOf(false) }
+    val skipRevision by MovieSkipPreferences.revision.collectAsState()
     var position by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
     var seeking by remember { mutableStateOf(false) }
@@ -512,20 +514,37 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
 
     BackHandler(enabled = host.fullscreen) { host.toggleFullscreen() }
 
+    if (skipDialogOpen) {
+        MovieSkipSettingsDialog(host.intent.getStringExtra(MoviePlayerActivity.EXTRA_MOVIE_ID).orEmpty()) {
+            skipDialogOpen = false
+        }
+    }
+
+    LaunchedEffect(host.autoNextRevision) {
+        if (host.autoNextMessage.isNotBlank()) {
+            showControls = true
+            controlReset++
+            val number = host.autoNextRevision
+            delay(3_300L)
+            host.clearAutoNextMessage(number)
+        }
+    }
+
     // 无交互 5 秒自动隐藏：弹出菜单、选集面板、投屏对话框时不计时。
-    LaunchedEffect(showControls, controlReset, speedMenu, lineMenu, episodePickerOpen, showCast) {
-        if (showControls && !speedMenu && !lineMenu && !episodePickerOpen && !showCast) {
+    LaunchedEffect(showControls, controlReset, speedMenu, lineMenu, episodePickerOpen, showCast, skipDialogOpen) {
+        if (showControls && !speedMenu && !lineMenu && !episodePickerOpen && !showCast && !skipDialogOpen) {
             delay(5_000L)
             showControls = false
         }
     }
 
-    LaunchedEffect(player) {
+    LaunchedEffect(player, skipRevision) {
         var lastSave = 0L
         while (isActive) {
             position = player?.currentPosition?.coerceAtLeast(0L) ?: 0L
             val now = player?.duration ?: 0L
             duration = if (now == C.TIME_UNSET || now < 0L) 0L else now
+            host.applySkipRules()
             val elapsed = android.os.SystemClock.elapsedRealtime()
             if (player != null && player.isPlaying && position > 0L &&
                 elapsed - lastSave >= 5_000L
@@ -764,6 +783,21 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                     }
                 }
                 if (host.changingEpisode) CircularProgressIndicator(Modifier.size(28.dp))
+                if (host.autoNextMessage.isNotBlank()) {
+                    Surface(
+                        shape = RoundedCornerShape(13.dp),
+                        color = Color.Black.copy(alpha = .76f),
+                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 24.dp)
+                    ) {
+                        Text(
+                            host.autoNextMessage,
+                            modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
+                            color = Color.White,
+                            fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                            maxLines = 2
+                        )
+                    }
+                }
                 // 所有叠加信息（包括网速、全屏返回）随轻点视频同步隐藏。
                 if (showControls) {
                     // 顶部一行自适应：网速 / 当前剧集 / 投屏与画中画。
@@ -794,6 +828,13 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                             modifier = Modifier.weight(1f)
                                 .padding(horizontal = 4.dp)
                         )
+                        IconButton(
+                            onClick = { skipDialogOpen = true; controlReset++ },
+                            modifier = Modifier.size(34.dp)
+                        ) {
+                            Icon(Icons.Outlined.Tune, "设置片头片尾",
+                                Modifier.size(19.dp), tint = Color.White)
+                        }
                         IconButton(
                             onClick = { showCast = true; controlReset++ },
                             modifier = Modifier.size(34.dp)
@@ -1148,6 +1189,16 @@ private fun EpisodeBrowser(
                     fontWeight = FontWeight.Bold, color = Color.White)
                 Text("  " + episodes.size + " 集", color = HintPlayer, fontSize = 11.sp)
                 Spacer(Modifier.weight(1f))
+                var editSkip by remember { mutableStateOf(false) }
+                if (editSkip) {
+                    MovieSkipSettingsDialog(
+                        host.intent.getStringExtra(MoviePlayerActivity.EXTRA_MOVIE_ID).orEmpty()
+                    ) { editSkip = false }
+                }
+                TextButton(onClick = { editSkip = true }) {
+                    Icon(Icons.Outlined.Tune, null, Modifier.size(17.dp))
+                    Text("片头片尾", fontSize = 11.sp)
+                }
                 if (!startExpanded && episodes.size > 9) {
                     TextButton(onClick = { expanded = !expanded }) {
                         Icon(
