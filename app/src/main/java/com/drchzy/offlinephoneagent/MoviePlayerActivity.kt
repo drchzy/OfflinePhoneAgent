@@ -51,6 +51,12 @@ private val SoftPlayer = Color(0xFF1D1F20)
 private val AccentPlayer = Color(0xFFD9CBAF)
 private val HintPlayer = Color(0xFF999B9B)
 
+// 同一进程内优先复用详情页已取得的全部剧集，避免打开播放器后重复请求。
+// 进程重启时仍通过 movieId 重新加载，保持恢复能力。
+internal object MoviePlaybackSession {
+    @Volatile var detail: MovieDetail? = null
+}
+
 /** 精简播放器：全屏、完整线路和剧集切换、后台暂停与资源释放。 */
 class MoviePlayerActivity : ComponentActivity() {
     companion object {
@@ -108,7 +114,8 @@ class MoviePlayerActivity : ComponentActivity() {
         val headers = linkedMapOf<String, String>()
         for (name in raw.keys()) headers[name] = raw.optString(name)
         playAddress(PlayAddress(url, intent.getStringExtra(EXTRA_AGENT).orEmpty(), headers))
-        loadEpisodeList()
+        movieDetail = MoviePlaybackSession.detail?.takeIf { it.movie.id == movieId }
+        if (movieDetail == null) loadEpisodeList()
         setContent {
             MaterialTheme(
                 colorScheme = darkColorScheme(
