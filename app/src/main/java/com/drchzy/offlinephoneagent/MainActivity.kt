@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
@@ -554,77 +556,139 @@ private fun UsageCard(title: String, window: UsageWindow?, modifier: Modifier = 
 
 @Composable
 private fun MoviePage(host: MainActivity) {
+    val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences("movie_search", Context.MODE_PRIVATE) }
+    val history = remember {
+        mutableStateListOf<String>().apply {
+            addAll(prefs.getString("history", "").orEmpty()
+                .split("|").filter { it.isNotBlank() }.take(15))
+        }
+    }
     var query by rememberSaveable { mutableStateOf("") }
     var showDiagnostics by remember { mutableStateOf(false) }
-    if (showDiagnostics) {
-        MovieDiagnosticsDialog(host, onDismiss = { showDiagnostics = false })
+    val gridState = rememberLazyGridState()
+    val compact by remember {
+        derivedStateOf {
+            gridState.firstVisibleItemIndex > 0 || gridState.firstVisibleItemScrollOffset > 100
+        }
     }
+    val searchAction = {
+        val term = query.trim()
+        if (term.isNotEmpty()) {
+            history.remove(term)
+            history.add(0, term)
+            while (history.size > 15) history.removeAt(history.lastIndex)
+            prefs.edit().putString("history", history.joinToString("|")).apply()
+        }
+        host.loadMovies(term)
+    }
+
+    if (showDiagnostics) MovieDiagnosticsDialog(host) { showDiagnostics = false }
     LaunchedEffect(Unit) {
         if (host.movies.isEmpty() && !host.movieLoading) host.loadMovies()
     }
     val selected = host.detail
     if (selected != null) {
-        DetailPage(selected, host::closeDetail, { episode -> host.play(episode, selected.movie.name) }, host.movieLoading)
+        DetailPage(selected, host::closeDetail, { ep -> host.play(ep, selected.movie.name) },
+            host.movieLoading)
         return
     }
+
     Column(Modifier.fillMaxSize()) {
-        Column(Modifier.padding(horizontal = 23.dp).padding(top = 20.dp)) {
-            SectionTitle("DISCOVER & WATCH", "Movie Library", "发现值得细细品味的光影。")
-            Spacer(Modifier.height(24.dp))
+        Column(
+            Modifier.fillMaxWidth().padding(horizontal = 17.dp)
+                .padding(top = if (compact) 5.dp else 12.dp)
+        ) {
+            AnimatedVisibility(visible = !compact) {
+                Column {
+                    Text("DISCOVER & WATCH", fontSize = 10.sp, letterSpacing = 2.sp,
+                        color = Muted)
+                    Spacer(Modifier.height(4.dp))
+                    Text("Movie Library", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    Text("探索精选电影、剧集与新发现。", fontSize = 12.sp, color = Muted)
+                    Spacer(Modifier.height(15.dp))
+                }
+            }
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                shape = RoundedCornerShape(18.dp),
-                placeholder = { Text("搜索电影、剧集、演员…", color = Muted) },
-                leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                shape = RoundedCornerShape(16.dp),
+                placeholder = { Text("搜索电影、剧集、演员…", fontSize = 13.sp) },
+                leadingIcon = { Icon(Icons.Outlined.Search, null, Modifier.size(19.dp)) },
                 trailingIcon = {
-                    IconButton(onClick = { host.loadMovies(query.trim()) }, enabled = !host.movieLoading) {
-                        Icon(Icons.Outlined.ArrowForward, "执行搜索")
+                    IconButton(onClick = searchAction, enabled = !host.movieLoading) {
+                        Icon(Icons.Outlined.ArrowForward, "搜索", Modifier.size(20.dp))
                     }
                 },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { host.loadMovies(query.trim()) })
+                keyboardActions = KeyboardActions(onSearch = { searchAction() }),
+                textStyle = LocalTextStyle.current.copy(fontSize = 14.sp)
             )
-            Spacer(Modifier.height(24.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(if (query.isEmpty()) "为你精选" else "搜索结果", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.weight(1f))
-                TextButton(onClick = { showDiagnostics = true }) {
-                    Icon(Icons.Outlined.BugReport, null, Modifier.size(16.dp))
-                    Spacer(Modifier.width(3.dp))
-                    Text("接口测试", fontSize = 12.sp)
-                }
-                TextButton(onClick = { host.loadMovies(query.trim()) }, enabled = !host.movieLoading) {
-                    Icon(Icons.Outlined.Refresh, null, Modifier.size(16.dp))
-                    Spacer(Modifier.width(5.dp))
-                    Text("刷新")
+            AnimatedVisibility(visible = !compact && history.isNotEmpty()) {
+                Column {
+                    Spacer(Modifier.height(5.dp))
+                    Row(
+                        Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        Text("最近", fontSize = 11.sp, color = Muted)
+                        history.take(9).forEach { term ->
+                            SuggestionChip(
+                                onClick = { query = term; host.loadMovies(term) },
+                                label = { Text(term, fontSize = 11.sp, maxLines = 1) }
+                            )
+                        }
+                        TextButton(onClick = {
+                            history.clear()
+                            prefs.edit().remove("history").apply()
+                        }) { Text("清除", fontSize = 11.sp) }
+                    }
                 }
             }
-            Text(host.movieMessage, fontSize = 12.sp, color = Muted, maxLines = 3)
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(7.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    if (query.isBlank()) "为你精选" else "搜索结果",
+                    fontSize = if (compact) 15.sp else 18.sp,
+                    fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = { showDiagnostics = true }) {
+                    Icon(Icons.Outlined.BugReport, null, Modifier.size(15.dp))
+                    Spacer(Modifier.width(3.dp))
+                    Text("接口", fontSize = 11.sp)
+                }
+                TextButton(onClick = { host.loadMovies(query.trim()) },
+                    enabled = !host.movieLoading) {
+                    Icon(Icons.Outlined.Refresh, null, Modifier.size(16.dp))
+                    Text("刷新", fontSize = 11.sp)
+                }
+            }
+            if (host.movieMessage.isNotBlank()) {
+                Text(host.movieMessage, fontSize = 11.sp, color = Muted, maxLines = 2)
+            }
+            Spacer(Modifier.height(7.dp))
         }
-        if (host.movieLoading) LinearProgressIndicator(Modifier.fillMaxWidth().padding(horizontal = 23.dp))
+        if (host.movieLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
         if (host.movies.isEmpty() && !host.movieLoading) {
-            Column(
-                Modifier.fillMaxWidth().weight(1f).padding(28.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(Icons.Outlined.MovieFilter, null, Modifier.size(44.dp), tint = Muted)
-                Spacer(Modifier.height(15.dp))
-                Text("影片列表尚未就绪", fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(8.dp))
-                Text("请检查 Movie 服务配置或尝试搜索", color = Muted, fontSize = 12.sp)
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(Icons.Outlined.MovieFilter, null, Modifier.size(37.dp), tint = Muted)
+                    Spacer(Modifier.height(12.dp))
+                    Text("影片列表尚未就绪", fontWeight = FontWeight.Medium)
+                    Text("请检查连接或尝试搜索", color = Muted, fontSize = 11.sp)
+                }
             }
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = GridCells.Adaptive(minSize = 152.dp),
+                state = gridState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(start = 23.dp, end = 23.dp, bottom = 28.dp, top = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-                verticalArrangement = Arrangement.spacedBy(22.dp)
+                contentPadding = PaddingValues(horizontal = 17.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(13.dp),
+                verticalArrangement = Arrangement.spacedBy(18.dp)
             ) {
                 items(host.movies, key = { it.id }) { movie ->
                     MovieTile(movie, onClick = { host.openDetail(movie) })
