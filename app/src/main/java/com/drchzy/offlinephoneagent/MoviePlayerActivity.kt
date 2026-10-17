@@ -38,6 +38,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -817,142 +818,183 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
 
 @Composable
 private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modifier) {
-    // 每次切换播放线路都恢复折叠状态，避免长剧集列表占满页面。
-    val current = host.movieDetail?.lines?.getOrNull(host.browseLineIndex)
-    val episodes = current?.episodes.orEmpty()
-    // 打开播放器自动定位到正在播放的那一集所在的 100 集分段。
-    val activeIndex = if (current?.code == host.lineCode) {
-        episodes.indexOfFirst {
-            (it.id.isNotBlank() && it.id == host.episodeId) ||
-                (it.id.isBlank() && it.name == host.episodeName)
-        }.coerceAtLeast(0)
-    } else 0
+    val currentLine = host.movieDetail?.lines?.getOrNull(host.browseLineIndex)
+    val episodes = currentLine?.episodes.orEmpty()
     var rangeIndex by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
-        mutableIntStateOf(activeIndex / 100)
+        mutableIntStateOf(0)
     }
-    var expanded by remember(host.movieDetail?.movie?.id, host.browseLineIndex, rangeIndex) {
+    var descending by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
+        mutableStateOf(false)
+    }
+    var expanded by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
         mutableStateOf(false)
     }
     val rangeCount = (episodes.size + 99) / 100
-    val rangeEpisodes = episodes.drop(rangeIndex * 100).take(100)
+    val selectedEpisodeIndex =
+        if (currentLine?.code == host.lineCode) episodes.indexOfFirst {
+            (host.episodeId.isNotBlank() && it.id == host.episodeId) ||
+                (host.episodeId.isBlank() && it.name == host.episodeName)
+        } else -1
+    val currentRange = episodes.drop(rangeIndex * 100).take(100)
+    val visibleEpisodes = if (descending) currentRange.reversed() else currentRange
+    val gridState = rememberLazyGridState()
+    var displayColumns by remember { mutableIntStateOf(4) }
+
+    // 正常自动切集 / 手动选集后，把当前集的 100 集分段和选中项同步滚到首行。
+    LaunchedEffect(selectedEpisodeIndex, host.episodeId, host.episodeName, host.lineCode) {
+        if (selectedEpisodeIndex >= 0) {
+            rangeIndex = selectedEpisodeIndex / 100
+        }
+    }
+    LaunchedEffect(selectedEpisodeIndex, rangeIndex, descending, displayColumns) {
+        if (selectedEpisodeIndex >= 0 && selectedEpisodeIndex / 100 == rangeIndex) {
+            val localIndex = selectedEpisodeIndex - rangeIndex * 100
+            val actualIndex = if (descending) currentRange.lastIndex - localIndex else localIndex
+            if (actualIndex >= 0) {
+                // Grid scrollToItem 会将目标集所在的网格行滚到顶部。
+                gridState.scrollToItem(actualIndex)
+            }
+        } else if (rangeIndex >= 0) {
+            gridState.scrollToItem(0)
+        }
+    }
+
     Column(modifier) {
-        Column(Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 10.dp)) {
-            Text(host.movieDetail?.movie?.name.orEmpty().ifBlank { "正在播放" } +
-                " · " + host.episodeName, color = Color.White,
-                fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
-                maxLines = 2, overflow = TextOverflow.Ellipsis)
-            Spacer(Modifier.height(5.dp))
-            val movie = host.movieDetail?.movie
-            if (movie != null) {
-                Text(movie.year + " · " + movie.type + " · " + movie.dynamic,
-                    color = HintPlayer, fontSize = 11.sp, maxLines = 1)
+        Column(
+            Modifier.fillMaxWidth()
+                .padding(start = 13.dp, end = 13.dp, top = 10.dp, bottom = 5.dp)
+        ) {
+            Text(
+                host.movieDetail?.movie?.name.orEmpty().ifBlank { "正在播放" } +
+                    " · " + host.episodeName,
+                fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color.White,
+                maxLines = 2, overflow = TextOverflow.Ellipsis
+            )
+            Spacer(Modifier.height(4.dp))
+            host.movieDetail?.movie?.let { movie ->
+                Text(
+                    movie.year + " · " + movie.type + " · " + movie.dynamic,
+                    color = HintPlayer, fontSize = 11.sp, maxLines = 1
+                )
                 Spacer(Modifier.height(4.dp))
-                Text(movie.summary.ifBlank { "暂无简介" }, color = HintPlayer,
-                    fontSize = 11.sp, maxLines = 2, lineHeight = 16.sp,
-                    overflow = TextOverflow.Ellipsis)
+                Text(
+                    movie.summary.ifBlank { "暂无简介" },
+                    color = HintPlayer, fontSize = 11.sp, maxLines = 2, lineHeight = 16.sp,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
             if (host.errorText.isNotBlank()) {
                 Spacer(Modifier.height(6.dp))
-                Text(host.errorText, color = Color(0xFFFFB09E), fontSize = 11.sp,
-                    maxLines = 3)
+                Text(host.errorText, color = Color(0xFFFFB09E),
+                    fontSize = 11.sp, maxLines = 3)
             }
-            Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("全部剧集", color = Color.White,
-                    fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("全部剧集", fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold, color = Color.White)
                 Text("  " + episodes.size + " 集", color = HintPlayer, fontSize = 11.sp)
                 Spacer(Modifier.weight(1f))
-                if (rangeEpisodes.size > 9) {
+                if (episodes.size > 9) {
                     TextButton(onClick = { expanded = !expanded }) {
                         Icon(
                             if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
-                            contentDescription = null, modifier = Modifier.size(17.dp)
+                            null, Modifier.size(17.dp)
                         )
-                        Text(if (expanded) "收起" else "展开全部", fontSize = 11.sp)
+                        Text(if (expanded) "收起" else "展开", fontSize = 11.sp)
                     }
                 }
                 if (host.loadingList || host.changingEpisode) {
                     CircularProgressIndicator(Modifier.size(17.dp), strokeWidth = 2.dp)
                 } else if (host.movieDetail == null) {
                     TextButton(onClick = host::loadEpisodeList) {
-                        Icon(Icons.Outlined.Refresh, "重试", Modifier.size(15.dp))
-                        Text("重试")
+                        Text("重试", fontSize = 12.sp)
                     }
                 }
             }
-            val lines = host.movieDetail?.lines.orEmpty()
-            if (lines.isNotEmpty()) {
-                Row(
-                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+
+            // 固定在剧集网格上方，不跟随下方剧集滑动；线路只在播放器工具条切换。
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                if (rangeCount > 1) {
+                    Row(
+                        Modifier.weight(1f).horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        repeat(rangeCount) { index ->
+                            val first = index * 100 + 1
+                            val last = minOf((index + 1) * 100, episodes.size)
+                            FilterChip(
+                                selected = rangeIndex == index,
+                                onClick = {
+                                    rangeIndex = index
+                                    expanded = false
+                                },
+                                label = { Text("$first–$last", fontSize = 11.sp) }
+                            )
+                        }
+                    }
+                } else {
+                    Text("选择剧集", color = HintPlayer, fontSize = 11.sp,
+                        modifier = Modifier.weight(1f))
+                }
+                Spacer(Modifier.width(6.dp))
+                TextButton(
+                    onClick = { descending = !descending },
+                    modifier = Modifier.height(40.dp),
+                    contentPadding = PaddingValues(horizontal = 7.dp)
                 ) {
-                    lines.forEachIndexed { index, line ->
-                        FilterChip(
-                            selected = index == host.browseLineIndex,
-                            onClick = { host.selectLine(index) },
-                            label = { Text(line.name, fontSize = 11.sp, maxLines = 1) }
-                        )
-                    }
+                    Icon(Icons.Outlined.SwapVert, "切换排序", Modifier.size(17.dp))
+                    Text(if (descending) "倒序" else "正序", fontSize = 12.sp)
                 }
             }
-            if (rangeCount > 1) {
-                Spacer(Modifier.height(5.dp))
-                Row(
-                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    repeat(rangeCount) { index ->
-                        val start = index * 100 + 1
-                        val end = minOf((index + 1) * 100, episodes.size)
-                        FilterChip(
-                            selected = rangeIndex == index,
-                            onClick = { rangeIndex = index },
-                            label = { Text("$start–$end", fontSize = 11.sp) }
-                        )
-                    }
-                }
-            }
-            Spacer(Modifier.height(5.dp))
         }
         if (episodes.isEmpty()) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(if (host.loadingList) "正在加载完整剧集…" else "该线路暂无可选剧集",
-                    color = HintPlayer, fontSize = 12.sp)
+            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                Text(
+                    if (host.loadingList) "正在加载剧集…" else "暂无可播放剧集",
+                    color = HintPlayer, fontSize = 12.sp
+                )
             }
         } else {
-            // 适配手机/平板宽度：默认最多显示三行，展开后列表才独立滚动。
+            // 未展开也允许网格自身滚动：只显示三行高度，但可浏览本段全部剧集。
+            // 标签及排序条留在固定的 Column 内，不参与网格滑动。
             BoxWithConstraints(
                 modifier = if (expanded) Modifier.fillMaxWidth().weight(1f)
-                else Modifier.fillMaxWidth().height(153.dp)
+                else Modifier.fillMaxWidth().height(156.dp)
             ) {
                 val columns = maxOf(2, (maxWidth.value / 83f).toInt())
-                val shown = if (expanded) rangeEpisodes else rangeEpisodes.take(columns * 3)
+                SideEffect { displayColumns = columns }
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(columns),
-                    modifier = Modifier.fillMaxSize().padding(horizontal = 13.dp),
-                    userScrollEnabled = expanded,
-                    contentPadding = PaddingValues(bottom = if (expanded) 24.dp else 0.dp),
+                    state = gridState,
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+                    userScrollEnabled = true,
+                    contentPadding = PaddingValues(bottom = 15.dp),
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(shown.size) { index ->
-                        val ep = shown[index]
-                        val selected = current?.code == host.lineCode &&
-                            ((ep.id.isNotBlank() && ep.id == host.episodeId) ||
-                                (ep.id.isBlank() && ep.name == host.episodeName))
+                    items(visibleEpisodes.size) { index ->
+                        val episode = visibleEpisodes[index]
+                        val selected = currentLine?.code == host.lineCode &&
+                            ((episode.id.isNotBlank() && episode.id == host.episodeId) ||
+                                (episode.id.isBlank() && episode.name == host.episodeName))
                         Surface(
-                            onClick = { host.choose(ep) },
+                            onClick = { host.choose(episode) },
                             enabled = !host.changingEpisode,
                             shape = RoundedCornerShape(11.dp),
                             color = if (selected) AccentPlayer else SoftPlayer,
                             contentColor = if (selected) InkPlayer else Color.White
                         ) {
-                            Box(Modifier.fillMaxWidth().height(42.dp).padding(horizontal = 3.dp),
-                                contentAlignment = Alignment.Center) {
-                                Text(ep.name.ifBlank { "第 " + (index + 1) + " 集" },
+                            Box(
+                                Modifier.fillMaxWidth().height(42.dp).padding(horizontal = 3.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    episode.name.ifBlank {
+                                        "第 " + (rangeIndex * 100 + index + 1) + " 集"
+                                    },
                                     fontSize = 11.sp,
                                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                                    maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    maxLines = 1, overflow = TextOverflow.Ellipsis
+                                )
                             }
                         }
                     }
