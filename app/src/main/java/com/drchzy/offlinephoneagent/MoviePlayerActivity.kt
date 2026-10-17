@@ -237,6 +237,11 @@ class MoviePlayerActivity : ComponentActivity() {
             override fun onPlayerError(error: PlaybackException) {
                 if (playback === next) errorText = "播放失败：" + (error.message ?: "可尝试其他线路")
             }
+            override fun onPlaybackStateChanged(state: Int) {
+                if (playback === next && state == Player.STATE_ENDED) {
+                    playFollowingEpisode()
+                }
+            }
         })
         mediaUrl = address.url
         val previous = playback
@@ -248,6 +253,19 @@ class MoviePlayerActivity : ComponentActivity() {
         next.prepare()
         next.playWhenReady = !backgrounded || isInPictureInPictureMode
         next.playbackParameters = PlaybackParameters(speed)
+    }
+
+    /** 正常播完后自动播放同一线路的下一集；最后一集停止，不循环重播。 */
+    private fun playFollowingEpisode() {
+        if (changingEpisode || isFinishing || isDestroyed) return
+        val line = movieDetail?.lines?.firstOrNull { it.code == lineCode } ?: return
+        val current = line.episodes.indexOfFirst {
+            (episodeId.isNotBlank() && it.id == episodeId) ||
+                (episodeId.isBlank() && it.name == episodeName)
+        }
+        if (current >= 0 && current + 1 < line.episodes.size) {
+            choose(line.episodes[current + 1])
+        }
     }
 
     fun loadEpisodeList() {
