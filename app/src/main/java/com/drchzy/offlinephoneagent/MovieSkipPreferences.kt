@@ -2,6 +2,8 @@ package com.drchzy.offlinephoneagent
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -75,7 +77,8 @@ fun MovieSkipSettingsDialog(movieId: String, onDismiss: () -> Unit) {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     listOf(0, 30, 60, 90).forEach { seconds ->
                         SuggestionChip(
                             onClick = { intro = seconds.toString() },
@@ -94,7 +97,8 @@ fun MovieSkipSettingsDialog(movieId: String, onDismiss: () -> Unit) {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     listOf(0, 30, 60, 90).forEach { seconds ->
                         SuggestionChip(
                             onClick = { outro = seconds.toString() },
