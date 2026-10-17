@@ -430,6 +430,7 @@ class MoviePlayerActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     val context = androidx.compose.ui.platform.LocalContext.current
