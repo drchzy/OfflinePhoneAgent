@@ -403,6 +403,8 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val player = host.playback
     var showControls by remember { mutableStateOf(true) }
+    var controlReset by remember { mutableIntStateOf(0) }
+    var episodePickerOpen by remember { mutableStateOf(false) }
     var position by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
     var seeking by remember { mutableStateOf(false) }
@@ -422,11 +424,27 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
 
     BackHandler(enabled = host.fullscreen) { host.toggleFullscreen() }
 
+    // 无交互 5 秒自动隐藏：弹出菜单、选集面板、投屏对话框时不计时。
+    LaunchedEffect(showControls, controlReset, speedMenu, lineMenu, episodePickerOpen, showCast) {
+        if (showControls && !speedMenu && !lineMenu && !episodePickerOpen && !showCast) {
+            delay(5_000L)
+            showControls = false
+        }
+    }
+
     LaunchedEffect(player) {
+        var lastSave = 0L
         while (isActive) {
             position = player?.currentPosition?.coerceAtLeast(0L) ?: 0L
             val now = player?.duration ?: 0L
             duration = if (now == C.TIME_UNSET || now < 0L) 0L else now
+            val elapsed = android.os.SystemClock.elapsedRealtime()
+            if (player != null && player.isPlaying && position > 0L &&
+                elapsed - lastSave >= 5_000L
+            ) {
+                host.checkpoint()
+                lastSave = elapsed
+            }
             delay(450L)
         }
     }
@@ -456,6 +474,24 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                 }
             }
             castBusy = false
+        }
+    }
+    if (episodePickerOpen) {
+        ModalBottomSheet(
+            onDismissRequest = { episodePickerOpen = false },
+            containerColor = SoftPlayer
+        ) {
+            Box(Modifier.fillMaxWidth().fillMaxHeight(0.82f)) {
+                EpisodeBrowser(
+                    host,
+                    modifier = Modifier.fillMaxSize(),
+                    startExpanded = true,
+                    onEpisodeSelected = {
+                        episodePickerOpen = false
+                        showControls = false
+                    }
+                )
+            }
         }
     }
     if (showCast) {
@@ -620,6 +656,9 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                     previewSeek = -1L
                                 } else if (direction == 0 && !held) {
                                     showControls = !showControls
+                                    controlReset++
+                                } else {
+                                    controlReset++
                                 }
                             }
                         }
@@ -685,21 +724,22 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                     ) {
                         IconButton(
                             onClick = { if (host.playing) player?.pause() else player?.play() },
-                            modifier = Modifier.size(34.dp)
+                            modifier = Modifier.size(38.dp)
                         ) {
                             Icon(
                                 if (host.playing) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
-                                "播放或暂停", Modifier.size(23.dp), tint = Color.White
+                                "播放或暂停", Modifier.size(25.dp), tint = Color.White
                             )
                         }
                         // 进度轨道与全部按钮同一行，宽度自适应手机和平板。
                         // 轨道厚度 4dp，透明触控区高 40dp，兼顾拖动和视觉清爽。
                         Canvas(
-                            modifier = Modifier.weight(1f).height(40.dp)
+                            modifier = Modifier.weight(1f).height(42.dp)
                                 .padding(horizontal = 4.dp)
                                 .pointerInput(player, duration) {
                                     awaitEachGesture {
                                         val down = awaitFirstDown(requireUnconsumed = false)
+                                        controlReset++
                                         val w = size.width.coerceAtLeast(1).toFloat()
                                         if (duration > 0L) {
                                             seeking = true
@@ -731,18 +771,18 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                 Color.White.copy(alpha = .40f),
                                 start = Offset(0f, center),
                                 end = Offset(size.width, center),
-                                strokeWidth = 4.dp.toPx(),
+                                strokeWidth = 5.dp.toPx(),
                                 cap = androidx.compose.ui.graphics.StrokeCap.Round
                             )
                             drawLine(
                                 AccentPlayer,
                                 start = Offset(0f, center),
                                 end = Offset(size.width * ratio, center),
-                                strokeWidth = 4.dp.toPx(),
+                                strokeWidth = 5.dp.toPx(),
                                 cap = androidx.compose.ui.graphics.StrokeCap.Round
                             )
                             drawCircle(
-                                AccentPlayer, radius = 4.5.dp.toPx(),
+                                AccentPlayer, radius = 5.0.dp.toPx(),
                                 center = Offset(size.width * ratio, center)
                             )
                         }
@@ -769,7 +809,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         Box {
                             IconButton(
                                 onClick = { lineMenu = true },
-                                modifier = Modifier.size(34.dp)
+                                modifier = Modifier.size(36.dp)
                             ) {
                                 Icon(Icons.Outlined.List, "切换线路",
                                     Modifier.size(22.dp), tint = Color.White)
@@ -791,9 +831,19 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                 }
                             }
                         }
+                        TextButton(
+                            onClick = {
+                                episodePickerOpen = true
+                                controlReset++
+                            },
+                            modifier = Modifier.height(38.dp),
+                            contentPadding = PaddingValues(horizontal = 2.dp)
+                        ) {
+                            Text("选集", fontSize = 12.sp, color = Color.White)
+                        }
                         IconButton(
                             onClick = host::toggleFullscreen,
-                            modifier = Modifier.size(34.dp)
+                            modifier = Modifier.size(36.dp)
                         ) {
                             Icon(
                                 if (host.fullscreen) Icons.Outlined.FullscreenExit
