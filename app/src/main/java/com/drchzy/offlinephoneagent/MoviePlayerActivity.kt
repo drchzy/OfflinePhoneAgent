@@ -504,7 +504,8 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     }
     LaunchedEffect(episodePickerOpen, host.episodeId, host.lineCode, inlineEpisodes.size) {
         if (episodePickerOpen) {
-            // DropdownMenu 打开即定位当前选集所在行。
+            // 等弹出框完成初次布局，再自动滚到当前集附近，避免首次打开没定位。
+            delay(90L)
             val itemHeightPx = with(density) { 48.dp.roundToPx() }
             episodeScroll.scrollTo(
                 ((selectedIndex.coerceAtLeast(0) - 2) * itemHeightPx).coerceAtLeast(0)
@@ -726,6 +727,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                             (abs(moved.x) > slop || abs(moved.y) > slop)
                                         ) {
                                             direction = if (abs(moved.x) >= abs(moved.y)) 1 else 2
+                                            if (direction == 1) gestureLabel = ""
                                         }
                                         when (direction) {
                                             1 -> {
