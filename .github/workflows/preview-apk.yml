@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: preview-apk-${{ github.ref }}
@@ -22,11 +22,16 @@ jobs:
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/app/offline-phone-agent.jks
-      APP_VERSION_CODE: "34"
-      APP_VERSION_NAME: 1.0.34-preview
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set preview build version
+        shell: bash
+        run: |
+          CODE=$((${{ github.run_number }} + 32))
+          echo "APP_VERSION_CODE=$CODE" >> "$GITHUB_ENV"
+          echo "APP_VERSION_NAME=1.0.$CODE-preview" >> "$GITHUB_ENV"
 
       - name: Set up Java
         uses: actions/setup-java@v5
@@ -74,7 +79,7 @@ jobs:
             printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
             gradle :app:assembleRelease --stacktrace
             mkdir -p preview-apk
-            cp app/build/outputs/apk/release/app-release.apk preview-apk/OfflinePhoneAgent-preview-signed.apk
+            cp app/build/outputs/apk/release/app-release.apk "preview-apk/OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
             echo "Existing release signing used"
           else
             echo "No signing secrets available; use debug artifact for fresh install"
@@ -86,5 +91,21 @@ jobs:
           name: OfflinePhoneAgent-Compose-Movie-preview
           path: |
             app/build/outputs/apk/debug/app-debug.apk
-            preview-apk/OfflinePhoneAgent-preview-signed.apk
+            preview-apk/*.apk
           if-no-files-found: error
+
+      - name: Validate signed preview output
+        if: success()
+        shell: bash
+        run: test -f "preview-apk/OfflinePhoneAgent-v${APP_VERSION_NAME}.apk"
+
+      - name: Create prerelease for in-app preview updates
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.APP_VERSION_NAME }}
+          name: OfflinePhoneAgent v${{ env.APP_VERSION_NAME }}
+          prerelease: true
+          make_latest: false
+          generate_release_notes: false
+          files: preview-apk/OfflinePhoneAgent-v${{ env.APP_VERSION_NAME }}.apk
