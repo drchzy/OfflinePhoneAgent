@@ -72,6 +72,7 @@ data class MovieSettings(
 class MovieApi(private val context: Context) {
     companion object {
         const val DEFAULT_CONFIG_URL = "https://app-site.ecoliving168.com/domain_v5.json"
+        const val DEFAULT_RSA_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA02F/kPg5A2NX4qZ5JSns+bjhVMCC6JbTiTKpbgNgiXU+Kkorg6Dj76gS68gB8llhbUKCXjIdygnHPrxVHWfzmzisq9P9awmXBkCk74Skglx2LKHa/mNz9ivg6YzQ5pQFUEWS0DfomGBXVtqvBlOXMCRxp69oWaMsnfjnBV+0J7vHbXzUIkqBLdXSNfM9Ag5qdRDrJC3CqB65EJ3ARWVzZTTcXSdMW9i3qzEZPawPNPe5yPYbMZIoXLcrqvEZnRK1oak67/ihf7iwPJqdc+68ZYEmmdqwunOvRdjq89fQMVelmqcRD9RYe08v+xDxG9Co9z7hcXGTsUquMxkh29uNawIDAQAB"
         private const val PREFS = "movie_connector"
     }
 
@@ -83,7 +84,7 @@ class MovieApi(private val context: Context) {
         prefs.getString("aes_key", "").orEmpty(),
         prefs.getString("aes_iv", "").orEmpty(),
         prefs.getString("hmac_key", "").orEmpty(),
-        prefs.getString("rsa_public_key", "").orEmpty()
+        prefs.getString("rsa_public_key", "").orEmpty().ifBlank { DEFAULT_RSA_PUBLIC_KEY }
     )
 
     fun save(settings: MovieSettings) {
