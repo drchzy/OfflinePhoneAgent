@@ -1,0 +1,90 @@
+name: Preview Android APK
+
+on:
+  push:
+    branches: ["feat/compose-movie-20261017"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_SET: ${{ secrets.KEYSTORE_SET }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/app/offline-phone-agent.jks
+      APP_VERSION_CODE: ${{ github.run_number }}
+      APP_VERSION_NAME: 1.0.${{ github.run_number }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: "platform-tools platforms;android-35 build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Compile debug APK
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Prepare existing release signing
+        shell: bash
+        run: |
+          if [ -n "$KEYSTORE_SET" ]; then
+            DECODED=$(printf '%s' "$KEYSTORE_SET" | base64 --decode)
+            ANDROID_KEYSTORE_BASE64=$(printf '%s' "$DECODED" | cut -d'|' -f1)
+            ANDROID_KEYSTORE_PASSWORD=$(printf '%s' "$DECODED" | cut -d'|' -f2)
+            ANDROID_KEY_ALIAS=$(printf '%s' "$DECODED" | cut -d'|' -f3)
+            ANDROID_KEY_PASSWORD=$(printf '%s' "$DECODED" | cut -d'|' -f4)
+            echo "::add-mask::$ANDROID_KEYSTORE_BASE64"
+            echo "::add-mask::$ANDROID_KEYSTORE_PASSWORD"
+            echo "::add-mask::$ANDROID_KEY_ALIAS"
+            echo "::add-mask::$ANDROID_KEY_PASSWORD"
+            echo "ANDROID_KEYSTORE_BASE64=$ANDROID_KEYSTORE_BASE64" >> "$GITHUB_ENV"
+            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build signed preview release when key is configured
+        shell: bash
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            trap 'rm -f "$ANDROID_KEYSTORE_PATH"' EXIT
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+            gradle :app:assembleRelease --stacktrace
+            mkdir -p preview-apk
+            cp app/build/outputs/apk/release/app-release.apk preview-apk/OfflinePhoneAgent-preview-signed.apk
+            echo "Existing release signing used"
+          else
+            echo "No signing secrets available; use debug artifact for fresh install"
+          fi
+
+      - name: Upload installable APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OfflinePhoneAgent-Compose-Movie-preview
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            preview-apk/OfflinePhoneAgent-preview-signed.apk
+          if-no-files-found: error
