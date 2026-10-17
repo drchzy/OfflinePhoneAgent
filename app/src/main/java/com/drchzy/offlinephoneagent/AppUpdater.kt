@@ -45,9 +45,9 @@ object AppUpdater {
                         AlertDialog.Builder(activity)
                             .setTitle("发现新版本")
                             .setMessage(
-                                "当前版本：" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")\\n" +
+                                "当前版本：" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")\n" +
                                     "可更新至：" + newest.versionName + " (" + newest.versionCode + ")" +
-                                    if (newest.preview) "\\n更新渠道：预览版" else "\\n更新渠道：正式版"
+                                    if (newest.preview) "\n更新渠道：预览版" else "\n更新渠道：正式版"
                             )
                             .setNegativeButton("稍后", null)
                             .setPositiveButton("下载并安装") { _, _ ->
@@ -56,7 +56,7 @@ object AppUpdater {
                             .show()
                     } else if (!silent) {
                         val channelMessage = if (isPreviewBuild()) {
-                            "当前是预览版，GitHub 尚无版本号更高的 Release。\\n" +
+                            "当前是预览版，GitHub 尚无版本号更高的 Release。\n" +
                                 "Actions 构建产物不属于 Release，无法自动更新。"
                         } else {
                             "当前是正式版，GitHub 没有比它更新的正式 Release。"
@@ -65,7 +65,7 @@ object AppUpdater {
                             .setTitle("检查更新")
                             .setMessage(
                                 "当前版本：" + BuildConfig.VERSION_NAME +
-                                    " (" + BuildConfig.VERSION_CODE + ")\\n\\n" + channelMessage
+                                    " (" + BuildConfig.VERSION_CODE + ")\n\n" + channelMessage
                             )
                             .setPositiveButton("确定", null)
                             .show()
