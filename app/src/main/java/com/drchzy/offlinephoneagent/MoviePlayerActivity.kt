@@ -675,11 +675,23 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
 @Composable
 private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modifier) {
     // 每次切换播放线路都恢复折叠状态，避免长剧集列表占满页面。
-    var expanded by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
-        mutableStateOf(false)
-    }
     val current = host.movieDetail?.lines?.getOrNull(host.browseLineIndex)
     val episodes = current?.episodes.orEmpty()
+    // 打开播放器自动定位到正在播放的那一集所在的 100 集分段。
+    val activeIndex = if (current?.code == host.lineCode) {
+        episodes.indexOfFirst {
+            (it.id.isNotBlank() && it.id == host.episodeId) ||
+                (it.id.isBlank() && it.name == host.episodeName)
+        }.coerceAtLeast(0)
+    } else 0
+    var rangeIndex by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
+        mutableIntStateOf(activeIndex / 100)
+    }
+    var expanded by remember(host.movieDetail?.movie?.id, host.browseLineIndex, rangeIndex) {
+        mutableStateOf(false)
+    }
+    val rangeCount = (episodes.size + 99) / 100
+    val rangeEpisodes = episodes.drop(rangeIndex * 100).take(100)
     Column(modifier) {
         Column(Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 10.dp)) {
             Text(host.movieDetail?.movie?.name.orEmpty().ifBlank { "正在播放" } +
@@ -707,7 +719,7 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
                     fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text("  " + episodes.size + " 集", color = HintPlayer, fontSize = 11.sp)
                 Spacer(Modifier.weight(1f))
-                if (episodes.size > 8) {
+                if (rangeEpisodes.size > 9) {
                     TextButton(onClick = { expanded = !expanded }) {
                         Icon(
                             if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
@@ -740,6 +752,23 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
                     }
                 }
             }
+            if (rangeCount > 1) {
+                Spacer(Modifier.height(5.dp))
+                Row(
+                    Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    repeat(rangeCount) { index ->
+                        val start = index * 100 + 1
+                        val end = minOf((index + 1) * 100, episodes.size)
+                        FilterChip(
+                            selected = rangeIndex == index,
+                            onClick = { rangeIndex = index },
+                            label = { Text("$start–$end", fontSize = 11.sp) }
+                        )
+                    }
+                }
+            }
             Spacer(Modifier.height(5.dp))
         }
         if (episodes.isEmpty()) {
@@ -754,7 +783,7 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
                 else Modifier.fillMaxWidth().height(153.dp)
             ) {
                 val columns = maxOf(2, (maxWidth.value / 83f).toInt())
-                val shown = if (expanded) episodes else episodes.take(columns * 3)
+                val shown = if (expanded) rangeEpisodes else rangeEpisodes.take(columns * 3)
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(columns),
                     modifier = Modifier.fillMaxSize().padding(horizontal = 13.dp),
