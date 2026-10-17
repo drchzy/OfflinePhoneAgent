@@ -806,7 +806,7 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                         FilterChip(
                             selected = rangeIndex == index,
                             onClick = { rangeIndex = index },
-                            label = { Text("$" + "{first}–$" + "{last}", fontSize = 12.sp) }
+                            label = { Text("$first–$last", fontSize = 12.sp) }
                         )
                     }
                 }
