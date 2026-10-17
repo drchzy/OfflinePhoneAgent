@@ -58,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -493,8 +494,30 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     var showControls by remember { mutableStateOf(true) }
     var controlReset by remember { mutableIntStateOf(0) }
     var episodePickerOpen by remember { mutableStateOf(false) }
+    val episodeScroll = rememberScrollState()
+    val density = LocalDensity.current
+    val chosenLine = host.movieDetail?.lines?.firstOrNull { it.code == host.lineCode }
+    val inlineEpisodes = chosenLine?.episodes.orEmpty()
+    val selectedIndex = inlineEpisodes.indexOfFirst {
+        (host.episodeId.isNotBlank() && it.id == host.episodeId) ||
+            (host.episodeId.isBlank() && it.name == host.episodeName)
+    }
+    LaunchedEffect(episodePickerOpen, host.episodeId, host.lineCode, inlineEpisodes.size) {
+        if (episodePickerOpen) {
+            // DropdownMenu 打开即定位当前选集所在行。
+            val itemHeightPx = with(density) { 48.dp.roundToPx() }
+            episodeScroll.scrollTo(
+                ((selectedIndex.coerceAtLeast(0) - 2) * itemHeightPx).coerceAtLeast(0)
+            )
+        }
+    }
     var skipDialogOpen by remember { mutableStateOf(false) }
     val skipRevision by MovieSkipPreferences.revision.collectAsState()
+    val skipInfo = remember(skipRevision, host.intent) {
+        MovieSkipPreferences.get(
+            context, host.intent.getStringExtra(MoviePlayerActivity.EXTRA_MOVIE_ID).orEmpty()
+        )
+    }
     var position by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
     var seeking by remember { mutableStateOf(false) }
@@ -581,24 +604,6 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                 }
             }
             castBusy = false
-        }
-    }
-    if (episodePickerOpen) {
-        ModalBottomSheet(
-            onDismissRequest = { episodePickerOpen = false },
-            containerColor = SoftPlayer
-        ) {
-            Box(Modifier.fillMaxWidth().fillMaxHeight(0.82f)) {
-                EpisodeBrowser(
-                    host,
-                    modifier = Modifier.fillMaxSize(),
-                    startExpanded = true,
-                    onEpisodeSelected = {
-                        episodePickerOpen = false
-                        showControls = false
-                    }
-                )
-            }
         }
     }
     if (showCast) {
@@ -723,7 +728,8 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                                 if (available > 0L) {
                                                     val shift = (moved.x / w * 120_000f).toLong()
                                                     previewSeek = (base + shift).coerceIn(0L, available)
-                                                    gestureLabel = "预览进度  " + clock(previewSeek)
+                                                    // 不在画面中央显示进度预览；白色滑块直接跟随手指。
+                                                    showControls = true
                                                 }
                                                 change.consume()
                                             }
@@ -761,6 +767,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                 if (direction == 1 && previewSeek >= 0L) {
                                     player?.seekTo(previewSeek)
                                     previewSeek = -1L
+                                    showControls = true
                                 } else if (direction == 0 && !held) {
                                     showControls = !showControls
                                     controlReset++
