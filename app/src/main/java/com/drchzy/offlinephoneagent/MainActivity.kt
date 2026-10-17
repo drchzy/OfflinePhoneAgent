@@ -217,6 +217,7 @@ class MainActivity : ComponentActivity() {
                 val address = movieApi.playback(episode)
                 runOnUiThread {
                     movieLoading = false
+                    MoviePlaybackSession.detail = detail
                     startActivity(Intent(this, MoviePlayerActivity::class.java).apply {
                         putExtra(MoviePlayerActivity.EXTRA_URL, address.url)
                         putExtra(MoviePlayerActivity.EXTRA_MOVIE_ID, detail?.movie?.id.orEmpty())
