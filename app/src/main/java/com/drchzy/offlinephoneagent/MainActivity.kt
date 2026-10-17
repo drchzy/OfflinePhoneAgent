@@ -694,6 +694,7 @@ private fun MoviePage(host: MainActivity) {
     }
     var query by rememberSaveable { mutableStateOf("") }
     var showDiagnostics by remember { mutableStateOf(false) }
+    var showHistory by remember { mutableStateOf(false) }
     val gridState = rememberLazyGridState()
     val compact by remember {
         derivedStateOf {
@@ -712,6 +713,15 @@ private fun MoviePage(host: MainActivity) {
     }
 
     if (showDiagnostics) MovieDiagnosticsDialog(host) { showDiagnostics = false }
+    if (showHistory) {
+        MovieHistoryDialog(
+            onDismiss = { showHistory = false },
+            onOpen = { record ->
+                showHistory = false
+                host.openDetail(MovieItem(record.movieId, record.movieName, ""))
+            }
+        )
+    }
     LaunchedEffect(Unit) {
         if (host.movies.isEmpty() && !host.movieLoading) host.loadMovies()
     }
@@ -769,8 +779,14 @@ private fun MoviePage(host: MainActivity) {
             Spacer(Modifier.height(7.dp))
             AnimatedVisibility(visible = !compact && recentMovies.isNotEmpty()) {
                 Column {
-                    Text("最近观看", fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("最近观看", fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.weight(1f))
+                        TextButton(onClick = { showHistory = true }) {
+                            Text("全部记录", fontSize = 11.sp)
+                        }
+                    }
                     Row(
                         Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -1255,4 +1271,66 @@ private fun SettingsPanel(
 private fun formatWatchTime(ms: Long): String {
     val s = ms.coerceAtLeast(0L) / 1000L
     return "%02d:%02d".format(s / 60L, s % 60L)
+}
+
+/** 全部播放历史：支持打开影片和按影片删除本地记录。 */
+@Composable
+private fun MovieHistoryDialog(
+    onDismiss: () -> Unit,
+    onOpen: (EpisodeWatch) -> Unit
+) {
+    val context = LocalContext.current
+    val revision by MovieWatchHistory.revision.collectAsState()
+    val entries = remember(revision) {
+        MovieWatchHistory.all(context).distinctBy { it.movieId }
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("全部播放历史", fontSize = 19.sp) },
+        text = {
+            Column(
+                Modifier.fillMaxWidth().heightIn(max = 410.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(7.dp)
+            ) {
+                if (entries.isEmpty()) {
+                    Text("暂无播放历史", color = Muted, fontSize = 12.sp)
+                }
+                entries.forEach { item ->
+                    Surface(
+                        shape = RoundedCornerShape(13.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        onClick = { onOpen(item) }
+                    ) {
+                        Row(
+                            Modifier.fillMaxWidth().padding(horizontal = 9.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(Modifier.weight(1f)) {
+                                Text(item.movieName.ifBlank { "未知影片" },
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                Text(
+                                    item.episodeName + " · " +
+                                        (if (item.finished) "已看完" else "上次 " + formatWatchTime(item.positionMs)),
+                                    color = Muted, fontSize = 11.sp
+                                )
+                            }
+                            IconButton(
+                                onClick = { MovieWatchHistory.clearMovie(context, item.movieId) },
+                                modifier = Modifier.size(35.dp)
+                            ) {
+                                Icon(Icons.Outlined.DeleteOutline, "清除这部影片的播放记录",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(18.dp))
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("完成") } }
+    )
 }
