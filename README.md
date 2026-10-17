@@ -33,6 +33,8 @@ gradle :app:assembleDebug
 
 ## GitHub 发布
 
+> **构建与发布操作说明**：[BUILD.md](BUILD.md)。2026-10-17 起，开发分支预览版已取消重复的 `assembleDebug`，直接一次 `assembleRelease` 生成原签名 APK，校验后自动发布 Prerelease；签名缺失则失败。
+
 现有 `.github/workflows/android-apk.yml` 工作流在 main 分支提交信息含 `[build]` 时触发，使用现有固定签名数据构建 APK，并发布带版本号的 GitHub Release。签名密钥必须配置在仓库 Secrets 中，否则工作流按设计失败，防止覆盖安装时签名变化。
 
 检查更新继续使用原来的 `AppUpdater`，旧版相同签名才能覆盖安装。
