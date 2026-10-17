@@ -359,6 +359,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     var gestureLabel by remember { mutableStateOf("") }
     var gestureWidth by remember { mutableIntStateOf(1) }
     var gestureHeight by remember { mutableIntStateOf(1) }
+    var previewSeek by remember { mutableLongStateOf(-1L) }
     var speedMenu by remember { mutableStateOf(false) }
     var lineMenu by remember { mutableStateOf(false) }
     var showCast by remember { mutableStateOf(false) }
@@ -480,117 +481,204 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
             }
 
             if (!host.pictureInPicture) {
+                // 同一个事件识别器处理点按、长按及两个轴向的滑动，避免事件冲突。
                 Box(
                     Modifier.fillMaxSize()
                         .onSizeChanged {
                             gestureWidth = it.width.coerceAtLeast(1)
                             gestureHeight = it.height.coerceAtLeast(1)
                         }
-                        .pointerInput(player) {
-                            detectTapGestures(
-                                onTap = { showControls = !showControls },
-                                onLongPress = {
-                                    host.applySpeed(2f)
-                                    gestureLabel = "长按 2× 快进"
-                                },
-                                onPress = {
-                                    val before = host.speed
-                                    tryAwaitRelease()
-                                    if (host.speed == 2f && before != 2f) host.applySpeed(before)
-                                }
-                            )
-                        }
-                        .pointerInput(gestureWidth, gestureHeight) {
-                            var onLeft = true
-                            detectVerticalDragGestures(
-                                onDragStart = { onLeft = it.x < gestureWidth / 2f },
-                                onVerticalDrag = { change, dy ->
-                                    change.consume()
-                                    val amount = -dy / gestureHeight.toFloat().coerceAtLeast(1f)
-                                    if (onLeft) {
-                                        host.brightness(amount)
-                                        gestureLabel = "亮度 " + (host.brightnessLevel * 100).toInt() + "%"
-                                    } else {
-                                        host.volume(amount)
-                                        gestureLabel = "音量 " + (host.volumeLevel * 100).toInt() + "%"
+                        .pointerInput(player, host.fullscreen) {
+                            awaitEachGesture {
+                                val down = awaitFirstDown(requireUnconsumed = false)
+                                val downAt = SystemClock.uptimeMillis()
+                                val w = size.width.coerceAtLeast(1).toFloat()
+                                val h = size.height.coerceAtLeast(1).toFloat()
+                                val left = down.position.x < w / 2f
+                                val base = player?.currentPosition?.coerceAtLeast(0L) ?: 0L
+                                val available = player?.duration?.takeIf {
+                                    it > 0L && it != C.TIME_UNSET
+                                } ?: 0L
+                                val slop = viewConfiguration.touchSlop
+                                var last = down.position
+                                var moved = Offset.Zero
+                                var direction = 0 // 0=点击/长按；1=横向进度；2=纵向调节
+                                var held = false
+                                var lastTick = 0L
+                                var pressed = true
+                                while (pressed) {
+                                    val event = withTimeoutOrNull(45L) { awaitPointerEvent() }
+                                    if (event != null) {
+                                        val change = event.changes.firstOrNull { it.id == down.id }
+                                            ?: break
+                                        if (!change.pressed) {
+                                            pressed = false
+                                            break
+                                        }
+                                        val delta = change.position - last
+                                        last = change.position
+                                        moved += delta
+                                        if (direction == 0 && !held &&
+                                            (abs(moved.x) > slop || abs(moved.y) > slop)
+                                        ) {
+                                            direction = if (abs(moved.x) >= abs(moved.y)) 1 else 2
+                                        }
+                                        when (direction) {
+                                            1 -> {
+                                                if (available > 0L) {
+                                                    val shift = (moved.x / w * 120_000f).toLong()
+                                                    previewSeek = (base + shift).coerceIn(0L, available)
+                                                    gestureLabel = "预览进度  " + clock(previewSeek)
+                                                }
+                                                change.consume()
+                                            }
+                                            2 -> {
+                                                val amount = -delta.y / h * 2.8f
+                                                if (left) {
+                                                    host.brightness(amount)
+                                                    gestureLabel = "亮度 " +
+                                                        (host.brightnessLevel * 100).roundToInt() + "%"
+                                                } else {
+                                                    host.volume(amount)
+                                                    gestureLabel = "音量 " +
+                                                        (host.volumeLevel * 100).roundToInt() + "%"
+                                                }
+                                                change.consume()
+                                            }
+                                        }
+                                    }
+                                    if (direction == 0 && SystemClock.uptimeMillis() - downAt >= 490L) {
+                                        held = true
+                                    }
+                                    if (held && direction == 0 && player != null) {
+                                        val now = SystemClock.uptimeMillis()
+                                        if (lastTick == 0L || now - lastTick >= 350L) {
+                                            val desired = player.currentPosition + if (left) -2000L else 2000L
+                                            player.seekTo(
+                                                if (available > 0L) desired.coerceIn(0L, available)
+                                                else desired.coerceAtLeast(0L)
+                                            )
+                                            gestureLabel = if (left) "长按快退  -2 秒" else "长按快进  +2 秒"
+                                            lastTick = now
+                                        }
                                     }
                                 }
-                            )
+                                if (direction == 1 && previewSeek >= 0L) {
+                                    player?.seekTo(previewSeek)
+                                    previewSeek = -1L
+                                } else if (direction == 0 && !held) {
+                                    showControls = !showControls
+                                }
+                            }
                         }
                 )
+
                 if (gestureLabel.isNotBlank()) {
-                    Surface(shape = RoundedCornerShape(18.dp),
-                        color = Color.Black.copy(alpha = 0.70f)) {
-                        Text(gestureLabel, Modifier.padding(horizontal = 16.dp, vertical = 11.dp),
-                            color = Color.White, fontSize = 13.sp)
+                    Surface(
+                        color = Color.Black.copy(alpha = 0.72f),
+                        shape = RoundedCornerShape(14.dp)
+                    ) {
+                        Text(
+                            gestureLabel, Modifier.padding(horizontal = 13.dp, vertical = 9.dp),
+                            color = Color.White, fontSize = 12.sp
+                        )
                     }
                 }
-                if (host.changingEpisode) CircularProgressIndicator(Modifier.size(29.dp))
+                if (host.changingEpisode) CircularProgressIndicator(Modifier.size(28.dp))
+                // 所有叠加信息（包括网速、全屏返回）随轻点视频同步隐藏。
                 if (showControls) {
+                    Row(
+                        modifier = Modifier.align(Alignment.TopStart)
+                            .padding(start = 5.dp, top = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (host.fullscreen) {
+                            IconButton(onClick = host::toggleFullscreen, modifier = Modifier.size(34.dp)) {
+                                Icon(Icons.Outlined.ArrowBack, "退出全屏",
+                                    Modifier.size(18.dp), tint = Color.White)
+                            }
+                        }
+                        Surface(
+                            color = Color.Black.copy(alpha = 0.55f),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                "↓ " + kbps + " KB/s",
+                                Modifier.padding(horizontal = 7.dp, vertical = 5.dp),
+                                color = Color.White, fontSize = 10.sp
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.align(Alignment.TopEnd).padding(end = 5.dp, top = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(1.dp)
+                    ) {
+                        IconButton(onClick = { showCast = true }, modifier = Modifier.size(34.dp)) {
+                            Icon(Icons.Outlined.Cast, "投屏", Modifier.size(19.dp), tint = Color.White)
+                        }
+                        IconButton(onClick = host::minimizeToPiP, modifier = Modifier.size(34.dp)) {
+                            Icon(Icons.Outlined.PictureInPictureAlt, "画中画",
+                                Modifier.size(19.dp), tint = Color.White)
+                        }
+                    }
                     IconButton(
                         onClick = { if (host.playing) player?.pause() else player?.play() },
-                        modifier = Modifier.align(Alignment.Center).size(40.dp)
-                            .background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(20.dp))
+                        modifier = Modifier.align(Alignment.Center).size(39.dp)
+                            .background(Color.Black.copy(alpha = 0.44f), RoundedCornerShape(20.dp))
                     ) {
                         Icon(if (host.playing) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
-                            "播放暂停", Modifier.size(24.dp), tint = Color.White)
+                            "暂停或播放", Modifier.size(23.dp), tint = Color.White)
                     }
                     Column(
-                        Modifier.align(Alignment.BottomCenter).fillMaxWidth()
-                            .background(Brush.verticalGradient(listOf(
-                                Color.Transparent, Color.Black.copy(alpha = 0.86f))))
-                            .padding(horizontal = 7.dp, vertical = 1.dp)
+                        modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+                            .background(Brush.verticalGradient(
+                                listOf(Color.Transparent, Color.Black.copy(alpha = 0.76f))))
+                            .padding(horizontal = 7.dp, vertical = 2.dp)
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(clock(if (seeking) (fraction * duration).toLong() else position),
-                                color = Color.White, fontSize = 10.sp)
-                            Slider(
-                                value = if (seeking) fraction else
-                                    if (duration > 0L)
-                                        (position.toFloat() / duration).coerceIn(0f, 1f) else 0f,
-                                onValueChange = { fraction = it; seeking = true },
-                                onValueChangeFinished = {
-                                    if (duration > 0L) player?.seekTo((fraction * duration).toLong())
-                                    seeking = false
-                                },
-                                enabled = duration > 0L,
-                                modifier = Modifier.weight(1f).padding(horizontal = 7.dp).height(29.dp)
-                            )
-                            Text(clock(duration), color = Color.White, fontSize = 10.sp)
-                        }
                         Row(
-                            Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(3.dp)
+                            Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             IconButton(
                                 onClick = { if (host.playing) player?.pause() else player?.play() },
-                                modifier = Modifier.size(30.dp)
+                                modifier = Modifier.size(29.dp)
                             ) {
-                                Icon(if (host.playing) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
-                                    "暂停播放", Modifier.size(19.dp), tint = Color.White)
+                                Icon(if (host.playing) Icons.Outlined.Pause
+                                    else Icons.Outlined.PlayArrow, "暂停",
+                                    Modifier.size(18.dp), tint = Color.White)
                             }
-                            Text("↓" + kbps + " KB/s", fontSize = 10.sp, color = Color.White)
+                            Text(clock(if (seeking) (fraction * duration).toLong() else position),
+                                color = Color.White, fontSize = 10.sp)
                             Spacer(Modifier.weight(1f))
                             Box {
                                 TextButton(onClick = { speedMenu = true },
-                                    contentPadding = PaddingValues(horizontal = 4.dp)) {
+                                    contentPadding = PaddingValues(horizontal = 5.dp, vertical = 0.dp)) {
                                     Text(host.speed.toString() + "×", fontSize = 11.sp,
                                         color = Color.White)
                                 }
-                                DropdownMenu(expanded = speedMenu, onDismissRequest = { speedMenu = false }) {
+                                DropdownMenu(
+                                    expanded = speedMenu,
+                                    onDismissRequest = { speedMenu = false }
+                                ) {
                                     listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { rate ->
-                                        DropdownMenuItem(text = { Text(rate.toString() + "×") },
-                                            onClick = { host.applySpeed(rate); speedMenu = false })
+                                        DropdownMenuItem(
+                                            text = { Text(rate.toString() + "×") },
+                                            onClick = { host.applySpeed(rate); speedMenu = false }
+                                        )
                                     }
                                 }
                             }
                             Box {
-                                IconButton(onClick = { lineMenu = true }, modifier = Modifier.size(31.dp)) {
-                                    Icon(Icons.Outlined.List, "切换线路", Modifier.size(18.dp),
-                                        tint = Color.White)
+                                IconButton(
+                                    onClick = { lineMenu = true }, modifier = Modifier.size(29.dp)
+                                ) {
+                                    Icon(Icons.Outlined.List, "切换线路",
+                                        Modifier.size(17.dp), tint = Color.White)
                                 }
-                                DropdownMenu(expanded = lineMenu, onDismissRequest = { lineMenu = false }) {
+                                DropdownMenu(
+                                    expanded = lineMenu,
+                                    onDismissRequest = { lineMenu = false }
+                                ) {
                                     host.movieDetail?.lines.orEmpty().forEachIndexed { index, line ->
                                         DropdownMenuItem(text = { Text(line.name) },
                                             onClick = {
@@ -600,25 +688,63 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                     }
                                 }
                             }
-                            IconButton(onClick = { showCast = true }, modifier = Modifier.size(31.dp)) {
-                                Icon(Icons.Outlined.Cast, "DLNA投屏", Modifier.size(18.dp),
-                                    tint = Color.White)
+                            IconButton(onClick = host::toggleFullscreen, modifier = Modifier.size(29.dp)) {
+                                Icon(
+                                    if (host.fullscreen) Icons.Outlined.FullscreenExit
+                                    else Icons.Outlined.Fullscreen,
+                                    "全屏", Modifier.size(19.dp), tint = Color.White
+                                )
                             }
-                            IconButton(onClick = host::minimizeToPiP, modifier = Modifier.size(31.dp)) {
-                                Icon(Icons.Outlined.PictureInPictureAlt, "画中画", Modifier.size(18.dp),
-                                    tint = Color.White)
-                            }
-                            IconButton(onClick = host::toggleFullscreen, modifier = Modifier.size(31.dp)) {
-                                Icon(if (host.fullscreen) Icons.Outlined.FullscreenExit
-                                    else Icons.Outlined.Fullscreen, "全屏", Modifier.size(20.dp),
-                                    tint = Color.White)
-                            }
+                            Text(clock(duration), color = Color.White, fontSize = 10.sp)
+                        }
+                        // 细轨道绘制在最底部；保留较大的透明触控区便于拖动。
+                        Canvas(
+                            modifier = Modifier.fillMaxWidth().height(15.dp)
+                                .pointerInput(player, duration) {
+                                    awaitEachGesture {
+                                        val down = awaitFirstDown(requireUnconsumed = false)
+                                        val width = size.width.coerceAtLeast(1).toFloat()
+                                        if (duration > 0L) {
+                                            seeking = true
+                                            fraction = (down.position.x / width).coerceIn(0f, 1f)
+                                        }
+                                        var pressed = true
+                                        while (pressed) {
+                                            val event = awaitPointerEvent()
+                                            val change = event.changes.firstOrNull { it.id == down.id }
+                                                ?: break
+                                            if (!change.pressed) {
+                                                pressed = false
+                                                break
+                                            }
+                                            fraction = (change.position.x / width).coerceIn(0f, 1f)
+                                            change.consume()
+                                        }
+                                        if (duration > 0L) player?.seekTo((duration * fraction).toLong())
+                                        seeking = false
+                                    }
+                                }
+                        ) {
+                            val y = size.height / 2f
+                            val completed = if (duration > 0L)
+                                (if (seeking) fraction else position.toFloat() / duration)
+                                    .coerceIn(0f, 1f)
+                            else 0f
+                            drawLine(Color.White.copy(alpha = 0.32f),
+                                start = Offset(0f, y), end = Offset(size.width, y),
+                                strokeWidth = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                            drawLine(AccentPlayer,
+                                start = Offset(0f, y), end = Offset(size.width * completed, y),
+                                strokeWidth = 2.5.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                            drawCircle(AccentPlayer, radius = 3.5.dp.toPx(),
+                                center = Offset(size.width * completed, y))
                         }
                     }
                 }
             }
         }
     }
+
     val header: @Composable () -> Unit = {
         Row(
             Modifier.fillMaxWidth().height(48.dp).padding(horizontal = 9.dp),
@@ -634,16 +760,6 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                 color = Color.White, fontWeight = FontWeight.SemiBold, maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            IconButton(onClick = { showCast = true }, modifier = Modifier.size(36.dp)) {
-                Icon(Icons.Outlined.Cast, "DLNA投屏", Modifier.size(20.dp), tint = Color.White)
-            }
-            IconButton(onClick = host::minimizeToPiP, modifier = Modifier.size(36.dp)) {
-                Icon(Icons.Outlined.PictureInPictureAlt, "最小化画中画",
-                    Modifier.size(20.dp), tint = Color.White)
-            }
-            IconButton(onClick = host::toggleFullscreen, modifier = Modifier.size(36.dp)) {
-                Icon(Icons.Outlined.Fullscreen, "全屏", Modifier.size(20.dp), tint = Color.White)
-            }
         }
     }
 
@@ -659,12 +775,6 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
         } else if (host.fullscreen) {
             Box(Modifier.fillMaxSize()) {
                 surface(Modifier.fillMaxSize())
-                IconButton(onClick = host::toggleFullscreen,
-                    modifier = Modifier.align(Alignment.TopStart).padding(10.dp).size(34.dp)
-                        .background(Color.Black.copy(alpha = 0.50f), RoundedCornerShape(18.dp))) {
-                    Icon(Icons.Outlined.ArrowBack, "退出全屏", Modifier.size(19.dp),
-                        tint = Color.White)
-                }
             }
         } else if (isTabletLandscape) {
             Row(Modifier.fillMaxSize()) {
@@ -672,7 +782,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                     header()
                     surface(Modifier.fillMaxWidth().aspectRatio(16f / 9f))
                     Spacer(Modifier.height(10.dp))
-                    Text("左侧滑动调亮度 · 右侧调音量 · 长按 2× 快进",
+                    Text("左侧滑动调亮度 · 右侧调音量 · 长按左右侧快退/快进",
                         Modifier.padding(horizontal = 15.dp), color = HintPlayer, fontSize = 11.sp)
                 }
                 EpisodeBrowser(host, Modifier.weight(1f).fillMaxHeight())
