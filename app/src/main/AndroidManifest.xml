@@ -17,7 +17,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MoviePlayerActivity" android:exported="false" />
+        <activity
+            android:name=".MoviePlayerActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
