@@ -128,7 +128,7 @@ class MoviePlayerActivity : ComponentActivity() {
     var volumeLevel by mutableFloatStateOf(0.5f)
         private set
 
-    fun setSpeed(value: Float) {
+    fun applySpeed(value: Float) {
         speed = value
         playback?.playbackParameters = PlaybackParameters(value)
     }
@@ -475,13 +475,13 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                             detectTapGestures(
                                 onTap = { showControls = !showControls },
                                 onLongPress = {
-                                    host.setSpeed(2f)
+                                    host.applySpeed(2f)
                                     gestureLabel = "长按 2× 快进"
                                 },
                                 onPress = {
                                     val before = host.speed
                                     tryAwaitRelease()
-                                    if (host.speed == 2f && before != 2f) host.setSpeed(before)
+                                    if (host.speed == 2f && before != 2f) host.applySpeed(before)
                                 }
                             )
                         }
@@ -566,7 +566,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                 DropdownMenu(expanded = speedMenu, onDismissRequest = { speedMenu = false }) {
                                     listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { rate ->
                                         DropdownMenuItem(text = { Text(rate.toString() + "×") },
-                                            onClick = { host.setSpeed(rate); speedMenu = false })
+                                            onClick = { host.applySpeed(rate); speedMenu = false })
                                     }
                                 }
                             }
