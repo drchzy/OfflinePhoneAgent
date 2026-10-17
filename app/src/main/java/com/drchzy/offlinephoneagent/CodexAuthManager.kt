@@ -62,6 +62,37 @@ class CodexAuthManager(context: Context) {
 
     fun currentTokens(): CodexTokens? = store.load()
 
+    /** 只从现有 OAuth JWT 提取用户可见名称，不额外请求账户接口。 */
+    fun displayName(): String {
+        val tokens = currentTokens() ?: return ""
+        for (jwt in listOf(tokens.idToken, tokens.accessToken)) {
+            val payload = runCatching {
+                val encoded = jwt.split('.').getOrNull(1) ?: return@runCatching null
+                val decoded = Base64.decode(
+                    encoded, Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING
+                )
+                JSONObject(String(decoded, StandardCharsets.UTF_8))
+            }.getOrNull() ?: continue
+            val claims = listOfNotNull(
+                payload,
+                payload.optJSONObject("user"),
+                payload.optJSONObject("https://api.openai.com/auth")
+            )
+            for (claim in claims) {
+                for (key in listOf("name", "preferred_username", "email")) {
+                    val candidate = claim.optString(key).trim()
+                    if (candidate.isNotBlank() && candidate != "null") return candidate.take(100)
+                }
+            }
+        }
+        return ""
+    }
+
+    /** 退出只删除本机安全存储的凭据，不改变云端登录会话。 */
+    fun logout() {
+        store.clear()
+    }
+
     fun refresh(tokens: CodexTokens): CodexTokens {
         if (tokens.refreshToken.isBlank()) error("没有 refresh token，请重新登录")
         val form = form(
