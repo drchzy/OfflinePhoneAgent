@@ -83,12 +83,13 @@ class CodexUsageClient(context: Context) {
         val root = JSONObject(text)
         val summary = root.optJSONObject("rate_limit_reset_credits")
         val summaryCount = summary?.optInt("available_count", -1)?.takeIf { it >= 0 }
-        val details = if (summaryCount == 0) {
-            ResetCardsResult(0, emptyList(), "")
-        } else {
-            runCatching { readResetCards(tokens) }.getOrElse {
-                ResetCardsResult(null, emptyList(), "重置卡明细暂时不可用，可在 Codex 用量页核对")
-            }
+        // 即使摘要说 0 张也要读取详情：摘要可能延迟更新，不能误判为无卡。
+        // 明细接口可能返回 HTTP 429；失败时只回退到摘要并明确标注不完整。
+        val details = runCatching { readResetCards(tokens) }.getOrElse { error ->
+            val code = error.message?.takeIf { it.matches(Regex("HTTP [0-9]{3}")) }
+            val explanation = if (code == null) "网络或解析错误" else code
+            ResetCardsResult(null, emptyList(),
+                "重置卡明细不可用（$explanation），以下数量仅来自用量摘要")
         }
         // 服务端可用数量优先以本次明细接口为准；不可用时回退到用量摘要。
         val actualCount = details.availableCount ?: summaryCount
