@@ -4,6 +4,8 @@ import android.content.Context
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.Instant
+import java.time.OffsetDateTime
 
 data class UsageWindow(
     val usedPercent: Double,
@@ -88,10 +90,17 @@ class CodexUsageClient(context: Context) {
                 ResetCardsResult(null, emptyList(), "重置卡明细暂时不可用，可在 Codex 用量页核对")
             }
         }
+        // 服务端可用数量优先以本次明细接口为准；不可用时回退到用量摘要。
         val actualCount = details.availableCount ?: summaryCount
-        val cardMessage = if (actualCount == null && details.message.isBlank()) {
-            "账户没有返回重置卡数量"
-        } else details.message
+        val notices = mutableListOf<String>()
+        if (details.message.isNotBlank()) notices += details.message
+        if (details.availableCount != null && summaryCount != null &&
+            details.availableCount != summaryCount
+        ) {
+            notices += "摘要显示 $summaryCount 张，明细显示 ${details.availableCount} 张；以明细接口为准"
+        }
+        if (actualCount == null && notices.isEmpty()) notices += "服务器没有提供可用重置卡数量"
+        val cardMessage = notices.joinToString("；")
         val rate = root.optJSONObject("rate_limit") ?: return CodexUsage(
             null, null, actualCount, details.cards, cardMessage
         )
@@ -118,6 +127,25 @@ class CodexUsageClient(context: Context) {
             }
         }
         return CodexUsage(fiveHour, weekly, actualCount, details.cards, cardMessage)
+    }
+
+    /** 接受服务端的 RFC3339/ISO8601 格式，也兼容秒/毫秒 Unix 时间戳。 */
+    private fun parseExpiry(value: Any?): Long? {
+        val string = when (value) {
+            null, JSONObject.NULL -> return null
+            is Number -> value.toString()
+            is String -> value.trim()
+            else -> return null
+        }
+        if (string.isBlank() || string == "null") return null
+        val seconds = string.toLongOrNull()?.let { epoch ->
+            if (epoch > 10_000_000_000L) epoch / 1000L else epoch
+        } ?: runCatching {
+            Instant.parse(string).epochSecond
+        }.recoverCatching {
+            OffsetDateTime.parse(string).toEpochSecond()
+        }.getOrNull()
+        return seconds?.takeIf { it > 0L }
     }
 
     private data class ResetCardsResult(
@@ -158,8 +186,9 @@ class CodexUsageClient(context: Context) {
                 for (i in 0 until array.length()) {
                     val obj = array.optJSONObject(i) ?: continue
                     if (!obj.optString("status").equals("available", ignoreCase = true)) continue
-                    val expires = obj.optLong("expires_at", 0L)
-                        .takeIf { it > 0L }
+                    // expires_at 实际为 ISO 8601 字符串，例如 2026-07-17T00:00:00Z。
+                    // optLong 解析失败会变成 0，导致每一张卡都显示「未注明到期时间」。
+                    val expires = parseExpiry(obj.opt("expires_at"))
                     cards += CodexResetCard(
                         id = obj.optString("id").ifBlank { "credit-$i" },
                         title = obj.optString("title").ifBlank { "额度重置卡" }.take(80),
@@ -169,12 +198,19 @@ class CodexUsageClient(context: Context) {
             }
             val count = root.optInt("available_count", -1).takeIf { it >= 0 }
                 ?: if (array != null) cards.size else null
-            val message = if (array == null && (count ?: 0) > 0) {
-                "仅返回数量，未提供逐张到期日期"
-            } else if (count != null && count > cards.size) {
-                "明细可能不完整，共返回 ${cards.size} 张可用卡"
-            } else ""
-            return ResetCardsResult(count, cards, message)
+            val notes = mutableListOf<String>()
+            if (array == null) {
+                notes += "服务器只返回数量，未提供逐张明细"
+            } else {
+                if (count != null && count != cards.size) {
+                    notes += "服务器报告 $count 张可用卡，但仅返回 ${cards.size} 条可用明细"
+                }
+                val withoutExpiry = cards.count { it.expiresAtSeconds == null }
+                if (withoutExpiry > 0) {
+                    notes += "$withoutExpiry 张未提供有效到期时间"
+                }
+            }
+            return ResetCardsResult(count, cards, notes.joinToString("；"))
         } finally {
             conn.disconnect()
         }
