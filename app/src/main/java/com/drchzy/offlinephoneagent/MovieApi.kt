@@ -72,6 +72,11 @@ data class MovieSettings(
 class MovieApi(private val context: Context) {
     companion object {
         const val DEFAULT_CONFIG_URL = "https://app-site.ecoliving168.com/domain_v5.json"
+        // 公开的兼容客户端协议默认值；不是用户凭据或 OAuth Token。
+        const val DEFAULT_API_URL = "https://8rbnkl4.gdifefl.cn/api"
+        const val DEFAULT_AES_KEY = "e6d5de5fcc51f53d"
+        const val DEFAULT_AES_IV = "2f13eef7dfc6c613"
+        const val DEFAULT_HMAC_KEY = "635a580fcb5dc6e60caa39c31a7bde48"
         const val DEFAULT_RSA_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA02F/kPg5A2NX4qZ5JSns+bjhVMCC6JbTiTKpbgNgiXU+Kkorg6Dj76gS68gB8llhbUKCXjIdygnHPrxVHWfzmzisq9P9awmXBkCk74Skglx2LKHa/mNz9ivg6YzQ5pQFUEWS0DfomGBXVtqvBlOXMCRxp69oWaMsnfjnBV+0J7vHbXzUIkqBLdXSNfM9Ag5qdRDrJC3CqB65EJ3ARWVzZTTcXSdMW9i3qzEZPawPNPe5yPYbMZIoXLcrqvEZnRK1oak67/ihf7iwPJqdc+68ZYEmmdqwunOvRdjq89fQMVelmqcRD9RYe08v+xDxG9Co9z7hcXGTsUquMxkh29uNawIDAQAB"
         private const val PREFS = "movie_connector"
     }
@@ -79,11 +84,11 @@ class MovieApi(private val context: Context) {
     private val prefs get() = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     fun settings(): MovieSettings = MovieSettings(
-        prefs.getString("api_url", "").orEmpty(),
+        prefs.getString("api_url", DEFAULT_API_URL).orEmpty(),
         prefs.getString("config_url", DEFAULT_CONFIG_URL).orEmpty().ifBlank { DEFAULT_CONFIG_URL },
-        prefs.getString("aes_key", "").orEmpty(),
-        prefs.getString("aes_iv", "").orEmpty(),
-        prefs.getString("hmac_key", "").orEmpty(),
+        prefs.getString("aes_key", DEFAULT_AES_KEY).orEmpty(),
+        prefs.getString("aes_iv", DEFAULT_AES_IV).orEmpty(),
+        prefs.getString("hmac_key", DEFAULT_HMAC_KEY).orEmpty(),
         prefs.getString("rsa_public_key", "").orEmpty().ifBlank { DEFAULT_RSA_PUBLIC_KEY }
     )
 
