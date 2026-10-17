@@ -1,6 +1,14 @@
 package com.drchzy.offlinephoneagent
 
 import android.content.pm.ActivityInfo
+import android.app.PictureInPictureParams
+import android.content.Context
+import android.content.res.Configuration
+import android.media.AudioManager
+import android.net.TrafficStats
+import android.os.Process
+import android.util.Rational
+import android.view.WindowManager
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -9,6 +17,14 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -33,6 +49,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.datasource.DefaultDataSource
@@ -94,6 +111,58 @@ class MoviePlayerActivity : ComponentActivity() {
     private var movieId = ""
     private var shouldResume = false
     private var backgrounded = false
+    var speed by mutableFloatStateOf(1f)
+        private set
+    var pictureInPicture by mutableStateOf(false)
+        private set
+    var mediaUrl by mutableStateOf("")
+        private set
+    var brightnessLevel by mutableFloatStateOf(0.5f)
+        private set
+    var volumeLevel by mutableFloatStateOf(0.5f)
+        private set
+
+    fun setSpeed(value: Float) {
+        speed = value
+        playback?.playbackParameters = PlaybackParameters(value)
+    }
+
+    fun brightness(delta: Float) {
+        val attrs = window.attributes
+        val start = if (attrs.screenBrightness < 0f) brightnessLevel else attrs.screenBrightness
+        brightnessLevel = (start + delta).coerceIn(0.02f, 1f)
+        attrs.screenBrightness = brightnessLevel
+        window.attributes = attrs
+    }
+
+    fun volume(delta: Float) {
+        val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC).coerceAtLeast(1)
+        val current = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+        val next = (current + delta * max).toInt().coerceIn(0, max)
+        audio.setStreamVolume(AudioManager.STREAM_MUSIC, next, 0)
+        volumeLevel = next.toFloat() / max
+    }
+
+    fun minimizeToPiP() {
+        if (isInPictureInPictureMode) return
+        val params = PictureInPictureParams.Builder()
+            .setAspectRatio(Rational(16, 9)).build()
+        runCatching {
+            enterPictureInPictureMode(params)
+        }.onFailure {
+            errorText = "画中画不可用：" + (it.message ?: "请检查系统悬浮窗口支持")
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean,
+        newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        pictureInPicture = isInPictureInPictureMode
+        if (isInPictureInPictureMode) {
+            fullscreen = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,6 +215,7 @@ class MoviePlayerActivity : ComponentActivity() {
                 if (playback === next) errorText = "播放失败：" + (error.message ?: "可尝试其他线路")
             }
         })
+        mediaUrl = address.url
         val previous = playback
         playback = next
         playing = false
@@ -153,7 +223,8 @@ class MoviePlayerActivity : ComponentActivity() {
         errorText = ""
         next.setMediaItem(MediaItem.fromUri(address.url))
         next.prepare()
-        next.playWhenReady = !backgrounded
+        next.playWhenReady = !backgrounded || isInPictureInPictureMode
+        next.playbackParameters = PlaybackParameters(speed)
     }
 
     fun loadEpisodeList() {
@@ -207,7 +278,7 @@ class MoviePlayerActivity : ComponentActivity() {
     override fun onPause() {
         shouldResume = playback?.playWhenReady == true
         backgrounded = true
-        playback?.pause()
+        if (!isInPictureInPictureMode) playback?.pause()
         super.onPause()
     }
 
@@ -219,7 +290,7 @@ class MoviePlayerActivity : ComponentActivity() {
     }
 
     override fun onStop() {
-        playback?.pause()
+        if (!isInPictureInPictureMode) playback?.pause()
         super.onStop()
     }
 
