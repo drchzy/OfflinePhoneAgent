@@ -478,6 +478,10 @@ private fun UsageCard(title: String, window: UsageWindow?, modifier: Modifier = 
 @Composable
 private fun MoviePage(host: MainActivity) {
     var query by rememberSaveable { mutableStateOf("") }
+    var showDiagnostics by remember { mutableStateOf(false) }
+    if (showDiagnostics) {
+        MovieDiagnosticsDialog(host, onDismiss = { showDiagnostics = false })
+    }
     LaunchedEffect(Unit) {
         if (host.movies.isEmpty() && !host.movieLoading) host.loadMovies()
     }
@@ -510,6 +514,11 @@ private fun MoviePage(host: MainActivity) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(if (query.isEmpty()) "为你精选" else "搜索结果", fontSize = 19.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.weight(1f))
+                TextButton(onClick = { showDiagnostics = true }) {
+                    Icon(Icons.Outlined.BugReport, null, Modifier.size(16.dp))
+                    Spacer(Modifier.width(3.dp))
+                    Text("接口测试", fontSize = 12.sp)
+                }
                 TextButton(onClick = { host.loadMovies(query.trim()) }, enabled = !host.movieLoading) {
                     Icon(Icons.Outlined.Refresh, null, Modifier.size(16.dp))
                     Spacer(Modifier.width(5.dp))
