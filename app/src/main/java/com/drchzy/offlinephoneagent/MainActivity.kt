@@ -54,6 +54,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -982,6 +984,66 @@ private fun SettingsPanel(
     var iv by remember { mutableStateOf(initial.aesIv) }
     var hmac by remember { mutableStateOf(initial.hmacKey) }
     var rsaPublicKey by remember { mutableStateOf(initial.rsaPublicKey) }
+    var showAdvanced by remember { mutableStateOf(false) }
+    var passwordPrompt by remember { mutableStateOf(false) }
+    var passwordInput by remember { mutableStateOf("") }
+    var passwordIncorrect by remember { mutableStateOf(false) }
+
+    // 界面防误操作开关，不是凭据保险箱；密码固定在 APK 内可被逆向读取。
+    if (passwordPrompt) {
+        AlertDialog(
+            onDismissRequest = {
+                passwordPrompt = false
+                passwordInput = ""
+                passwordIncorrect = false
+            },
+            title = { Text("验证高级配置密码") },
+            text = {
+                Column {
+                    Text("输入密码后才能查看和修改 Movie API 参数。",
+                        fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.height(10.dp))
+                    OutlinedTextField(
+                        value = passwordInput,
+                        onValueChange = {
+                            passwordInput = it
+                            passwordIncorrect = false
+                        },
+                        label = { Text("管理密码") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        isError = passwordIncorrect,
+                        supportingText = {
+                            if (passwordIncorrect) {
+                                Text("密码不正确，请重试")
+                            }
+                        }
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (passwordInput == "1995") {
+                        showAdvanced = true
+                        passwordPrompt = false
+                        passwordInput = ""
+                        passwordIncorrect = false
+                    } else {
+                        passwordIncorrect = true
+                    }
+                }) { Text("解锁") }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    passwordPrompt = false
+                    passwordInput = ""
+                    passwordIncorrect = false
+                }) { Text("取消") }
+            }
+        )
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -994,15 +1056,36 @@ private fun SettingsPanel(
                     Switch(checked = dark, onCheckedChange = { toggleTheme() })
                 }
                 Spacer(Modifier.height(9.dp))
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text("显示高级 API 配置", fontSize = 14.sp)
+                        Text("默认隐藏，启用需要密码", color = Muted, fontSize = 11.sp)
+                    }
+                    Switch(
+                        checked = showAdvanced,
+                        onCheckedChange = { enabled ->
+                            if (enabled) {
+                                passwordInput = ""
+                                passwordIncorrect = false
+                                passwordPrompt = true
+                            } else {
+                                showAdvanced = false
+                                passwordInput = ""
+                            }
+                        }
+                    )
+                }
+                Spacer(Modifier.height(9.dp))
                 OutlinedButton(onClick = onUpdate, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Outlined.SystemUpdate, null, Modifier.size(17.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("检查应用更新")
                 }
-                Spacer(Modifier.height(23.dp))
-                Text("MOVIE · API 连接", fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp, color = Muted)
+                if (showAdvanced) {
+                    Spacer(Modifier.height(18.dp))
+                    Text("MOVIE · API 连接", fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp, color = Muted)
                 Spacer(Modifier.height(10.dp))
-                Text("留空 API 地址则从动态配置获取。签名参数仅保存在本机，不会提交到 GitHub。",
+                Text("新设备已预填兼容参数；手动修改后只在本机保存。API 地址留空可改为动态获取。",
                     fontSize = 11.sp, color = Muted, lineHeight = 17.sp)
                 Spacer(Modifier.height(11.dp))
                 listOf("API BaseURL" to apiUrl, "配置 JSON 地址" to configUrl).forEachIndexed { idx, pair ->
@@ -1048,13 +1131,16 @@ private fun SettingsPanel(
                     maxLines = 5,
                     textStyle = LocalTextStyle.current.copy(fontSize = 12.sp)
                 )
+                }
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                onSave(MovieSettings(apiUrl, configUrl, key, iv, hmac, rsaPublicKey))
+                if (showAdvanced) {
+                    onSave(MovieSettings(apiUrl, configUrl, key, iv, hmac, rsaPublicKey))
+                }
                 onDismiss()
-            }) { Text("保存设置") }
+            }) { Text(if (showAdvanced) "保存配置" else "完成") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } }
     )
