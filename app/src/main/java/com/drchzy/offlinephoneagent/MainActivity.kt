@@ -676,13 +676,14 @@ private fun SettingsPanel(
     var key by remember { mutableStateOf(initial.aesKey) }
     var iv by remember { mutableStateOf(initial.aesIv) }
     var hmac by remember { mutableStateOf(initial.hmacKey) }
+    var rsaPublicKey by remember { mutableStateOf(initial.rsaPublicKey) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(25.dp),
         title = { Text("偏好设置", fontSize = 23.sp, fontWeight = FontWeight.Bold) },
         text = {
-            Column(Modifier.heightIn(max = 460.dp).verticalScroll(rememberScrollState())) {
+            Column(Modifier.heightIn(max = 520.dp).verticalScroll(rememberScrollState())) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Text("深色模式", Modifier.weight(1f), fontSize = 14.sp)
                     Switch(checked = dark, onCheckedChange = { toggleTheme() })
@@ -727,11 +728,26 @@ private fun SettingsPanel(
                     label = { Text("HMAC Key") },
                     modifier = Modifier.fillMaxWidth(), singleLine = true
                 )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    "业务请求使用 RSA/PKCS1Padding；上方 AES Key/IV 仅供需要 AES 的响应解密使用。",
+                    fontSize = 11.sp, color = Muted, lineHeight = 17.sp
+                )
+                OutlinedTextField(
+                    value = rsaPublicKey,
+                    onValueChange = { rsaPublicKey = it },
+                    label = { Text("RSA 公钥（完整 X.509 Base64）") },
+                    placeholder = { Text("粘贴完整公钥，不要包含 ...") },
+                    modifier = Modifier.fillMaxWidth(),
+                    minLines = 3,
+                    maxLines = 5,
+                    textStyle = LocalTextStyle.current.copy(fontSize = 12.sp)
+                )
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                onSave(MovieSettings(apiUrl, configUrl, key, iv, hmac))
+                onSave(MovieSettings(apiUrl, configUrl, key, iv, hmac, rsaPublicKey))
                 onDismiss()
             }) { Text("保存设置") }
         },

@@ -5,6 +5,10 @@ import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
 import android.util.Base64
+import com.google.gson.Gson
+import java.security.KeyFactory
+import java.security.interfaces.RSAPublicKey
+import java.security.spec.X509EncodedKeySpec
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -61,7 +65,8 @@ data class MovieSettings(
     val configUrl: String,
     val aesKey: String,
     val aesIv: String,
-    val hmacKey: String
+    val hmacKey: String,
+    val rsaPublicKey: String = ""
 )
 
 class MovieApi(private val context: Context) {
@@ -77,7 +82,8 @@ class MovieApi(private val context: Context) {
         prefs.getString("config_url", DEFAULT_CONFIG_URL).orEmpty().ifBlank { DEFAULT_CONFIG_URL },
         prefs.getString("aes_key", "").orEmpty(),
         prefs.getString("aes_iv", "").orEmpty(),
-        prefs.getString("hmac_key", "").orEmpty()
+        prefs.getString("hmac_key", "").orEmpty(),
+        prefs.getString("rsa_public_key", "").orEmpty()
     )
 
     fun save(settings: MovieSettings) {
@@ -87,6 +93,7 @@ class MovieApi(private val context: Context) {
             .putString("aes_key", settings.aesKey.trim())
             .putString("aes_iv", settings.aesIv.trim())
             .putString("hmac_key", settings.hmacKey.trim())
+            .putString("rsa_public_key", settings.rsaPublicKey.trim())
             .apply()
     }
 
@@ -192,23 +199,42 @@ class MovieApi(private val context: Context) {
             (SystemClock.elapsedRealtime() - base).toInt()
     }
 
+    /**
+     * v1 业务 pack：RSA 2048 PKCS#1 v1.5 + URL-safe Base64 无填充 + HMAC-MD5。
+     * 完整 X.509 公钥请从设置页配置；截断为 ... 的密钥无法使用。
+     */
     private fun pack(params: Map<String, String>, s: MovieSettings): Pair<String, String> {
-        require(s.aesKey.toByteArray(StandardCharsets.UTF_8).size == 16) { "请先设置 16 字节 AES Key" }
-        require(s.aesIv.toByteArray(StandardCharsets.UTF_8).size == 16) { "请先设置 16 字节 AES IV" }
-        require(s.hmacKey.isNotBlank()) { "请先设置 HMAC Key" }
+        require(s.rsaPublicKey.isNotBlank()) { "未配置完整 RSA 公钥，请在 Movie 设置中粘贴完整的 X.509 Base64 公钥" }
+        require(s.hmacKey.isNotBlank()) { "请先在 Movie 设置中配置 HMAC Key" }
+        val keyBase64 = s.rsaPublicKey
+            .replace("-----BEGIN PUBLIC KEY-----", "")
+            .replace("-----END PUBLIC KEY-----", "")
+            .replace(Regex("\\s+"), "")
+        require(!keyBase64.contains("...")) { "RSA 公钥被省略号截断，请粘贴完整密钥" }
+        val pub = try {
+            KeyFactory.getInstance("RSA").generatePublic(
+                X509EncodedKeySpec(Base64.decode(keyBase64, Base64.DEFAULT))
+            ) as RSAPublicKey
+        } catch (e: Exception) {
+            throw IllegalArgumentException("RSA 公钥无效：需要完整的 X.509 SubjectPublicKeyInfo Base64", e)
+        }
+
         val values = LinkedHashMap(params)
         values.remove("timestamp")
         values.remove("sign")
-        values["timestamp"] = timestamp().toString()
-        val json = JSONObject(values as Map<*, *>).toString()
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-        cipher.init(
-            Cipher.ENCRYPT_MODE,
-            SecretKeySpec(s.aesKey.toByteArray(StandardCharsets.UTF_8), "AES"),
-            IvParameterSpec(s.aesIv.toByteArray(StandardCharsets.UTF_8))
-        )
+        values["timestamp"] = (System.currentTimeMillis() / 1000L).toString()
+        val json = Gson().toJson(values)
+        val bytes = json.toByteArray(StandardCharsets.UTF_8)
+        val maxBytes = (pub.modulus.bitLength() + 7) / 8 - 11
+        require(bytes.size <= maxBytes) {
+            "RSA/PKCS1Padding 单块最大明文 $maxBytes 字节，当前 ${bytes.size} 字节"
+        }
+        val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+        cipher.init(Cipher.ENCRYPT_MODE, pub)
+        val encrypted = cipher.doFinal(bytes)
         val encoded = Base64.encodeToString(
-            cipher.doFinal(json.toByteArray(StandardCharsets.UTF_8)), Base64.NO_WRAP
+            encrypted,
+            Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
         )
         val mac = Mac.getInstance("HmacMD5")
         mac.init(SecretKeySpec(s.hmacKey.toByteArray(StandardCharsets.UTF_8), "HmacMD5"))
@@ -235,7 +261,17 @@ class MovieApi(private val context: Context) {
 
     private fun get(path: String, params: Map<String, String> = emptyMap()): JSONObject {
         val s = settings()
-        val (value, signature) = pack(params, s)
+        val (value, signature) = try {
+            pack(params, s)
+        } catch (e: Exception) {
+            MovieHttpLog.add(
+                path,
+                "GET " + resolveBaseUrl() + path + "\\n原始参数：" + Gson().toJson(params),
+                "请求封装失败：" + (e.message ?: e.javaClass.simpleName),
+                null
+            )
+            throw e
+        }
         val query = "pack=" + URLEncoder.encode(value, "UTF-8") +
             "&signature=" + URLEncoder.encode(signature, "UTF-8")
         val targetUrl = resolveBaseUrl() + path + "?" + query
