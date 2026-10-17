@@ -795,16 +795,27 @@ private fun MoviePage(host: MainActivity) {
                 }
             }
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 152.dp),
-                state = gridState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 17.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(13.dp),
-                verticalArrangement = Arrangement.spacedBy(18.dp)
-            ) {
-                items(host.movies, key = { it.id }) { movie ->
-                    MovieTile(movie, onClick = { host.openDetail(movie) })
+            BoxWithConstraints(Modifier.fillMaxSize()) {
+                // GridCells.Adaptive 在窄 dp / 放大字体设备上会退化为一列。
+                // 手机始终双列，横屏平板按可用宽度增加到 3–6 列。
+                val columns = when {
+                    maxWidth < 610.dp -> 2
+                    maxWidth < 850.dp -> 3
+                    maxWidth < 1120.dp -> 4
+                    maxWidth < 1400.dp -> 5
+                    else -> 6
+                }
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    state = gridState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(host.movies, key = { it.id }) { movie ->
+                        MovieTile(movie, onClick = { host.openDetail(movie) })
+                    }
                 }
             }
         }
