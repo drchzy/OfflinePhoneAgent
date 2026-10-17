@@ -339,6 +339,38 @@ class MoviePlayerActivity : ComponentActivity() {
         }
     }
 
+    /** 当前线路的前一集或后一集；到达边界时不发起网络请求。 */
+    private fun adjacentEpisode(offset: Int): MovieEpisode? {
+        val line = movieDetail?.lines?.firstOrNull { it.code == lineCode } ?: return null
+        val current = line.episodes.indexOfFirst { ep ->
+            (episodeId.isNotBlank() && ep.id == episodeId) ||
+                (episodeId.isBlank() && ep.name == episodeName)
+        }
+        if (current < 0) return null
+        return line.episodes.getOrNull(current + offset)
+    }
+
+    fun canNavigateEpisode(offset: Int): Boolean =
+        !changingEpisode && adjacentEpisode(offset) != null
+
+    fun navigateEpisode(offset: Int) {
+        if (changingEpisode) return
+        adjacentEpisode(offset)?.let { choose(it) }
+    }
+
+    fun playerTitle(): String {
+        val name = movieDetail?.movie?.name?.takeIf { it.isNotBlank() }
+            ?: savedEpisodeName.ifBlank { intent.getStringExtra(EXTRA_TITLE).orEmpty() }
+        val line = movieDetail?.lines?.firstOrNull { it.code == lineCode }
+        val index = line?.episodes?.indexOfFirst {
+            (episodeId.isNotBlank() && it.id == episodeId) ||
+                (episodeId.isBlank() && it.name == episodeName)
+        } ?: -1
+        val episode = if (episodeName.isNotBlank()) episodeName else
+            if (index >= 0) "第${index + 1}集" else ""
+        return if (episode.isBlank()) name else "$name · $episode"
+    }
+
     fun selectLine(index: Int, startPlaying: Boolean = false) {
         val list = movieDetail?.lines.orEmpty()
         if (index !in list.indices) return
@@ -678,33 +710,73 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                 if (host.changingEpisode) CircularProgressIndicator(Modifier.size(28.dp))
                 // 所有叠加信息（包括网速、全屏返回）随轻点视频同步隐藏。
                 if (showControls) {
+                    // 顶部一行自适应：网速 / 当前剧集 / 投屏与画中画。
                     Row(
-                        modifier = Modifier.align(Alignment.TopStart)
-                            .padding(start = 5.dp, top = 4.dp),
+                        modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth()
+                            .background(Brush.verticalGradient(listOf(
+                                Color.Black.copy(alpha = .62f), Color.Transparent
+                            )))
+                            .padding(horizontal = 5.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (host.fullscreen) {
-                            IconButton(onClick = host::toggleFullscreen, modifier = Modifier.size(34.dp)) {
+                            IconButton(
+                                onClick = { host.toggleFullscreen(); controlReset++ },
+                                modifier = Modifier.size(34.dp)
+                            ) {
                                 Icon(Icons.Outlined.ArrowBack, "退出全屏",
-                                    Modifier.size(18.dp), tint = Color.White)
+                                    Modifier.size(19.dp), tint = Color.White)
                             }
                         }
+                        Text("↓ $kbps KB/s", color = Color.White, fontSize = 10.sp,
+                            maxLines = 1, modifier = Modifier.padding(horizontal = 4.dp))
                         Text(
-                            "↓ " + kbps + " KB/s", color = Color.White, fontSize = 11.sp,
-                            modifier = Modifier.padding(start = 4.dp, top = 2.dp)
+                            host.playerTitle(), color = Color.White,
+                            fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                            maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier.weight(1f)
+                                .padding(horizontal = 4.dp)
                         )
-                    }
-                    Row(
-                        modifier = Modifier.align(Alignment.TopEnd).padding(end = 5.dp, top = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(1.dp)
-                    ) {
-                        IconButton(onClick = { showCast = true; controlReset++ }, modifier = Modifier.size(34.dp)) {
-                            Icon(Icons.Outlined.Cast, "投屏", Modifier.size(19.dp), tint = Color.White)
+                        IconButton(
+                            onClick = { showCast = true; controlReset++ },
+                            modifier = Modifier.size(34.dp)
+                        ) {
+                            Icon(Icons.Outlined.Cast, "投屏",
+                                Modifier.size(19.dp), tint = Color.White)
                         }
-                        IconButton(onClick = { host.minimizeToPiP(); controlReset++ }, modifier = Modifier.size(34.dp)) {
+                        IconButton(
+                            onClick = { host.minimizeToPiP(); controlReset++ },
+                            modifier = Modifier.size(34.dp)
+                        ) {
                             Icon(Icons.Outlined.PictureInPictureAlt, "画中画",
                                 Modifier.size(19.dp), tint = Color.White)
                         }
+                    }
+                    // 手动切集不挤占窄屏底部进度条，按钮放在视频两侧。
+                    IconButton(
+                        onClick = { host.navigateEpisode(-1); controlReset++ },
+                        enabled = host.canNavigateEpisode(-1),
+                        modifier = Modifier.align(Alignment.CenterStart).padding(start = 12.dp)
+                            .size(42.dp).background(
+                                Color.Black.copy(alpha = .38f), RoundedCornerShape(22.dp))
+                    ) {
+                        Icon(Icons.Outlined.SkipPrevious, "上一集",
+                            Modifier.size(27.dp),
+                            tint = if (host.canNavigateEpisode(-1)) Color.White
+                                else Color.White.copy(alpha = .32f))
+                    }
+                    IconButton(
+                        onClick = { host.navigateEpisode(1); controlReset++ },
+                        enabled = host.canNavigateEpisode(1),
+                        modifier = Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)
+                            .size(42.dp).background(
+                                Color.Black.copy(alpha = .38f), RoundedCornerShape(22.dp))
+                    ) {
+                        Icon(Icons.Outlined.SkipNext, "下一集",
+                            Modifier.size(27.dp),
+                            tint = if (host.canNavigateEpisode(1)) Color.White
+                                else Color.White.copy(alpha = .32f))
                     }
                     IconButton(
                         onClick = {
@@ -880,8 +952,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                 Icon(Icons.Outlined.ArrowBack, "返回", Modifier.size(19.dp), tint = Color.White)
             }
             Text(
-                host.movieDetail?.movie?.name?.takeIf { it.isNotBlank() }
-                    ?: host.intent.getStringExtra(MoviePlayerActivity.EXTRA_TITLE).orEmpty(),
+                host.playerTitle(),
                 modifier = Modifier.weight(1f), fontSize = 15.sp,
                 color = Color.White, fontWeight = FontWeight.SemiBold, maxLines = 1,
                 overflow = TextOverflow.Ellipsis
