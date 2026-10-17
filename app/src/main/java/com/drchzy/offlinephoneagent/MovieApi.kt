@@ -238,7 +238,8 @@ class MovieApi(private val context: Context) {
         val (value, signature) = pack(params, s)
         val query = "pack=" + URLEncoder.encode(value, "UTF-8") +
             "&signature=" + URLEncoder.encode(signature, "UTF-8")
-        val conn = URL(resolveBaseUrl() + path + "?" + query).openConnection() as HttpURLConnection
+        val targetUrl = resolveBaseUrl() + path + "?" + query
+        val conn = URL(targetUrl).openConnection() as HttpURLConnection
         conn.connectTimeout = 15000
         conn.readTimeout = 25000
         conn.setRequestProperty("Authorization", "")
@@ -257,10 +258,27 @@ class MovieApi(private val context: Context) {
             .put("type", 1).put("brand", Build.BRAND).put("model", Build.MODEL)
             .put("system_version", Build.VERSION.SDK_INT).put("sdk_version", "1.0.0.8")
         conn.setRequestProperty("X-Client-UUID", device.toString())
+        val requestPacket = buildString {
+            append("GET ").append(targetUrl).append('\n')
+            append("User-Agent: Android\n")
+            append("Accept: application/prs.55App.v2+json\n")
+            append("X-Client-Version: ").append(conn.getRequestProperty("X-Client-Version")).append('\n')
+            append("X-App-Lang: zh_CN\n")
+            append("X-Client-UUID: [设备标识已隐藏]\n")
+            append("Authorization: [已隐藏]\n")
+            append("\n加密前参数：\n").append(JSONObject(params).toString(2))
+        }
+        var captured = false
         try {
             val status = conn.responseCode
             val stream = if (status in 200..299) conn.inputStream else conn.errorStream
             var body = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+            MovieHttpLog.add(
+                path, requestPacket,
+                "HTTP " + status + "\nContent-Type: " + conn.contentType + "\n\n" + body,
+                status
+            )
+            captured = true
             if (status !in 200..299) error("接口 HTTP " + status + "：" + body.take(180))
             if (conn.getHeaderField("X-App-Data-Encrypt") == "1") {
                 val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
@@ -276,6 +294,11 @@ class MovieApi(private val context: Context) {
                 error(root.optString("errorMsg").ifBlank { root.optString("msg", "Movie 请求失败") })
             }
             return root
+        } catch (e: Exception) {
+            if (!captured) {
+                MovieHttpLog.add(path, requestPacket, "请求异常：" + (e.message ?: e.javaClass.simpleName), null)
+            }
+            throw e
         } finally {
             conn.disconnect()
         }
