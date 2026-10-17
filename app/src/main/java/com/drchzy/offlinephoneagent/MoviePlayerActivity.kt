@@ -10,6 +10,8 @@ import android.os.Process
 import android.util.Rational
 import android.view.WindowManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
@@ -128,6 +130,17 @@ class MoviePlayerActivity : ComponentActivity() {
     private var savedEpisodeName = ""
     private var shouldResume = false
     private var backgrounded = false
+    private val autoNextHandler = Handler(Looper.getMainLooper())
+    private var introChecked = false
+    private var autoNextPending = false
+    var autoNextMessage by mutableStateOf("")
+        private set
+    var autoNextRevision by mutableIntStateOf(0)
+        private set
+
+    fun clearAutoNextMessage(expected: Int) {
+        if (expected == autoNextRevision) autoNextMessage = ""
+    }
     var speed by mutableFloatStateOf(1f)
         private set
     var pictureInPicture by mutableStateOf(false)
@@ -242,9 +255,9 @@ class MoviePlayerActivity : ComponentActivity() {
                 if (playback === next) errorText = "播放失败：" + (error.message ?: "可尝试其他线路")
             }
             override fun onPlaybackStateChanged(state: Int) {
-                if (playback === next && state == Player.STATE_ENDED) {
-                    playFollowingEpisode()
-                }
+                if (playback !== next) return
+                if (state == Player.STATE_READY) applySkipRules()
+                if (state == Player.STATE_ENDED) playFollowingEpisode()
             }
         })
         mediaUrl = address.url
@@ -255,6 +268,8 @@ class MoviePlayerActivity : ComponentActivity() {
                     episodeId.isBlank() && it.episodeName == episodeName)
         }?.resumeMs ?: 0L
         val previous = playback
+        autoNextPending = false
+        introChecked = false
         playback = next
         playing = false
         previous?.release()
@@ -284,18 +299,56 @@ class MoviePlayerActivity : ComponentActivity() {
         )
     }
 
-    /** 正常播完后自动播放同一线路的下一集；最后一集停止，不循环重播。 */
+    /** 从当前位置应用片头/片尾规则，调用端必须在主线程。 */
+    fun applySkipRules() {
+        val player = playback ?: return
+        if (isFinishing || isDestroyed || changingEpisode || autoNextPending ||
+            player.playbackState != Player.STATE_READY) return
+        val duration = player.duration.takeIf { it > 0 && it != C.TIME_UNSET } ?: return
+        val times = MovieSkipPreferences.get(applicationContext, movieId)
+        if (!introChecked) {
+            introChecked = true
+            val intro = times.introSeconds * 1000L
+            if (intro > 0L && intro < duration - 5_000L && player.currentPosition < intro) {
+                player.seekTo(intro)
+                return
+            }
+        }
+        val outro = times.outroSeconds * 1000L
+        if (outro > 0L && outro < duration - 5_000L && player.isPlaying &&
+            player.currentPosition >= duration - outro) {
+            playFollowingEpisode()
+        }
+    }
+
+    /** 正常结束或进入片尾范围时统一处理，最后一集不循环。 */
     private fun playFollowingEpisode() {
-        checkpoint(completed = true)
-        if (changingEpisode || isFinishing || isDestroyed) return
-        val line = movieDetail?.lines?.firstOrNull { it.code == lineCode } ?: return
-        val current = line.episodes.indexOfFirst {
+        if (changingEpisode || autoNextPending || isFinishing || isDestroyed) return
+        val line = movieDetail?.lines?.firstOrNull { it.code == lineCode }
+        val current = line?.episodes?.indexOfFirst {
             (episodeId.isNotBlank() && it.id == episodeId) ||
                 (episodeId.isBlank() && it.name == episodeName)
+        } ?: -1
+        val following = if (current >= 0) line?.episodes?.getOrNull(current + 1) else null
+        if (following == null) {
+            // 对于自然结束的最后一集，依然标记为看完。
+            if (playback?.playbackState == Player.STATE_ENDED) checkpoint(completed = true)
+            return
         }
-        if (current >= 0 && current + 1 < line.episodes.size) {
-            choose(line.episodes[current + 1])
-        }
+        checkpoint(completed = true)
+        autoNextPending = true
+        autoNextMessage = "即将自动播放 ${following.name}"
+        autoNextRevision++
+        val currentEpisode = episodeId
+        val currentLine = lineCode
+        autoNextHandler.postDelayed({
+            if (!autoNextPending || isFinishing || isDestroyed ||
+                episodeId != currentEpisode || lineCode != currentLine) return@postDelayed
+            autoNextPending = false
+            autoNextMessage = "正在自动播放 ${following.name}"
+            autoNextRevision++
+            choose(following)
+        }, 1_300L)
     }
 
     fun loadEpisodeList() {
@@ -319,6 +372,7 @@ class MoviePlayerActivity : ComponentActivity() {
     fun choose(episode: MovieEpisode) {
         if (changingEpisode) return
         if (episode.id.isNotBlank() && episode.id == episodeId && episode.fromCode == lineCode) return
+        autoNextPending = false
         checkpoint()
         changingEpisode = true
         errorText = ""
@@ -423,6 +477,7 @@ class MoviePlayerActivity : ComponentActivity() {
 
     override fun onDestroy() {
         checkpoint()
+        autoNextHandler.removeCallbacksAndMessages(null)
         worker.shutdownNow()
         playback?.release()
         playback = null
