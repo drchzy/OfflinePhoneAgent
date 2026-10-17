@@ -489,14 +489,16 @@ private fun CodexPage(host: MainActivity) {
             }
         }
         Spacer(Modifier.height(29.dp))
-        Text("使用额度", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+        Text("使用额度", fontSize = 19.sp, fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(14.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             UsageCard("5 小时", host.usage?.fiveHour, Modifier.weight(1f))
             UsageCard("每周", host.usage?.weekly, Modifier.weight(1f))
         }
         Spacer(Modifier.height(28.dp))
-        Text("快捷操作", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+        Text("快捷操作", fontSize = 19.sp, fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(15.dp))
         Button(
             onClick = { if (host.loggedIn) host.refreshCodex() else host.loginCodex() },
@@ -682,7 +684,8 @@ private fun MoviePage(host: MainActivity) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(Icons.Outlined.MovieFilter, null, Modifier.size(37.dp), tint = Muted)
                     Spacer(Modifier.height(12.dp))
-                    Text("影片列表尚未就绪", fontWeight = FontWeight.Medium)
+                    Text("影片列表尚未就绪", fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onBackground)
                     Text("请检查连接或尝试搜索", color = Muted, fontSize = 11.sp)
                 }
             }
@@ -730,6 +733,7 @@ private fun MovieTile(item: MovieItem, onClick: () -> Unit) {
         }
         Spacer(Modifier.height(10.dp))
         Text(item.name, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1, overflow = TextOverflow.Ellipsis)
         Text(item.type.ifBlank { item.dynamic.ifBlank { "立即查看" } },
             fontSize = 11.sp, color = Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
