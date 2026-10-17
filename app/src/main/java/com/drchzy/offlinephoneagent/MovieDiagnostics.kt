@@ -122,6 +122,39 @@ fun MovieDiagnosticsDialog(
                     Spacer(Modifier.width(9.dp))
                     Text(if (loading) "请求中…" else "发送 GET 请求")
                 }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = {
+                        if (loading) return@OutlinedButton
+                        loading = true
+                        result = null
+                        val url = requestUrl.trim()
+                        scope.launch {
+                            result = try {
+                                val decoded = withContext(Dispatchers.IO) { MovieConfigDecoder.fetch(url) }
+                                ProbeResult(
+                                    decoded.url,
+                                    decoded.finalUrl,
+                                    decoded.code,
+                                    decoded.elapsedMs,
+                                    decoded.contentType,
+                                    decoded.responseText,
+                                    decoded.apiService,
+                                    decoded.error
+                                )
+                            } catch (e: Exception) {
+                                ProbeResult(url, "", -1, 0, "", "", null, e.message ?: "图片解码失败")
+                            } finally {
+                                loading = false
+                            }
+                        }
+                    },
+                    enabled = !loading && requestUrl.trim().startsWith("http"),
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Text(if (loading) "正在解码…" else "解码图片配置")
+                }
                 Spacer(Modifier.height(15.dp))
                 HorizontalDivider()
                 Spacer(Modifier.height(11.dp))
