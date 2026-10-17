@@ -76,6 +76,8 @@ class MainActivity : ComponentActivity() {
 
     var loggedIn by mutableStateOf(false)
         private set
+    var codexAccountName by mutableStateOf("")
+        private set
     var codeInfo by mutableStateOf("")
         private set
     var codexStatus by mutableStateOf("登录后即可同步用量")
@@ -97,7 +99,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = AndroidColor.rgb(16, 17, 18)
         window.navigationBarColor = AndroidColor.rgb(16, 17, 18)
-        loggedIn = CodexAuthManager(this).currentTokens() != null
+        val auth = CodexAuthManager(this)
+        loggedIn = auth.currentTokens() != null
+        codexAccountName = if (loggedIn) auth.displayName() else ""
         MovieHttpLog.initialize(this)
         setContent { OfflineApplication(this) }
         if (loggedIn) refreshCodex()
@@ -106,7 +110,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        loggedIn = CodexAuthManager(this).currentTokens() != null
+        val auth = CodexAuthManager(this)
+        loggedIn = auth.currentTokens() != null
+        codexAccountName = if (loggedIn) auth.displayName() else ""
     }
 
     override fun onDestroy() {
@@ -132,6 +138,7 @@ class MainActivity : ComponentActivity() {
                 auth.completeDeviceLogin(info)
                 runOnUiThread {
                     loggedIn = true
+                    codexAccountName = auth.displayName()
                     codexLoading = false
                     codeInfo = ""
                     codexStatus = "账号已连接"
@@ -156,6 +163,7 @@ class MainActivity : ComponentActivity() {
                 runOnUiThread {
                     usage = fresh
                     loggedIn = true
+                    codexAccountName = CodexAuthManager(applicationContext).displayName()
                     codexLoading = false
                     codexStatus = "同步成功 · " + DateFormat.getTimeInstance(DateFormat.SHORT).format(Date())
                     CodexUsageWidgetProvider.refreshAll(applicationContext)
@@ -167,6 +175,19 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    /** 退出仅移除本机凭据。刷新中禁用退出，防止并发刷新把 Token 重新保存。 */
+    fun logoutCodex() {
+        if (codexLoading || !loggedIn) return
+        CodexAuthManager(applicationContext).logout()
+        loggedIn = false
+        codexAccountName = ""
+        usage = null
+        codeInfo = ""
+        codexStatus = "已退出登录"
+        CodexUsageWidgetProvider.refreshAll(applicationContext)
+        Toast.makeText(this, "已退出 Codex（仅清除本机凭据）", Toast.LENGTH_SHORT).show()
     }
 
     fun pinWidget() {
@@ -443,12 +464,25 @@ private fun SectionTitle(eyebrow: String, title: String, subtitle: String) {
 @Composable
 private fun CodexPage(host: MainActivity) {
     val textColor = MaterialTheme.colorScheme.onSurface
+    var confirmLogout by remember { mutableStateOf(false) }
+    if (confirmLogout) {
+        AlertDialog(
+            onDismissRequest = { confirmLogout = false },
+            title = { Text("退出 Codex？") },
+            text = { Text("将清除本机保存的登录凭据和用量缓存。不会退出其他设备，也不会影响 Movie 配置。") },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmLogout = false
+                    host.logoutCodex()
+                }) { Text("确认退出") }
+            },
+            dismissButton = { TextButton(onClick = { confirmLogout = false }) { Text("取消") } }
+        )
+    }
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-            .padding(start = 23.dp, end = 23.dp, top = 22.dp, bottom = 35.dp)
+            .padding(start = 23.dp, end = 23.dp, top = 12.dp, bottom = 35.dp)
     ) {
-        SectionTitle("YOUR AI CONSOLE", "Codex Overview", "让每一次创作都尽在掌握。")
-        Spacer(Modifier.height(30.dp))
         Surface(
             color = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(24.dp),
@@ -468,11 +502,26 @@ private fun CodexPage(host: MainActivity) {
                 }
                 Spacer(Modifier.width(15.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(if (host.loggedIn) "账户已连接" else "尚未连接账户", fontWeight = FontWeight.SemiBold)
+                    Text(if (host.loggedIn) "账户已连接" else "尚未连接账户",
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface)
+                    if (host.loggedIn && host.codexAccountName.isNotBlank()) {
+                        Text(host.codexAccountName, fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
                     Text(host.codexStatus, fontSize = 12.sp, color = Muted, maxLines = 3)
                 }
                 if (host.loggedIn) {
-                    Icon(Icons.Outlined.CheckCircle, null, tint = Champagne, modifier = Modifier.size(20.dp))
+                    IconButton(
+                        onClick = { confirmLogout = true },
+                        enabled = !host.codexLoading,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(Icons.Outlined.Logout, contentDescription = "退出 Codex",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(19.dp))
+                    }
                 }
             }
         }
@@ -496,7 +545,9 @@ private fun CodexPage(host: MainActivity) {
             UsageCard("5 小时", host.usage?.fiveHour, Modifier.weight(1f))
             UsageCard("每周", host.usage?.weekly, Modifier.weight(1f))
         }
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(20.dp))
+        ResetCreditsSection(host.usage)
+        Spacer(Modifier.height(27.dp))
         Text("快捷操作", fontSize = 19.sp, fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(15.dp))
@@ -523,9 +574,74 @@ private fun CodexPage(host: MainActivity) {
         }
         Spacer(Modifier.height(25.dp))
         Text(
-            "已保留设备授权、加密 Token 存储、桌面小组件及应用内升级。",
+            "账户名称来自登录凭据；额度与重置卡来自当前账户的只读接口。",
             fontSize = 11.sp, color = Muted, lineHeight = 18.sp
         )
+    }
+}
+
+@Composable
+private fun ResetCreditsSection(usage: CodexUsage?) {
+    val count = usage?.availableResetCount
+    val cards = usage?.resetCards.orEmpty()
+    Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Codex 重置卡", fontSize = 19.sp, fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f))
+            Text(
+                if (count == null) "数量未知" else "可用 $count 张",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Spacer(Modifier.height(11.dp))
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(Modifier.padding(17.dp)) {
+                when {
+                    usage == null -> Text("登录后同步用量即可查看重置卡。", color = Muted, fontSize = 12.sp)
+                    count == 0 -> Text("暂无可用重置卡", color = Muted, fontSize = 12.sp)
+                    cards.isEmpty() -> Text(
+                        if (count == null) "接口未返回重置卡数量与到期信息"
+                        else "有 $count 张可用重置卡，但接口没有返回逐张到期时间",
+                        color = Muted, fontSize = 12.sp
+                    )
+                    else -> {
+                        cards.forEachIndexed { index, card ->
+                            if (index > 0) {
+                                Spacer(Modifier.height(9.dp))
+                                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = .10f))
+                                Spacer(Modifier.height(9.dp))
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    card.title.ifBlank { "重置卡 ${index + 1}" },
+                                    fontWeight = FontWeight.Medium, fontSize = 13.sp,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.weight(1f),
+                                    maxLines = 1, overflow = TextOverflow.Ellipsis
+                                )
+                                val expiry = card.expiresAtSeconds?.let {
+                                    DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                                        .format(Date(it * 1000L))
+                                } ?: "未注明到期时间"
+                                Text("到期：$expiry", color = Muted, fontSize = 11.sp)
+                            }
+                        }
+                    }
+                }
+                val note = usage?.resetCardsMessage.orEmpty()
+                if (note.isNotBlank()) {
+                    Spacer(Modifier.height(9.dp))
+                    Text(note, fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
     }
 }
 
@@ -602,19 +718,8 @@ private fun MoviePage(host: MainActivity) {
     Column(Modifier.fillMaxSize()) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 17.dp)
-                .padding(top = if (compact) 5.dp else 12.dp)
+                .padding(top = if (compact) 4.dp else 8.dp)
         ) {
-            AnimatedVisibility(visible = !compact) {
-                Column {
-                    Text("DISCOVER & WATCH", fontSize = 10.sp, letterSpacing = 2.sp,
-                        color = Muted)
-                    Spacer(Modifier.height(4.dp))
-                    Text("Movie Library", fontSize = 30.sp, fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground)
-                    Text("探索精选电影、剧集与新发现。", fontSize = 12.sp, color = Muted)
-                    Spacer(Modifier.height(15.dp))
-                }
-            }
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
