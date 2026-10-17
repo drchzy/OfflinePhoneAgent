@@ -256,6 +256,7 @@ class MainActivity : ComponentActivity() {
                     startActivity(Intent(this, MoviePlayerActivity::class.java).apply {
                         putExtra(MoviePlayerActivity.EXTRA_URL, address.url)
                         putExtra(MoviePlayerActivity.EXTRA_MOVIE_ID, detail?.movie?.id.orEmpty())
+                        putExtra(MoviePlayerActivity.EXTRA_MOVIE_NAME, detail?.movie?.name ?: movieName)
                         putExtra(MoviePlayerActivity.EXTRA_EPISODE_ID, episode.id)
                         putExtra(MoviePlayerActivity.EXTRA_LINE_CODE, episode.fromCode)
                         putExtra(MoviePlayerActivity.EXTRA_EPISODE_NAME, episode.name)
@@ -681,6 +682,10 @@ private fun UsageCard(title: String, window: UsageWindow?, modifier: Modifier = 
 private fun MoviePage(host: MainActivity) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("movie_search", Context.MODE_PRIVATE) }
+    val watchVersion by MovieWatchHistory.revision.collectAsState()
+    val recentMovies = remember(watchVersion) {
+        MovieWatchHistory.all(context).distinctBy { it.movieId }.take(6)
+    }
     val history = remember {
         mutableStateListOf<String>().apply {
             addAll(prefs.getString("history", "").orEmpty()
@@ -762,6 +767,34 @@ private fun MoviePage(host: MainActivity) {
                 }
             }
             Spacer(Modifier.height(7.dp))
+            AnimatedVisibility(visible = !compact && recentMovies.isNotEmpty()) {
+                Column {
+                    Text("最近观看", fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground)
+                    Row(
+                        Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        recentMovies.forEach { entry ->
+                            SuggestionChip(
+                                onClick = {
+                                    host.openDetail(MovieItem(
+                                        id = entry.movieId,
+                                        name = entry.movieName,
+                                        cover = ""
+                                    ))
+                                },
+                                label = {
+                                    Text(
+                                        entry.movieName + " · " + entry.episodeName,
+                                        maxLines = 1, fontSize = 11.sp
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     if (query.isBlank()) "为你精选" else "搜索结果",
@@ -860,6 +893,23 @@ private fun MovieTile(item: MovieItem, onClick: () -> Unit) {
 
 @Composable
 private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEpisode) -> Unit, busy: Boolean) {
+    val local = LocalContext.current
+    val historyVersion by MovieWatchHistory.revision.collectAsState()
+    val recent = remember(detail.movie.id, historyVersion) {
+        MovieWatchHistory.all(local).filter { it.movieId == detail.movie.id }
+    }
+    val mostRecent = recent.firstOrNull()
+    val resumeLine = detail.lines.firstOrNull { it.code == mostRecent?.lineCode }
+    val matchedIndex = resumeLine?.episodes?.indexOfFirst {
+        (mostRecent != null && mostRecent.episodeId.isNotBlank() && it.id == mostRecent.episodeId) ||
+            (mostRecent != null && mostRecent.episodeId.isBlank() && it.name == mostRecent.episodeName)
+    } ?: -1
+    val continueEpisode = when {
+        matchedIndex < 0 -> null
+        mostRecent?.finished == true ->
+            resumeLine?.episodes?.getOrNull(matchedIndex + 1) ?: resumeLine?.episodes?.getOrNull(matchedIndex)
+        else -> resumeLine?.episodes?.getOrNull(matchedIndex)
+    }
     var lineIndex by remember(detail.movie.id) { mutableIntStateOf(0) }
     val line = detail.lines.getOrNull(lineIndex)
     var rangeIndex by remember(detail.movie.id, lineIndex) { mutableIntStateOf(0) }
@@ -884,6 +934,38 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                 Text(detail.movie.year + "  ·  " + detail.movie.type, color = Muted, fontSize = 12.sp)
                 Spacer(Modifier.height(20.dp))
                 Text(detail.movie.dynamic, color = Champagne, fontSize = 12.sp)
+            }
+        }
+        if (continueEpisode != null) {
+            Spacer(Modifier.height(13.dp))
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface,
+                onClick = { if (!busy) onPlay(continueEpisode) }
+            ) {
+                Row(
+                    Modifier.fillMaxWidth().padding(13.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Outlined.PlayCircle, "继续播放",
+                        Modifier.size(28.dp), tint = Champagne)
+                    Spacer(Modifier.width(10.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            "继续播放 · " + continueEpisode.name,
+                            fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            if (mostRecent?.finished == true) "上次剧集已看完，将从下一集开始"
+                            else "从上次的 " + formatWatchTime(mostRecent?.positionMs ?: 0L) + " 继续",
+                            fontSize = 11.sp, color = Muted
+                        )
+                    }
+                    Icon(Icons.Outlined.ChevronRight, null,
+                        Modifier.size(22.dp), tint = Muted)
+                }
             }
         }
         Spacer(Modifier.height(24.dp))
@@ -935,15 +1017,38 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
             (if (episodesExpanded) allRows else allRows.take(3)).forEach { row ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     row.forEach { episode ->
+                        val viewed = recent.firstOrNull {
+                            it.lineCode == episode.fromCode &&
+                                (episode.id.isNotBlank() && it.episodeId == episode.id ||
+                                    episode.id.isBlank() && it.episodeName == episode.name)
+                        }
+                        val label = when {
+                            viewed == null -> ""
+                            viewed === mostRecent -> "上次看到"
+                            viewed.watched -> "已看过"
+                            else -> "看过一部分"
+                        }
                         Surface(
                             modifier = Modifier.weight(1f).padding(bottom = 8.dp),
                             shape = RoundedCornerShape(13.dp),
                             color = MaterialTheme.colorScheme.surface,
                             onClick = { if (!busy) onPlay(episode) }
                         ) {
-                            Text(episode.name, Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-                                fontSize = 12.sp, maxLines = 1, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                                overflow = TextOverflow.Ellipsis)
+                            Column(
+                                Modifier.fillMaxWidth().height(52.dp).padding(horizontal = 5.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(episode.name,
+                                    fontSize = 12.sp, maxLines = 1,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    overflow = TextOverflow.Ellipsis)
+                                if (label.isNotBlank()) {
+                                    Text(label, fontSize = 10.sp,
+                                        color = MaterialTheme.colorScheme.primary)
+                                }
+                            }
                         }
                     }
                     repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
@@ -1144,4 +1249,10 @@ private fun SettingsPanel(
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } }
     )
+}
+
+/** 播放记录中的时间使用分钟/秒，不显示毫秒。 */
+private fun formatWatchTime(ms: Long): String {
+    val s = ms.coerceAtLeast(0L) / 1000L
+    return "%02d:%02d".format(s / 60L, s % 60L)
 }
