@@ -16,6 +16,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.geometry.Offset
+import android.os.SystemClock
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.math.abs
+import kotlin.math.roundToInt
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -144,10 +152,10 @@ class MoviePlayerActivity : ComponentActivity() {
     fun volume(delta: Float) {
         val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC).coerceAtLeast(1)
-        val current = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
-        val next = (current + delta * max).toInt().coerceIn(0, max)
+        // 保留小数累积手势位移，避免音量档位取整后每次小滑动都变为 0。
+        volumeLevel = (volumeLevel + delta).coerceIn(0f, 1f)
+        val next = (volumeLevel * max).roundToInt().coerceIn(0, max)
         audio.setStreamVolume(AudioManager.STREAM_MUSIC, next, 0)
-        volumeLevel = next.toFloat() / max
     }
 
     fun minimizeToPiP() {
@@ -174,6 +182,13 @@ class MoviePlayerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = android.graphics.Color.rgb(16, 17, 18)
         window.navigationBarColor = android.graphics.Color.rgb(16, 17, 18)
+        val audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val volumeMax = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC).coerceAtLeast(1)
+        volumeLevel = audio.getStreamVolume(AudioManager.STREAM_MUSIC).toFloat() / volumeMax
+        val screenBrightness = android.provider.Settings.System.getInt(
+            contentResolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, 128
+        )
+        brightnessLevel = (screenBrightness / 255f).coerceIn(0.02f, 1f)
         movieId = intent.getStringExtra(EXTRA_MOVIE_ID).orEmpty()
         episodeId = intent.getStringExtra(EXTRA_EPISODE_ID).orEmpty()
         lineCode = intent.getStringExtra(EXTRA_LINE_CODE).orEmpty()
