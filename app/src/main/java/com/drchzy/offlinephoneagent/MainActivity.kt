@@ -14,6 +14,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -38,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
@@ -88,6 +96,7 @@ class MainActivity : ComponentActivity() {
         window.statusBarColor = AndroidColor.rgb(16, 17, 18)
         window.navigationBarColor = AndroidColor.rgb(16, 17, 18)
         loggedIn = CodexAuthManager(this).currentTokens() != null
+        MovieHttpLog.initialize(this)
         setContent { OfflineApplication(this) }
         if (loggedIn) refreshCodex()
         AppUpdater.checkForUpdate(this, silent = true)
@@ -257,9 +266,9 @@ private fun OfflineApplication(host: MainActivity) {
     var dark by rememberSaveable { mutableStateOf(true) }
     val scheme = if (dark) darkColorScheme(
         primary = Champagne, onPrimary = Night,
-        background = Night, surface = NightCard,
+        background = Color(0xFF14101F), surface = Color(0xFF24202D),
         onBackground = Paper, onSurface = Paper,
-        surfaceVariant = Color(0xFF292B2C), onSurfaceVariant = Muted
+        surfaceVariant = Color(0xFF353043), onSurfaceVariant = Muted
     ) else lightColorScheme(
         primary = Ink, onPrimary = Color.White,
         background = Paper, surface = Color.White,
@@ -271,74 +280,132 @@ private fun OfflineApplication(host: MainActivity) {
         var showSettings by remember { mutableStateOf(false) }
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
-        val background = MaterialTheme.colorScheme.background
+        val screenWidth = LocalConfiguration.current.screenWidthDp
+        val drawerWidth = minOf(310, (screenWidth * 0.83f).toInt()).dp
         val foreground = MaterialTheme.colorScheme.onBackground
-
+        val transition = rememberInfiniteTransition(label = "ambient-gradient")
+        val glow by transition.animateFloat(
+            initialValue = 0.0f, targetValue = 1.0f,
+            animationSpec = infiniteRepeatable(tween(7000), RepeatMode.Reverse),
+            label = "violet-glow"
+        )
+        val bgBrush = if (dark) Brush.linearGradient(
+            listOf(
+                lerp(Color(0xFF16141D), Color(0xFF221B35), glow),
+                Color(0xFF171421),
+                lerp(Color(0xFF22182D), Color(0xFF10151E), glow)
+            )
+        ) else Brush.verticalGradient(listOf(Paper, Color(0xFFF2F0F8)))
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet(
-                    modifier = Modifier.width(294.dp),
+                    modifier = Modifier.width(drawerWidth)
+                        .statusBarsPadding().navigationBarsPadding(),
                     drawerContainerColor = MaterialTheme.colorScheme.surface,
-                    drawerShape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)
+                    drawerShape = RoundedCornerShape(topEnd = 24.dp, bottomEnd = 24.dp)
                 ) {
-                    Column(Modifier.padding(horizontal = 24.dp, vertical = 30.dp)) {
-                        Text("OFFLINE", fontSize = 27.sp, fontWeight = FontWeight.Black, letterSpacing = 4.sp)
-                        Spacer(Modifier.height(6.dp))
-                        Text("YOUR PERSONAL SPACE", fontSize = 10.sp, letterSpacing = 2.sp, color = Muted)
-                        Spacer(Modifier.height(38.dp))
+                    Column(
+                        Modifier.fillMaxHeight()
+                            .padding(start = 17.dp, end = 17.dp, top = 20.dp, bottom = 15.dp)
+                    ) {
+                        Text("OFFLINE", fontSize = 23.sp,
+                            fontWeight = FontWeight.Black, letterSpacing = 3.sp)
+                        Text("YOUR PERSONAL SPACE", fontSize = 10.sp,
+                            letterSpacing = 2.sp, color = Muted)
+                        Spacer(Modifier.height(25.dp))
                         NavigationDrawerItem(
                             icon = { Icon(Icons.Outlined.AutoAwesome, null) },
-                            label = { Text("Codex", fontWeight = FontWeight.SemiBold) },
-                            selected = page == "Codex",
-                            onClick = { page = "Codex"; scope.launch { drawerState.close() } },
-                            shape = RoundedCornerShape(16.dp)
+                            label = { Text("Codex") }, selected = page == "Codex",
+                            onClick = { page = "Codex"; scope.launch { drawerState.close() } }
                         )
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(5.dp))
                         NavigationDrawerItem(
                             icon = { Icon(Icons.Outlined.Movie, null) },
-                            label = { Text("Movie", fontWeight = FontWeight.SemiBold) },
-                            selected = page == "Movie",
-                            onClick = { page = "Movie"; scope.launch { drawerState.close() } },
-                            shape = RoundedCornerShape(16.dp)
+                            label = { Text("Movie") }, selected = page == "Movie",
+                            onClick = { page = "Movie"; scope.launch { drawerState.close() } }
+                        )
+                        Spacer(Modifier.height(5.dp))
+                        val logging by MovieHttpLog.enabled.collectAsState()
+                        NavigationDrawerItem(
+                            icon = { Icon(Icons.Outlined.BugReport, null) },
+                            label = { Text(if (logging) "网络日志 · 采集中" else "网络日志") },
+                            selected = page == "日志",
+                            onClick = { page = "日志"; scope.launch { drawerState.close() } }
                         )
                         Spacer(Modifier.weight(1f))
-                        HorizontalDivider(color = foreground.copy(alpha = 0.09f))
-                        Spacer(Modifier.height(20.dp))
-                        Text("OfflinePhoneAgent", fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                        Text("A quiet place for powerful tools.", fontSize = 11.sp, color = Muted)
+                        HorizontalDivider(color = foreground.copy(alpha = 0.10f))
+                        Spacer(Modifier.height(8.dp))
+                        NavigationDrawerItem(
+                            icon = { Icon(Icons.Outlined.Tune, null) },
+                            label = { Text("偏好设置") },
+                            selected = false,
+                            onClick = { showSettings = true; scope.launch { drawerState.close() } }
+                        )
+                        NavigationDrawerItem(
+                            icon = { Icon(Icons.Outlined.SystemUpdate, null) },
+                            label = { Text("检查更新") },
+                            selected = false,
+                            onClick = { scope.launch { drawerState.close() }; host.updateNow() }
+                        )
+                        Spacer(Modifier.height(9.dp))
+                        Text("OfflinePhoneAgent", fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium)
+                        Text("v" + BuildConfig.VERSION_NAME, fontSize = 10.sp, color = Muted)
                     }
                 }
             }
         ) {
             Scaffold(
-                containerColor = background,
+                containerColor = Color.Transparent,
+                contentWindowInsets = WindowInsets.safeDrawing,
                 topBar = {
                     Row(
-                        Modifier.fillMaxWidth().height(76.dp).padding(horizontal = 16.dp),
+                        Modifier.fillMaxWidth().statusBarsPadding()
+                            .height(54.dp).padding(horizontal = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Outlined.Menu, "打开侧边导航")
+                        IconButton(onClick = { scope.launch { drawerState.open() } },
+                            modifier = Modifier.size(44.dp)) {
+                            Icon(Icons.Outlined.Menu, "打开侧栏", Modifier.size(23.dp))
                         }
-                        Spacer(Modifier.width(8.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text("WORKSPACE", fontSize = 10.sp, color = Muted, letterSpacing = 2.sp)
-                            Text(page, fontSize = 21.sp, fontWeight = FontWeight.SemiBold)
-                        }
-                        IconButton(onClick = { showSettings = true }) {
-                            Icon(Icons.Outlined.Tune, "设置")
-                        }
+                        Spacer(Modifier.width(11.dp))
+                        Text(page, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f))
                     }
                 }
             ) { padding ->
-                Crossfade(targetState = page, animationSpec = tween(220), label = "navigation") { destination ->
-                    Box(Modifier.padding(padding).fillMaxSize()) {
-                        if (destination == "Codex") {
-                            CodexPage(host)
-                        } else {
-                            MoviePage(host)
-                            MovieHttpFloatingPanel()
+                Box(Modifier.fillMaxSize().background(bgBrush)) {
+                    Crossfade(
+                        targetState = page, animationSpec = tween(260),
+                        label = "page-navigation"
+                    ) { target ->
+                        Box(
+                            Modifier.padding(padding).fillMaxSize()
+                                .pointerInput(target, host.detail) {
+                                    var offset = 0f
+                                    var edge = false
+                                    detectHorizontalDragGestures(
+                                        onDragStart = {
+                                            edge = it.x < 52.dp.toPx()
+                                            offset = 0f
+                                        },
+                                        onHorizontalDrag = { _, amount -> offset += amount },
+                                        onDragEnd = {
+                                            if (edge && offset > 100.dp.toPx()) {
+                                                if (target == "Movie" && host.detail != null) host.closeDetail()
+                                                else if (target != "Codex") page = "Codex"
+                                                else scope.launch { drawerState.open() }
+                                            }
+                                        }
+                                    )
+                                }
+                        ) {
+                            when (target) {
+                                "Codex" -> CodexPage(host)
+                                "Movie" -> MoviePage(host)
+                                else -> NetworkLogPage()
+                            }
                         }
                     }
                 }
