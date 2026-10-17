@@ -337,7 +337,7 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                 }
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    host.movieDetail?.movie?.name?.ifBlank { null }
+                    host.movieDetail?.movie?.name?.takeIf { it.isNotBlank() }
                         ?: host.intent.getStringExtra(MoviePlayerActivity.EXTRA_TITLE).orEmpty(),
                     Modifier.weight(1f),
                     fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
