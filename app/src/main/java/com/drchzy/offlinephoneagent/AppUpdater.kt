@@ -110,7 +110,7 @@ object AppUpdater {
                 val preview = release.optBoolean("prerelease", false)
                 if (preview && !isPreviewBuild()) continue
                 val tag = release.optString("tag_name").removePrefix("v")
-                val match = Regex("^1\\\\.0\\\\.(\\\\d+)(?:-preview)?$").matchEntire(tag) ?: continue
+                val match = Regex("""^1\.0\.(\d+)(?:-preview)?$""").matchEntire(tag) ?: continue
                 val versionCode = match.groupValues[1].toIntOrNull() ?: continue
                 val assets = release.optJSONArray("assets") ?: continue
                 for (j in 0 until assets.length()) {
