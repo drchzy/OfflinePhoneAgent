@@ -534,6 +534,9 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     var castDevices by remember { mutableStateOf<List<DlnaDevice>>(emptyList()) }
     var castMessage by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val topButtonSize = if (host.fullscreen) 47.dp else 34.dp
+    val topIconSize = if (host.fullscreen) 26.dp else 19.dp
+    val barButtonSize = if (host.fullscreen) 46.dp else 33.dp
 
     BackHandler(enabled = host.fullscreen) { host.toggleFullscreen() }
 
@@ -554,8 +557,9 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     }
 
     // 无交互 5 秒自动隐藏：弹出菜单、选集面板、投屏对话框时不计时。
-    LaunchedEffect(showControls, controlReset, speedMenu, lineMenu, episodePickerOpen, showCast, skipDialogOpen) {
-        if (showControls && !speedMenu && !lineMenu && !episodePickerOpen && !showCast && !skipDialogOpen) {
+    LaunchedEffect(showControls, controlReset, speedMenu, lineMenu, episodePickerOpen, showCast, skipDialogOpen, previewSeek, seeking) {
+        if (showControls && !speedMenu && !lineMenu && !episodePickerOpen &&
+            !showCast && !skipDialogOpen && previewSeek < 0L && !seeking) {
             delay(5_000L)
             showControls = false
         }
@@ -819,10 +823,10 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         if (host.fullscreen) {
                             IconButton(
                                 onClick = { host.toggleFullscreen(); controlReset++ },
-                                modifier = Modifier.size(34.dp)
+                                modifier = Modifier.size(topButtonSize)
                             ) {
                                 Icon(Icons.Outlined.ArrowBack, "退出全屏",
-                                    Modifier.size(19.dp), tint = Color.White)
+                                    Modifier.size(topIconSize), tint = Color.White)
                             }
                         }
                         Text("↓ $kbps KB/s", color = Color.White, fontSize = 10.sp,
@@ -835,52 +839,55 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                             modifier = Modifier.weight(1f)
                                 .padding(horizontal = 4.dp)
                         )
+                        Box {
+                            IconButton(
+                                onClick = { lineMenu = true; controlReset++ },
+                                modifier = Modifier.size(topButtonSize)
+                            ) {
+                                Icon(
+                                    Icons.Outlined.List, "切换播放线路",
+                                    Modifier.size(topIconSize), tint = Color.White
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = lineMenu,
+                                onDismissRequest = { lineMenu = false },
+                                modifier = Modifier.heightIn(max = 240.dp)
+                                    .widthIn(min = 155.dp, max = 260.dp)
+                            ) {
+                                host.movieDetail?.lines.orEmpty().forEachIndexed { index, line ->
+                                    DropdownMenuItem(
+                                        text = { Text(line.name, maxLines = 1) },
+                                        onClick = {
+                                            host.selectLine(index, true)
+                                            lineMenu = false
+                                            controlReset++
+                                        }
+                                    )
+                                }
+                            }
+                        }
                         IconButton(
                             onClick = { skipDialogOpen = true; controlReset++ },
-                            modifier = Modifier.size(34.dp)
+                            modifier = Modifier.size(topButtonSize)
                         ) {
                             Icon(Icons.Outlined.Tune, "设置片头片尾",
-                                Modifier.size(19.dp), tint = Color.White)
+                                Modifier.size(topIconSize), tint = Color.White)
                         }
                         IconButton(
                             onClick = { showCast = true; controlReset++ },
-                            modifier = Modifier.size(34.dp)
+                            modifier = Modifier.size(topButtonSize)
                         ) {
                             Icon(Icons.Outlined.Cast, "投屏",
-                                Modifier.size(19.dp), tint = Color.White)
+                                Modifier.size(topIconSize), tint = Color.White)
                         }
                         IconButton(
                             onClick = { host.minimizeToPiP(); controlReset++ },
-                            modifier = Modifier.size(34.dp)
+                            modifier = Modifier.size(topButtonSize)
                         ) {
                             Icon(Icons.Outlined.PictureInPictureAlt, "画中画",
-                                Modifier.size(19.dp), tint = Color.White)
+                                Modifier.size(topIconSize), tint = Color.White)
                         }
-                    }
-                    // 手动切集不挤占窄屏底部进度条，按钮放在视频两侧。
-                    IconButton(
-                        onClick = { host.navigateEpisode(-1); controlReset++ },
-                        enabled = host.canNavigateEpisode(-1),
-                        modifier = Modifier.align(Alignment.CenterStart).padding(start = 12.dp)
-                            .size(42.dp).background(
-                                Color.Black.copy(alpha = .38f), RoundedCornerShape(22.dp))
-                    ) {
-                        Icon(Icons.Outlined.SkipPrevious, "上一集",
-                            Modifier.size(27.dp),
-                            tint = if (host.canNavigateEpisode(-1)) Color.White
-                                else Color.White.copy(alpha = .32f))
-                    }
-                    IconButton(
-                        onClick = { host.navigateEpisode(1); controlReset++ },
-                        enabled = host.canNavigateEpisode(1),
-                        modifier = Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)
-                            .size(42.dp).background(
-                                Color.Black.copy(alpha = .38f), RoundedCornerShape(22.dp))
-                    ) {
-                        Icon(Icons.Outlined.SkipNext, "下一集",
-                            Modifier.size(27.dp),
-                            tint = if (host.canNavigateEpisode(1)) Color.White
-                                else Color.White.copy(alpha = .32f))
                     }
                     IconButton(
                         onClick = {
