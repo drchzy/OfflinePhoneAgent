@@ -848,14 +848,22 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
             }
         } else if (isTabletLandscape) {
             Row(Modifier.fillMaxSize()) {
-                Column(Modifier.weight(1.35f)) {
+                Column(Modifier.weight(1.7f).fillMaxHeight()) {
                     header()
-                    surface(Modifier.fillMaxWidth().aspectRatio(16f / 9f))
-                    Spacer(Modifier.height(10.dp))
-                    Text("左侧滑动调亮度 · 右侧调音量 · 长按左右侧快退/快进",
-                        Modifier.padding(horizontal = 15.dp), color = HintPlayer, fontSize = 11.sp)
+                    BoxWithConstraints(
+                        Modifier.fillMaxWidth().weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val fittedWidth = minOf(maxWidth, maxHeight * (16f / 9f))
+                        surface(Modifier.width(fittedWidth).aspectRatio(16f / 9f))
+                    }
+                    Text("左右滑动调整进度 · 左侧上下调亮度 · 右侧上下调音量",
+                        Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        color = HintPlayer, fontSize = 11.sp)
                 }
-                EpisodeBrowser(host, Modifier.weight(1f).fillMaxHeight())
+                EpisodeBrowser(
+                    host, Modifier.weight(1f).fillMaxHeight(), startExpanded = true
+                )
             }
         } else {
             Column(Modifier.fillMaxSize()) {
@@ -868,7 +876,20 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
 }
 
 @Composable
-private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modifier) {
+private fun EpisodeBrowser(
+    host: MoviePlayerActivity,
+    modifier: Modifier = Modifier,
+    startExpanded: Boolean = false,
+    onEpisodeSelected: () -> Unit = {}
+) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val watchVersion by MovieWatchHistory.revision.collectAsState()
+    val history = remember(host.movieDetail?.movie?.id, watchVersion) {
+        MovieWatchHistory.all(context).filter {
+            it.movieId == host.movieDetail?.movie?.id
+        }
+    }
+    val mostRecent = history.firstOrNull()
     val currentLine = host.movieDetail?.lines?.getOrNull(host.browseLineIndex)
     val episodes = currentLine?.episodes.orEmpty()
     var rangeIndex by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
@@ -878,7 +899,7 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
         mutableStateOf(false)
     }
     var expanded by remember(host.movieDetail?.movie?.id, host.browseLineIndex) {
-        mutableStateOf(false)
+        mutableStateOf(startExpanded)
     }
     val rangeCount = (episodes.size + 99) / 100
     val selectedEpisodeIndex =
@@ -944,7 +965,7 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
                     fontWeight = FontWeight.Bold, color = Color.White)
                 Text("  " + episodes.size + " 集", color = HintPlayer, fontSize = 11.sp)
                 Spacer(Modifier.weight(1f))
-                if (episodes.size > 9) {
+                if (!startExpanded && episodes.size > 9) {
                     TextButton(onClick = { expanded = !expanded }) {
                         Icon(
                             if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
@@ -1008,7 +1029,7 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
             // 未展开也允许网格自身滚动：只显示三行高度，但可浏览本段全部剧集。
             // 标签及排序条留在固定的 Column 内，不参与网格滑动。
             BoxWithConstraints(
-                modifier = if (expanded) Modifier.fillMaxWidth().weight(1f)
+                modifier = if (expanded || startExpanded) Modifier.fillMaxWidth().weight(1f)
                 else Modifier.fillMaxWidth().height(156.dp)
             ) {
                 val columns = maxOf(2, (maxWidth.value / 83f).toInt())
@@ -1027,16 +1048,33 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
                         val selected = currentLine?.code == host.lineCode &&
                             ((episode.id.isNotBlank() && episode.id == host.episodeId) ||
                                 (episode.id.isBlank() && episode.name == host.episodeName))
+                        val watched = history.firstOrNull {
+                            it.lineCode == episode.fromCode &&
+                                (episode.id.isNotBlank() && it.episodeId == episode.id ||
+                                    episode.id.isBlank() && it.episodeName == episode.name)
+                        }
+                        val marker = when {
+                            selected -> "正在播放"
+                            mostRecent != null && mostRecent.lineCode == episode.fromCode &&
+                                mostRecent.episodeId == episode.id && watched != null -> "上次看到"
+                            watched?.watched == true -> "已看过"
+                            watched != null && watched.positionMs > 0L -> "看过一部分"
+                            else -> ""
+                        }
                         Surface(
-                            onClick = { host.choose(episode) },
+                            onClick = {
+                                host.choose(episode)
+                                onEpisodeSelected()
+                            },
                             enabled = !host.changingEpisode,
                             shape = RoundedCornerShape(11.dp),
                             color = if (selected) AccentPlayer else SoftPlayer,
                             contentColor = if (selected) InkPlayer else Color.White
                         ) {
-                            Box(
-                                Modifier.fillMaxWidth().height(42.dp).padding(horizontal = 3.dp),
-                                contentAlignment = Alignment.Center
+                            Column(
+                                Modifier.fillMaxWidth().height(49.dp).padding(horizontal = 3.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
                                     episode.name.ifBlank {
@@ -1046,6 +1084,11 @@ private fun EpisodeBrowser(host: MoviePlayerActivity, modifier: Modifier = Modif
                                     fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                                     maxLines = 1, overflow = TextOverflow.Ellipsis
                                 )
+                                if (marker.isNotBlank()) {
+                                    Text(marker, fontSize = 9.sp,
+                                        color = if (selected) InkPlayer else AccentPlayer,
+                                        maxLines = 1)
+                                }
                             }
                         }
                     }
