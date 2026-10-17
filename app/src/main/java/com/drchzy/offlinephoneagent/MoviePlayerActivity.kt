@@ -98,6 +98,7 @@ class MoviePlayerActivity : ComponentActivity() {
         const val EXTRA_EPISODE_ID = "movie_episode_id"
         const val EXTRA_LINE_CODE = "movie_line_code"
         const val EXTRA_EPISODE_NAME = "movie_episode_name"
+        const val EXTRA_MOVIE_NAME = "movie_name_for_history"
     }
 
     private val worker = Executors.newSingleThreadExecutor()
@@ -124,6 +125,7 @@ class MoviePlayerActivity : ComponentActivity() {
     var browseLineIndex by mutableIntStateOf(0)
         private set
     private var movieId = ""
+    private var savedEpisodeName = ""
     private var shouldResume = false
     private var backgrounded = false
     var speed by mutableFloatStateOf(1f)
@@ -194,6 +196,7 @@ class MoviePlayerActivity : ComponentActivity() {
         episodeId = intent.getStringExtra(EXTRA_EPISODE_ID).orEmpty()
         lineCode = intent.getStringExtra(EXTRA_LINE_CODE).orEmpty()
         episodeName = intent.getStringExtra(EXTRA_EPISODE_NAME).orEmpty()
+        savedEpisodeName = intent.getStringExtra(EXTRA_MOVIE_NAME).orEmpty()
         val url = intent.getStringExtra(EXTRA_URL).orEmpty()
         if (!url.startsWith("https://") && !url.startsWith("http://")) {
             finish()
@@ -245,19 +248,45 @@ class MoviePlayerActivity : ComponentActivity() {
             }
         })
         mediaUrl = address.url
+        // 从本地播放记录恢复未看完剧集的播放位置；已看完的剧集从头开始。
+        val previousPosition = MovieWatchHistory.all(applicationContext).firstOrNull {
+            it.movieId == movieId && it.lineCode == lineCode &&
+                (episodeId.isNotBlank() && it.episodeId == episodeId ||
+                    episodeId.isBlank() && it.episodeName == episodeName)
+        }?.resumeMs ?: 0L
         val previous = playback
         playback = next
         playing = false
         previous?.release()
         errorText = ""
         next.setMediaItem(MediaItem.fromUri(address.url))
+        if (previousPosition > 0L) next.seekTo(previousPosition)
         next.prepare()
         next.playWhenReady = !backgrounded || isInPictureInPictureMode
         next.playbackParameters = PlaybackParameters(speed)
     }
 
+    /** 每 5 秒以及离开、切集时保存进度，不保存真实视频 URL 或认证请求头。 */
+    fun checkpoint(completed: Boolean = false) {
+        val active = playback ?: return
+        val duration = active.duration.takeIf { it > 0 && it != C.TIME_UNSET } ?: 0L
+        MovieWatchHistory.save(
+            context = applicationContext,
+            movieId = movieId,
+            movieName = movieDetail?.movie?.name?.takeIf { it.isNotBlank() }
+                ?: savedEpisodeName,
+            episodeId = episodeId,
+            episodeName = episodeName,
+            lineCode = lineCode,
+            positionMs = if (completed && duration > 0) duration else active.currentPosition,
+            durationMs = duration,
+            completed = completed
+        )
+    }
+
     /** 正常播完后自动播放同一线路的下一集；最后一集停止，不循环重播。 */
     private fun playFollowingEpisode() {
+        checkpoint(completed = true)
         if (changingEpisode || isFinishing || isDestroyed) return
         val line = movieDetail?.lines?.firstOrNull { it.code == lineCode } ?: return
         val current = line.episodes.indexOfFirst {
@@ -290,6 +319,7 @@ class MoviePlayerActivity : ComponentActivity() {
     fun choose(episode: MovieEpisode) {
         if (changingEpisode) return
         if (episode.id.isNotBlank() && episode.id == episodeId && episode.fromCode == lineCode) return
+        checkpoint()
         changingEpisode = true
         errorText = ""
         worker.execute {
@@ -339,6 +369,7 @@ class MoviePlayerActivity : ComponentActivity() {
     }
 
     override fun onPause() {
+        checkpoint()
         shouldResume = playback?.playWhenReady == true
         backgrounded = true
         if (!isInPictureInPictureMode) playback?.pause()
@@ -353,11 +384,13 @@ class MoviePlayerActivity : ComponentActivity() {
     }
 
     override fun onStop() {
+        checkpoint()
         if (!isInPictureInPictureMode) playback?.pause()
         super.onStop()
     }
 
     override fun onDestroy() {
+        checkpoint()
         worker.shutdownNow()
         playback?.release()
         playback = null
