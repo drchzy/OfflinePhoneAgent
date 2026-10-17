@@ -7,6 +7,12 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.os.SystemClock
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.zip.ZipFile
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.IOException
@@ -16,6 +22,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 object AppUpdater {
+    private val downloading = AtomicBoolean(false)
     private const val REPO_RELEASES_API =
         "https://api.github.com/repos/drchzy/OfflinePhoneAgent/releases?per_page=25"
 
@@ -24,7 +31,8 @@ object AppUpdater {
         val versionName: String,
         val downloadUrl: String,
         val apkName: String,
-        val preview: Boolean
+        val preview: Boolean,
+        val assetSizeBytes: Long = 0L
     )
 
     private fun isPreviewBuild(): Boolean =
@@ -120,7 +128,7 @@ object AppUpdater {
                     val name = asset.optString("name")
                     val url = asset.optString("browser_download_url")
                     if (name.endsWith(".apk", ignoreCase = true) && url.startsWith("https://github.com/")) {
-                        options.add(VersionInfo(versionCode, tag, url, name, preview))
+                        options.add(VersionInfo(versionCode, tag, url, name, preview, asset.optLong("size", 0L)))
                         break
                     }
                 }
@@ -152,46 +160,157 @@ object AppUpdater {
     }
 
     private fun downloadAndInstall(activity: Activity, info: VersionInfo) {
-        Toast.makeText(activity, "正在下载最新版…", Toast.LENGTH_SHORT).show()
+        if (!downloading.compareAndSet(false, true)) {
+            Toast.makeText(activity, "已有更新正在下载", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val cancelled = AtomicBoolean(false)
+        val dp = activity.resources.displayMetrics.density
+        fun dip(value: Int): Int = (value * dp + .5f).toInt()
+
+        val container = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dip(22), dip(12), dip(22), dip(10))
+        }
+        val detail = TextView(activity).apply {
+            text = "正在连接 GitHub…"
+            textSize = 13f
+        }
+        val bar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal).apply {
+            max = 100
+            isIndeterminate = true
+        }
+        val downloadedText = TextView(activity).apply {
+            text = "0 MB"
+            textSize = 12f
+        }
+        container.addView(detail)
+        container.addView(
+            bar,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dip(30)
+            ).apply { topMargin = dip(8) }
+        )
+        container.addView(downloadedText)
+        val dialog = AlertDialog.Builder(activity)
+            .setTitle("正在下载 · " + info.versionName)
+            .setView(container)
+            .setNegativeButton("取消下载") { _, _ -> cancelled.set(true) }
+            .setCancelable(false)
+            .create()
+        dialog.show()
 
         Thread {
+            var partial: File? = null
+            var connection: HttpURLConnection? = null
             try {
                 val baseDir = activity.externalCacheDir ?: activity.cacheDir
                 val updateDir = File(baseDir, "updates").apply { mkdirs() }
-                val apkFile = File(updateDir, info.apkName.ifBlank { "OfflinePhoneAgent-update.apk" })
-                updateDir.listFiles()?.forEach { if (it != apkFile) it.delete() }
-                if (apkFile.exists()) apkFile.delete()
+                val name = info.apkName.ifBlank { "OfflinePhoneAgent-update.apk" }
+                val apkFile = File(updateDir, name)
+                val tempFile = File(updateDir, "$name.part")
+                partial = tempFile
+                updateDir.listFiles()?.forEach { if (it != tempFile) it.delete() }
+                if (tempFile.exists()) tempFile.delete()
 
-                val connection = (URL(info.downloadUrl).openConnection() as HttpURLConnection).apply {
+                connection = (URL(info.downloadUrl).openConnection() as HttpURLConnection).apply {
                     connectTimeout = 15_000
                     readTimeout = 60_000
                     instanceFollowRedirects = true
                     setRequestProperty("User-Agent", "OfflinePhoneAgent/" + BuildConfig.VERSION_NAME)
                 }
-
-                try {
-                    val code = connection.responseCode
-                    if (code !in 200..299) throw IOException("下载失败 HTTP " + code)
-                    connection.inputStream.use { input ->
-                        apkFile.outputStream().use { output ->
-                            input.copyTo(output)
+                val response = connection.responseCode
+                if (response !in 200..299) throw IOException("下载失败 HTTP $response")
+                val expectedBytes = connection.contentLengthLong.takeIf { it > 0 }
+                    ?: info.assetSizeBytes.takeIf { it > 0 } ?: -1L
+                val buffer = ByteArray(32 * 1024)
+                var received = 0L
+                var lastUpdateAt = 0L
+                connection.inputStream.use { input ->
+                    tempFile.outputStream().buffered().use { output ->
+                        while (true) {
+                            if (cancelled.get()) throw IOException("下载已取消")
+                            val count = input.read(buffer)
+                            if (count < 0) break
+                            output.write(buffer, 0, count)
+                            received += count
+                            val now = SystemClock.elapsedRealtime()
+                            if (now - lastUpdateAt >= 120L) {
+                                lastUpdateAt = now
+                                val currentBytes = received
+                                activity.runOnUiThread {
+                                    if (!cancelled.get() && !activity.isFinishing && !activity.isDestroyed) {
+                                        val mb = currentBytes / 1_048_576.0
+                                        if (expectedBytes > 0) {
+                                            val pct = (currentBytes * 100L / expectedBytes)
+                                                .toInt().coerceIn(0, 100)
+                                            bar.isIndeterminate = false
+                                            bar.progress = pct
+                                            detail.text = "下载中 $pct%"
+                                            downloadedText.text = String.format(
+                                                java.util.Locale.getDefault(),
+                                                "%.1f / %.1f MB", mb, expectedBytes / 1_048_576.0
+                                            )
+                                        } else {
+                                            detail.text = "正在下载更新…"
+                                            downloadedText.text = String.format(
+                                                java.util.Locale.getDefault(), "已下载 %.1f MB", mb
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                } finally {
-                    connection.disconnect()
                 }
-
+                if (cancelled.get()) throw IOException("下载已取消")
+                if (received < 1_048_576L ||
+                    (expectedBytes > 0 && received != expectedBytes)) {
+                    throw IOException("文件不完整（已下载 $received 字节）")
+                }
+                // 校验 ZIP/APK 最基本结构，避免下载到 HTML 错误页也发起安装。
+                ZipFile(tempFile).use { zip ->
+                    if (zip.getEntry("AndroidManifest.xml") == null) {
+                        throw IOException("下载内容不是有效的 Android APK")
+                    }
+                }
+                if (apkFile.exists() && !apkFile.delete()) {
+                    throw IOException("无法替换旧的临时安装包")
+                }
+                if (!tempFile.renameTo(apkFile)) throw IOException("保存安装包失败")
+                partial = null
                 activity.runOnUiThread {
-                    installApk(activity, apkFile)
+                    if (!activity.isFinishing && !activity.isDestroyed && !cancelled.get()) {
+                        bar.isIndeterminate = false
+                        bar.progress = 100
+                        detail.text = "下载完成，正在启动安装…"
+                        dialog.dismiss()
+                        runCatching { installApk(activity, apkFile) }.onFailure {
+                            Toast.makeText(activity,
+                                "打开安装器失败：" + (it.message ?: "未知错误"),
+                                Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        apkFile.delete()
+                        dialog.dismiss()
+                    }
                 }
             } catch (e: Exception) {
                 activity.runOnUiThread {
-                    Toast.makeText(
-                        activity,
-                        "更新下载失败：" + (e.message ?: "网络异常"),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    dialog.dismiss()
+                    if (!cancelled.get() && !activity.isFinishing && !activity.isDestroyed) {
+                        AlertDialog.Builder(activity)
+                            .setTitle("更新下载失败")
+                            .setMessage(e.message ?: "网络异常，请重试")
+                            .setPositiveButton("重试") { _, _ -> prepareDownload(activity, info) }
+                            .setNegativeButton("取消", null)
+                            .show()
+                    }
                 }
+            } finally {
+                connection?.disconnect()
+                partial?.delete()
+                downloading.set(false)
             }
         }.start()
     }
