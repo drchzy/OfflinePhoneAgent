@@ -900,154 +900,248 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         Icon(if (host.playing) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
                             "暂停或播放", Modifier.size(23.dp), tint = Color.White)
                     }
-                    Row(
+                    Column(
                         modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
                             .background(Brush.verticalGradient(listOf(
-                                Color.Transparent, Color.Black.copy(alpha = .85f))))
-                            .padding(horizontal = 5.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                Color.Transparent, Color.Black.copy(alpha = .86f))))
+                            .padding(horizontal = if (host.fullscreen) 12.dp else 4.dp)
+                            .padding(bottom = if (host.fullscreen) 10.dp else 4.dp)
                     ) {
-                        IconButton(
-                            onClick = {
-                                if (host.playing) player?.pause() else player?.play()
-                                controlReset++
-                            },
-                            modifier = Modifier.size(38.dp)
+                        Row(
+                            Modifier.fillMaxWidth().padding(horizontal = 7.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                if (host.playing) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
-                                "播放或暂停", Modifier.size(25.dp), tint = Color.White
+                            if (duration > 0L &&
+                                (skipInfo.introSeconds > 0 || skipInfo.outroSeconds > 0)) {
+                                val introText = if (skipInfo.introSeconds > 0)
+                                    "片头 " + clock(skipInfo.introSeconds * 1000L) else ""
+                                val outroText = if (skipInfo.outroSeconds > 0)
+                                    "片尾 " + clock((duration - skipInfo.outroSeconds * 1000L)
+                                        .coerceAtLeast(0L)) else ""
+                                Text(
+                                    listOf(introText, outroText).filter { it.isNotEmpty() }
+                                        .joinToString(" · "),
+                                    color = AccentPlayer, fontSize = 10.sp,
+                                    maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            } else Spacer(Modifier.weight(1f))
+                            val time = when {
+                                previewSeek >= 0L -> previewSeek
+                                seeking -> (fraction * duration).toLong()
+                                else -> position
+                            }
+                            Text(
+                                clock(time) + " / " + clock(duration),
+                                color = Color.White, maxLines = 1,
+                                fontSize = if (host.fullscreen) 13.sp else 10.sp
                             )
                         }
-                        // 进度轨道与全部按钮同一行，宽度自适应手机和平板。
-                        // 轨道厚度 4dp，透明触控区高 40dp，兼顾拖动和视觉清爽。
-                        Canvas(
-                            modifier = Modifier.weight(1f).height(42.dp)
-                                .padding(horizontal = 4.dp)
-                                .pointerInput(player, duration) {
-                                    awaitEachGesture {
-                                        val down = awaitFirstDown(requireUnconsumed = false)
-                                        controlReset++
-                                        val w = size.width.coerceAtLeast(1).toFloat()
-                                        if (duration > 0L) {
-                                            seeking = true
-                                            fraction = (down.position.x / w).coerceIn(0f, 1f)
-                                        }
-                                        while (true) {
-                                            val e = awaitPointerEvent()
-                                            val ch = e.changes.firstOrNull { it.id == down.id }
-                                                ?: break
-                                            if (!ch.pressed) break
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(
+                                if (host.fullscreen) 4.dp else 0.dp)
+                        ) {
+                            IconButton(
+                                onClick = { host.navigateEpisode(-1); controlReset++ },
+                                enabled = host.canNavigateEpisode(-1),
+                                modifier = Modifier.size(barButtonSize)
+                            ) {
+                                Icon(Icons.Outlined.SkipPrevious, "上一集",
+                                    Modifier.size(if (host.fullscreen) 29.dp else 21.dp),
+                                    tint = if (host.canNavigateEpisode(-1)) Color.White
+                                        else Color.White.copy(alpha = .32f))
+                            }
+                            IconButton(
+                                onClick = {
+                                    if (host.playing) player?.pause() else player?.play()
+                                    controlReset++
+                                },
+                                modifier = Modifier.size(barButtonSize)
+                            ) {
+                                Icon(
+                                    if (host.playing) Icons.Outlined.Pause
+                                    else Icons.Outlined.PlayArrow,
+                                    "播放或暂停", Modifier.size(if (host.fullscreen) 30.dp else 24.dp),
+                                    tint = Color.White
+                                )
+                            }
+                            IconButton(
+                                onClick = { host.navigateEpisode(1); controlReset++ },
+                                enabled = host.canNavigateEpisode(1),
+                                modifier = Modifier.size(barButtonSize)
+                            ) {
+                                Icon(Icons.Outlined.SkipNext, "下一集",
+                                    Modifier.size(if (host.fullscreen) 29.dp else 21.dp),
+                                    tint = if (host.canNavigateEpisode(1)) Color.White
+                                        else Color.White.copy(alpha = .32f))
+                            }
+                            // 横向拖动视频直接在此轨道预览；白色圆点实时跟手。
+                            Canvas(
+                                modifier = Modifier.weight(1f)
+                                    .height(if (host.fullscreen) 52.dp else 42.dp)
+                                    .padding(horizontal = 4.dp)
+                                    .pointerInput(player, duration) {
+                                        awaitEachGesture {
+                                            val down = awaitFirstDown(requireUnconsumed = false)
+                                            controlReset++
+                                            val widthPx = size.width.coerceAtLeast(1).toFloat()
                                             if (duration > 0L) {
-                                                fraction = (ch.position.x / w).coerceIn(0f, 1f)
+                                                seeking = true
+                                                fraction = (down.position.x / widthPx)
+                                                    .coerceIn(0f, 1f)
                                             }
-                                            ch.consume()
+                                            while (true) {
+                                                val event = awaitPointerEvent()
+                                                val pointer = event.changes
+                                                    .firstOrNull { it.id == down.id } ?: break
+                                                if (!pointer.pressed) break
+                                                if (duration > 0L) {
+                                                    fraction = (pointer.position.x / widthPx)
+                                                        .coerceIn(0f, 1f)
+                                                }
+                                                pointer.consume()
+                                            }
+                                            if (duration > 0L) {
+                                                player?.seekTo((duration * fraction).toLong())
+                                            }
+                                            seeking = false
+                                            controlReset++
                                         }
-                                        if (duration > 0L) {
-                                            player?.seekTo((duration * fraction).toLong())
-                                        }
-                                        seeking = false
+                                    }
+                            ) {
+                                val y = size.height / 2f
+                                val activeSeek = previewSeek >= 0L || seeking
+                                val currentMs = when {
+                                    previewSeek >= 0L -> previewSeek
+                                    seeking -> (fraction * duration).toLong()
+                                    else -> position
+                                }
+                                val progress = if (duration > 0L)
+                                    (currentMs.toFloat() / duration).coerceIn(0f, 1f) else 0f
+                                val stroke = if (host.fullscreen) 5.dp.toPx() else 4.dp.toPx()
+                                drawLine(Color.White.copy(alpha = .4f),
+                                    Offset(0f, y), Offset(size.width, y), strokeWidth = stroke,
+                                    cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                                drawLine(if (activeSeek) Color.White else AccentPlayer,
+                                    Offset(0f, y), Offset(size.width * progress, y),
+                                    strokeWidth = stroke,
+                                    cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                                val intro = skipInfo.introSeconds * 1000L
+                                val outroStart = duration - skipInfo.outroSeconds * 1000L
+                                if (duration > 0L && intro in 1L until duration) {
+                                    val x = size.width * intro.toFloat() / duration
+                                    drawLine(Color(0xFFFFD26D), Offset(x, y - 8.dp.toPx()),
+                                        Offset(x, y + 8.dp.toPx()), strokeWidth = 2.4.dp.toPx())
+                                }
+                                if (duration > 0L && skipInfo.outroSeconds > 0 &&
+                                    outroStart in 1L until duration) {
+                                    val x = size.width * outroStart.toFloat() / duration
+                                    drawLine(Color(0xFFC5A9FF), Offset(x, y - 8.dp.toPx()),
+                                        Offset(x, y + 8.dp.toPx()), strokeWidth = 2.4.dp.toPx())
+                                }
+                                drawCircle(
+                                    if (activeSeek) Color.White else AccentPlayer,
+                                    radius = if (activeSeek) 6.5.dp.toPx() else 5.dp.toPx(),
+                                    center = Offset(size.width * progress, y)
+                                )
+                            }
+                            Box {
+                                TextButton(
+                                    onClick = { speedMenu = true; controlReset++ },
+                                    modifier = Modifier.height(barButtonSize)
+                                        .widthIn(min = if (host.fullscreen) 54.dp else 36.dp),
+                                    contentPadding = PaddingValues(horizontal = 1.dp)
+                                ) {
+                                    Text(host.speed.toString() + "×",
+                                        color = Color.White,
+                                        fontSize = if (host.fullscreen) 14.sp else 11.sp)
+                                }
+                                DropdownMenu(
+                                    expanded = speedMenu,
+                                    onDismissRequest = { speedMenu = false }
+                                ) {
+                                    listOf(.5f, .75f, 1f, 1.25f, 1.5f, 2f).forEach { rate ->
+                                        DropdownMenuItem(
+                                            text = { Text(rate.toString() + "×") },
+                                            onClick = {
+                                                host.applySpeed(rate)
+                                                speedMenu = false
+                                                controlReset++
+                                            }
+                                        )
                                     }
                                 }
-                        ) {
-                            val center = size.height / 2f
-                            val ratio = if (duration > 0L) {
-                                (if (seeking) fraction else position.toFloat() / duration)
-                                    .coerceIn(0f, 1f)
-                            } else 0f
-                            drawLine(
-                                Color.White.copy(alpha = .40f),
-                                start = Offset(0f, center),
-                                end = Offset(size.width, center),
-                                strokeWidth = 5.dp.toPx(),
-                                cap = androidx.compose.ui.graphics.StrokeCap.Round
-                            )
-                            drawLine(
-                                AccentPlayer,
-                                start = Offset(0f, center),
-                                end = Offset(size.width * ratio, center),
-                                strokeWidth = 5.dp.toPx(),
-                                cap = androidx.compose.ui.graphics.StrokeCap.Round
-                            )
-                            drawCircle(
-                                AccentPlayer, radius = 5.0.dp.toPx(),
-                                center = Offset(size.width * ratio, center)
-                            )
-                        }
-                        Box {
-                            TextButton(
-                                onClick = { speedMenu = true; controlReset++ },
-                                modifier = Modifier.height(34.dp).widthIn(min = 40.dp),
-                                contentPadding = PaddingValues(horizontal = 1.dp)
-                            ) {
-                                Text(host.speed.toString() + "×", fontSize = 11.sp, color = Color.White)
                             }
-                            DropdownMenu(
-                                expanded = speedMenu,
-                                onDismissRequest = { speedMenu = false }
-                            ) {
-                                listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { rate ->
-                                    DropdownMenuItem(
-                                        text = { Text(rate.toString() + "×") },
-                                        onClick = { host.applySpeed(rate); speedMenu = false }
-                                    )
+                            Box {
+                                TextButton(
+                                    onClick = {
+                                        episodePickerOpen = true
+                                        controlReset++
+                                    },
+                                    modifier = Modifier.height(barButtonSize),
+                                    contentPadding = PaddingValues(horizontal = 3.dp)
+                                ) {
+                                    Text("选集", color = Color.White,
+                                        fontSize = if (host.fullscreen) 15.sp else 11.sp)
                                 }
-                            }
-                        }
-                        Box {
-                            IconButton(
-                                onClick = { lineMenu = true; controlReset++ },
-                                modifier = Modifier.size(36.dp)
-                            ) {
-                                Icon(Icons.Outlined.List, "切换线路",
-                                    Modifier.size(22.dp), tint = Color.White)
-                            }
-                            DropdownMenu(
-                                expanded = lineMenu,
-                                onDismissRequest = { lineMenu = false },
-                                modifier = Modifier.heightIn(max = 220.dp)
-                                    .widthIn(min = 165.dp, max = 260.dp)
-                            ) {
-                                host.movieDetail?.lines.orEmpty().forEachIndexed { index, line ->
-                                    DropdownMenuItem(
-                                        text = { Text(line.name, maxLines = 1) },
-                                        onClick = {
-                                            host.selectLine(index, true)
-                                            lineMenu = false
+                                // 按钮就近向上展开，只显示集号；列表独立滚动。
+                                DropdownMenu(
+                                    expanded = episodePickerOpen,
+                                    onDismissRequest = { episodePickerOpen = false },
+                                    scrollState = episodeScroll,
+                                    modifier = Modifier
+                                        .width(if (host.fullscreen) 200.dp else 144.dp)
+                                        .heightIn(max = if (host.fullscreen) 410.dp else 280.dp)
+                                ) {
+                                    if (inlineEpisodes.isEmpty()) {
+                                        DropdownMenuItem(
+                                            text = { Text("正在获取剧集…") },
+                                            onClick = {
+                                                episodePickerOpen = false
+                                                host.loadEpisodeList()
+                                            }
+                                        )
+                                    } else {
+                                        inlineEpisodes.forEachIndexed { index, episode ->
+                                            val selected = index == selectedIndex
+                                            DropdownMenuItem(
+                                                text = {
+                                                    Text("第" + (index + 1) + "集",
+                                                        color = if (selected)
+                                                            MaterialTheme.colorScheme.primary
+                                                        else MaterialTheme.colorScheme.onSurface,
+                                                        fontWeight = if (selected)
+                                                            FontWeight.Bold else FontWeight.Normal)
+                                                },
+                                                trailingIcon = if (selected) {
+                                                    { Icon(Icons.Outlined.Check, "正在播放",
+                                                        Modifier.size(18.dp)) }
+                                                } else null,
+                                                onClick = {
+                                                    episodePickerOpen = false
+                                                    host.choose(episode)
+                                                    controlReset++
+                                                }
+                                            )
                                         }
-                                    )
+                                    }
                                 }
                             }
+                            IconButton(
+                                onClick = { host.toggleFullscreen(); controlReset++ },
+                                modifier = Modifier.size(barButtonSize)
+                            ) {
+                                Icon(
+                                    if (host.fullscreen) Icons.Outlined.FullscreenExit
+                                    else Icons.Outlined.Fullscreen,
+                                    "全屏",
+                                    Modifier.size(if (host.fullscreen) 27.dp else 21.dp),
+                                    tint = Color.White
+                                )
+                            }
                         }
-                        TextButton(
-                            onClick = {
-                                episodePickerOpen = true
-                                controlReset++
-                            },
-                            modifier = Modifier.height(38.dp),
-                            contentPadding = PaddingValues(horizontal = 2.dp)
-                        ) {
-                            Text("选集", fontSize = 12.sp, color = Color.White)
-                        }
-                        IconButton(
-                            onClick = { host.toggleFullscreen(); controlReset++ },
-                            modifier = Modifier.size(36.dp)
-                        ) {
-                            Icon(
-                                if (host.fullscreen) Icons.Outlined.FullscreenExit
-                                else Icons.Outlined.Fullscreen,
-                                "全屏", Modifier.size(22.dp), tint = Color.White
-                            )
-                        }
-                        // 正在播放时间和总时长合并为一组，固定在控制栏右下角。
-                        Text(
-                            clock(if (seeking) (fraction * duration).toLong() else position) +
-                                " / " + clock(duration),
-                            color = Color.White,
-                            fontSize = 10.sp,
-                            maxLines = 1
-                        )
                     }
                 }
             }
