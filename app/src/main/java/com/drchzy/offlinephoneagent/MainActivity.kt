@@ -620,19 +620,25 @@ private fun ResetCreditsSection(usage: CodexUsage?) {
                                 HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = .10f))
                                 Spacer(Modifier.height(9.dp))
                             }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.fillMaxWidth()) {
                                 Text(
                                     card.title.ifBlank { "重置卡 ${index + 1}" },
                                     fontWeight = FontWeight.Medium, fontSize = 13.sp,
                                     color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.weight(1f),
-                                    maxLines = 1, overflow = TextOverflow.Ellipsis
+                                    maxLines = 2, overflow = TextOverflow.Ellipsis
                                 )
+                                Spacer(Modifier.height(3.dp))
                                 val expiry = card.expiresAtSeconds?.let {
-                                    DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-                                        .format(Date(it * 1000L))
-                                } ?: "未注明到期时间"
-                                Text("到期：$expiry", color = Muted, fontSize = 11.sp)
+                                    DateFormat.getDateTimeInstance(
+                                        DateFormat.MEDIUM, DateFormat.SHORT
+                                    ).format(Date(it * 1000L))
+                                }
+                                Text(
+                                    if (expiry == null) "到期时间：接口未提供"
+                                    else "到期时间：$expiry（本地时间）",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontSize = 12.sp
+                                )
                             }
                         }
                     }
