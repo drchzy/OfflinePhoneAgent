@@ -328,8 +328,12 @@ private fun OfflineApplication(host: MainActivity) {
             ) { padding ->
                 Crossfade(targetState = page, animationSpec = tween(220), label = "navigation") { destination ->
                     Box(Modifier.padding(padding).fillMaxSize()) {
-                        if (destination == "Codex") CodexPage(host)
-                        else MoviePage(host)
+                        if (destination == "Codex") {
+                            CodexPage(host)
+                        } else {
+                            MoviePage(host)
+                            MovieHttpFloatingPanel()
+                        }
                     }
                 }
             }
