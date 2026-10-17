@@ -22,8 +22,8 @@ jobs:
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
       ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/app/offline-phone-agent.jks
-      APP_VERSION_CODE: ${{ github.run_number }}
-      APP_VERSION_NAME: 1.0.${{ github.run_number }}
+      APP_VERSION_CODE: "34"
+      APP_VERSION_NAME: 1.0.34-preview
     steps:
       - name: Checkout
         uses: actions/checkout@v4
