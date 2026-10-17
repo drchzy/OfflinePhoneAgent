@@ -102,6 +102,8 @@ object AppUpdater {
                 throw IOException("GitHub Release API 返回 HTTP " + code)
             }
             val content = connection.inputStream.bufferedReader().use { it.readText() }
+            MovieHttpLog.add("检查更新", "GET " + REPO_RELEASES_API,
+                "HTTP " + code + "\n\n" + content.take(48_000), code)
             val releases = JSONArray(content)
             val options = mutableListOf<VersionInfo>()
             for (i in 0 until releases.length()) {
