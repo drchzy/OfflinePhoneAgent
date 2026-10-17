@@ -56,7 +56,7 @@ internal object MovieConfigDecoder {
         var mime = ""
         var finalUrl = requested
         var readBytes = 0
-        return try {
+        val outcome = try {
             val target = URL(requested)
             require(target.protocol == "https" || target.protocol == "http") { "只支持 HTTP/HTTPS 地址" }
             require(target.host.isNotBlank()) { "请填写完整的 URL" }
@@ -115,6 +115,15 @@ internal object MovieConfigDecoder {
         } finally {
             connection?.disconnect()
         }
+        MovieHttpLog.add(
+            "Movie 配置",
+            "GET " + requested,
+            "HTTP " + outcome.code + "\n" + outcome.contentType +
+                "\n解码方式：" + outcome.decodeMode + "\n\n" +
+                (outcome.error ?: outcome.responseText),
+            outcome.code.takeIf { it >= 0 }
+        )
+        return outcome
     }
 
     /** 从真实 Bitmap 的 ARGB 整像素取 R 值，长度存放在前两个像素。 */
