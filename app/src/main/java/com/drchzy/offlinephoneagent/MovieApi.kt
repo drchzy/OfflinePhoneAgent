@@ -45,6 +45,17 @@ data class MovieLine(val name: String, val code: String, val episodes: List<Movi
 data class MovieDetail(val movie: MovieItem, val lines: List<MovieLine>)
 data class PlayAddress(val url: String, val userAgent: String, val headers: Map<String, String>)
 
+data class ProbeResult(
+    val requestUrl: String,
+    val finalUrl: String,
+    val statusCode: Int,
+    val elapsedMillis: Long,
+    val contentType: String,
+    val responseBody: String,
+    val apiService: String?,
+    val error: String? = null
+)
+
 data class MovieSettings(
     val baseUrl: String,
     val configUrl: String,
@@ -77,6 +88,73 @@ class MovieApi(private val context: Context) {
             .putString("aes_iv", settings.aesIv.trim())
             .putString("hmac_key", settings.hmacKey.trim())
             .apply()
+    }
+
+    /**
+     * 手动诊断专用：仅 GET、无认证头、最多读取 64 KiB。
+     * 不会自动访问候选配置源，也不会将结果默认为业务 API。
+     */
+    fun probeUrl(uri: String): ProbeResult {
+        val requested = uri.trim()
+        val parsed = URL(requested)
+        require(parsed.protocol.equals("https", true) || parsed.protocol.equals("http", true)) {
+            "只支持 HTTP / HTTPS"
+        }
+        require(parsed.host.isNotBlank()) { "请填写完整 URL" }
+        val started = SystemClock.elapsedRealtime()
+        var conn: HttpURLConnection? = null
+        return try {
+            conn = (parsed.openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 8_000
+                readTimeout = 12_000
+                instanceFollowRedirects = true
+                setRequestProperty("Accept", "application/json, text/plain, */*")
+                setRequestProperty("User-Agent", "OfflinePhoneAgent/1.0 Android")
+            }
+            val code = conn.responseCode
+            val type = conn.contentType.orEmpty()
+            val source = if (code in 200..299) conn.inputStream else conn.errorStream
+            val bytes = java.io.ByteArrayOutputStream()
+            if (source != null) source.use { input ->
+                val buffer = ByteArray(4096)
+                while (bytes.size() < 65_536) {
+                    val read = input.read(buffer, 0, minOf(buffer.size, 65_536 - bytes.size()))
+                    if (read <= 0) break
+                    bytes.write(buffer, 0, read)
+                }
+            }
+            val raw = String(bytes.toByteArray(), StandardCharsets.UTF_8)
+            val pretty = try { JSONObject(raw).toString(2) }
+                catch (_: Exception) { try { JSONArray(raw).toString(2) } catch (_: Exception) { raw } }
+            val api = try {
+                JSONObject(raw).optString("api_service").trim()
+                    .takeIf { it.startsWith("https://") || it.startsWith("http://") }
+            } catch (_: Exception) { null }
+            ProbeResult(
+                requested,
+                conn.url.toString(),
+                code,
+                SystemClock.elapsedRealtime() - started,
+                type,
+                pretty,
+                api,
+                if (bytes.size() >= 65_536) "响应超出 64 KiB，已截断" else null
+            )
+        } catch (e: Exception) {
+            ProbeResult(
+                requested,
+                conn?.url?.toString().orEmpty(),
+                -1,
+                SystemClock.elapsedRealtime() - started,
+                "",
+                "",
+                null,
+                e.javaClass.simpleName + ": " + (e.message ?: "连接失败")
+            )
+        } finally {
+            conn?.disconnect()
+        }
     }
 
     /** api_service 是动态配置中的业务接口根地址。离线或配置异常时使用缓存。 */
