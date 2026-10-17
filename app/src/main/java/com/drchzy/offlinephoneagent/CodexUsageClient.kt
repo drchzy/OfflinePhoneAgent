@@ -54,6 +54,17 @@ class CodexUsageClient(context: Context) {
         val status = conn.responseCode
         val stream = if (status in 200..299) conn.inputStream else conn.errorStream
         val text = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+        val safe = if (status in 200..299) {
+            runCatching {
+                JSONObject(text).optJSONObject("rate_limit")?.toString(2) ?: "无用量字段"
+            }.getOrDefault("非 JSON 响应")
+        } else "异常响应正文已隐藏，避免泄露账户凭据"
+        MovieHttpLog.add(
+            "Codex 用量",
+            "GET " + USAGE_URL + "\nAuthorization: [已隐藏]\nChatGPT-Account-Id: [已隐藏]",
+            "HTTP " + status + "\n\n" + safe,
+            status
+        )
         if (status !in 200..299) throw HttpStatusException(status, text)
 
         val root = JSONObject(text)
