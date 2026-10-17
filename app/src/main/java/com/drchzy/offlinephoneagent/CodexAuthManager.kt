@@ -140,6 +140,17 @@ class CodexAuthManager(context: Context) {
         val code = conn.responseCode
         val stream = if (code in 200..299) conn.inputStream else conn.errorStream
         val text = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+        val fields = runCatching {
+            JSONObject(text).keys().asSequence().toList().joinToString(", ")
+        }.getOrDefault("无法解析")
+        MovieHttpLog.add(
+            "OAuth 认证",
+            method + " " + url + "\nContent-Type: " + (contentType ?: "-") +
+                "\n请求正文：[OAuth 授权凭据已隐藏]",
+            "HTTP " + code + "\n响应字段：" + fields +
+                "\n响应正文：[身份凭据已隐藏]",
+            code
+        )
         if (code !in 200..299) throw HttpStatusException(code, text)
         return JSONObject(text)
     }
