@@ -360,6 +360,8 @@ private fun OfflineApplication(host: MainActivity) {
         ) {
             Scaffold(
                 containerColor = Color.Transparent,
+                // 透明背景缺少自动前景色映射，指定与暗色主题匹配的文字颜色。
+                contentColor = foreground,
                 contentWindowInsets = WindowInsets.safeDrawing,
                 topBar = {
                     Row(
@@ -369,11 +371,11 @@ private fun OfflineApplication(host: MainActivity) {
                     ) {
                         IconButton(onClick = { scope.launch { drawerState.open() } },
                             modifier = Modifier.size(44.dp)) {
-                            Icon(Icons.Outlined.Menu, "打开侧栏", Modifier.size(23.dp))
+                            Icon(Icons.Outlined.Menu, "打开侧栏", Modifier.size(23.dp), tint = foreground)
                         }
                         Spacer(Modifier.width(11.dp))
                         Text(page, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.weight(1f))
+                            color = foreground, modifier = Modifier.weight(1f))
                     }
                 }
             ) { padding ->
@@ -431,7 +433,8 @@ private fun SectionTitle(eyebrow: String, title: String, subtitle: String) {
     Column {
         Text(eyebrow.uppercase(), fontSize = 10.sp, color = Muted, letterSpacing = 2.2.sp)
         Spacer(Modifier.height(7.dp))
-        Text(title, fontSize = 32.sp, fontWeight = FontWeight.Bold, letterSpacing = (-1).sp)
+        Text(title, fontSize = 32.sp, fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground, letterSpacing = (-1).sp)
         Spacer(Modifier.height(5.dp))
         Text(subtitle, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
@@ -604,7 +607,8 @@ private fun MoviePage(host: MainActivity) {
                     Text("DISCOVER & WATCH", fontSize = 10.sp, letterSpacing = 2.sp,
                         color = Muted)
                     Spacer(Modifier.height(4.dp))
-                    Text("Movie Library", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    Text("Movie Library", fontSize = 30.sp, fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground)
                     Text("探索精选电影、剧集与新发现。", fontSize = 12.sp, color = Muted)
                     Spacer(Modifier.height(15.dp))
                 }
@@ -653,7 +657,8 @@ private fun MoviePage(host: MainActivity) {
                 Text(
                     if (query.isBlank()) "为你精选" else "搜索结果",
                     fontSize = if (compact) 15.sp else 18.sp,
-                    fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f)
+                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f)
                 )
                 TextButton(onClick = { showDiagnostics = true }) {
                     Icon(Icons.Outlined.BugReport, null, Modifier.size(15.dp))
@@ -735,6 +740,7 @@ private fun MovieTile(item: MovieItem, onClick: () -> Unit) {
 private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEpisode) -> Unit, busy: Boolean) {
     var lineIndex by remember(detail.movie.id) { mutableIntStateOf(0) }
     val line = detail.lines.getOrNull(lineIndex)
+    var episodesExpanded by remember(detail.movie.id, lineIndex) { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 23.dp)) {
         TextButton(onClick = onBack) {
             Icon(Icons.Outlined.ArrowBack, null, Modifier.size(18.dp))
@@ -749,7 +755,8 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                 else Box(contentAlignment = Alignment.Center) { Icon(Icons.Outlined.Movie, null) }
             }
             Column(Modifier.weight(1f)) {
-                Text(detail.movie.name, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(detail.movie.name, fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.height(12.dp))
                 Text(detail.movie.year + "  ·  " + detail.movie.type, color = Muted, fontSize = 12.sp)
                 Spacer(Modifier.height(20.dp))
@@ -757,11 +764,13 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
             }
         }
         Spacer(Modifier.height(24.dp))
-        Text("影片简介", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text("影片简介", fontWeight = FontWeight.Bold, fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(9.dp))
         Text(detail.movie.summary.ifBlank { "暂无简介" }, color = Muted, fontSize = 13.sp, lineHeight = 21.sp)
         Spacer(Modifier.height(28.dp))
-        Text("播放线路", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text("播放线路", fontWeight = FontWeight.Bold, fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(12.dp))
         if (detail.lines.isEmpty()) {
             Text("当前暂无可用播放线路", color = Muted, fontSize = 13.sp)
@@ -779,7 +788,8 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                 }
             }
             Spacer(Modifier.height(15.dp))
-            line?.episodes?.chunked(3)?.forEach { row ->
+            val allRows = line?.episodes.orEmpty().chunked(3)
+            (if (episodesExpanded) allRows else allRows.take(3)).forEach { row ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     row.forEach { episode ->
                         Surface(
@@ -794,6 +804,20 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                         }
                     }
                     repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
+                }
+            }
+            if (allRows.size > 3) {
+                TextButton(
+                    onClick = { episodesExpanded = !episodesExpanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        if (episodesExpanded) Icons.Outlined.ExpandLess
+                        else Icons.Outlined.ExpandMore,
+                        contentDescription = null, modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    Text(if (episodesExpanded) "收起剧集" else "展开全部 · 共 ${line?.episodes?.size ?: 0} 集")
                 }
             }
         }
