@@ -617,16 +617,10 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                                     Modifier.size(18.dp), tint = Color.White)
                             }
                         }
-                        Surface(
-                            color = Color.Black.copy(alpha = 0.55f),
-                            shape = RoundedCornerShape(6.dp)
-                        ) {
-                            Text(
-                                "↓ " + kbps + " KB/s",
-                                Modifier.padding(horizontal = 7.dp, vertical = 5.dp),
-                                color = Color.White, fontSize = 10.sp
-                            )
-                        }
+                        Text(
+                            "↓ " + kbps + " KB/s", color = Color.White, fontSize = 11.sp,
+                            modifier = Modifier.padding(start = 4.dp, top = 2.dp)
+                        )
                     }
                     Row(
                         modifier = Modifier.align(Alignment.TopEnd).padding(end = 5.dp, top = 4.dp),
@@ -648,116 +642,140 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
                         Icon(if (host.playing) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
                             "暂停或播放", Modifier.size(23.dp), tint = Color.White)
                     }
-                    Column(
+                    Row(
                         modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
-                            .background(Brush.verticalGradient(
-                                listOf(Color.Transparent, Color.Black.copy(alpha = 0.76f))))
-                            .padding(horizontal = 7.dp, vertical = 2.dp)
+                            .background(Brush.verticalGradient(listOf(
+                                Color.Transparent, Color.Black.copy(alpha = .85f))))
+                            .padding(horizontal = 5.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
-                        Row(
-                            Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        IconButton(
+                            onClick = { if (host.playing) player?.pause() else player?.play() },
+                            modifier = Modifier.size(34.dp)
                         ) {
-                            IconButton(
-                                onClick = { if (host.playing) player?.pause() else player?.play() },
-                                modifier = Modifier.size(29.dp)
-                            ) {
-                                Icon(if (host.playing) Icons.Outlined.Pause
-                                    else Icons.Outlined.PlayArrow, "暂停",
-                                    Modifier.size(18.dp), tint = Color.White)
-                            }
-                            Text(clock(if (seeking) (fraction * duration).toLong() else position),
-                                color = Color.White, fontSize = 10.sp)
-                            Spacer(Modifier.weight(1f))
-                            Box {
-                                TextButton(onClick = { speedMenu = true },
-                                    contentPadding = PaddingValues(horizontal = 5.dp, vertical = 0.dp)) {
-                                    Text(host.speed.toString() + "×", fontSize = 11.sp,
-                                        color = Color.White)
-                                }
-                                DropdownMenu(
-                                    expanded = speedMenu,
-                                    onDismissRequest = { speedMenu = false }
-                                ) {
-                                    listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { rate ->
-                                        DropdownMenuItem(
-                                            text = { Text(rate.toString() + "×") },
-                                            onClick = { host.applySpeed(rate); speedMenu = false }
-                                        )
-                                    }
-                                }
-                            }
-                            Box {
-                                IconButton(
-                                    onClick = { lineMenu = true }, modifier = Modifier.size(29.dp)
-                                ) {
-                                    Icon(Icons.Outlined.List, "切换线路",
-                                        Modifier.size(17.dp), tint = Color.White)
-                                }
-                                DropdownMenu(
-                                    expanded = lineMenu,
-                                    onDismissRequest = { lineMenu = false }
-                                ) {
-                                    host.movieDetail?.lines.orEmpty().forEachIndexed { index, line ->
-                                        DropdownMenuItem(text = { Text(line.name) },
-                                            onClick = {
-                                                host.selectLine(index, true)
-                                                lineMenu = false
-                                            })
-                                    }
-                                }
-                            }
-                            IconButton(onClick = host::toggleFullscreen, modifier = Modifier.size(29.dp)) {
-                                Icon(
-                                    if (host.fullscreen) Icons.Outlined.FullscreenExit
-                                    else Icons.Outlined.Fullscreen,
-                                    "全屏", Modifier.size(19.dp), tint = Color.White
-                                )
-                            }
-                            Text(clock(duration), color = Color.White, fontSize = 10.sp)
+                            Icon(
+                                if (host.playing) Icons.Outlined.Pause else Icons.Outlined.PlayArrow,
+                                "播放或暂停", Modifier.size(23.dp), tint = Color.White
+                            )
                         }
-                        // 细轨道绘制在最底部；保留较大的透明触控区便于拖动。
+                        // 进度轨道与全部按钮同一行，宽度自适应手机和平板。
+                        // 轨道厚度 4dp，透明触控区高 40dp，兼顾拖动和视觉清爽。
                         Canvas(
-                            modifier = Modifier.fillMaxWidth().height(15.dp)
+                            modifier = Modifier.weight(1f).height(40.dp)
+                                .padding(horizontal = 4.dp)
                                 .pointerInput(player, duration) {
                                     awaitEachGesture {
                                         val down = awaitFirstDown(requireUnconsumed = false)
-                                        val width = size.width.coerceAtLeast(1).toFloat()
+                                        val w = size.width.coerceAtLeast(1).toFloat()
                                         if (duration > 0L) {
                                             seeking = true
-                                            fraction = (down.position.x / width).coerceIn(0f, 1f)
+                                            fraction = (down.position.x / w).coerceIn(0f, 1f)
                                         }
-                                        var pressed = true
-                                        while (pressed) {
-                                            val event = awaitPointerEvent()
-                                            val change = event.changes.firstOrNull { it.id == down.id }
+                                        while (true) {
+                                            val e = awaitPointerEvent()
+                                            val ch = e.changes.firstOrNull { it.id == down.id }
                                                 ?: break
-                                            if (!change.pressed) {
-                                                pressed = false
-                                                break
+                                            if (!ch.pressed) break
+                                            if (duration > 0L) {
+                                                fraction = (ch.position.x / w).coerceIn(0f, 1f)
                                             }
-                                            fraction = (change.position.x / width).coerceIn(0f, 1f)
-                                            change.consume()
+                                            ch.consume()
                                         }
-                                        if (duration > 0L) player?.seekTo((duration * fraction).toLong())
+                                        if (duration > 0L) {
+                                            player?.seekTo((duration * fraction).toLong())
+                                        }
                                         seeking = false
                                     }
                                 }
                         ) {
-                            val y = size.height / 2f
-                            val completed = if (duration > 0L)
+                            val center = size.height / 2f
+                            val ratio = if (duration > 0L) {
                                 (if (seeking) fraction else position.toFloat() / duration)
                                     .coerceIn(0f, 1f)
-                            else 0f
-                            drawLine(Color.White.copy(alpha = 0.32f),
-                                start = Offset(0f, y), end = Offset(size.width, y),
-                                strokeWidth = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
-                            drawLine(AccentPlayer,
-                                start = Offset(0f, y), end = Offset(size.width * completed, y),
-                                strokeWidth = 2.5.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
-                            drawCircle(AccentPlayer, radius = 3.5.dp.toPx(),
-                                center = Offset(size.width * completed, y))
+                            } else 0f
+                            drawLine(
+                                Color.White.copy(alpha = .40f),
+                                start = Offset(0f, center),
+                                end = Offset(size.width, center),
+                                strokeWidth = 4.dp.toPx(),
+                                cap = androidx.compose.ui.graphics.StrokeCap.Round
+                            )
+                            drawLine(
+                                AccentPlayer,
+                                start = Offset(0f, center),
+                                end = Offset(size.width * ratio, center),
+                                strokeWidth = 4.dp.toPx(),
+                                cap = androidx.compose.ui.graphics.StrokeCap.Round
+                            )
+                            drawCircle(
+                                AccentPlayer, radius = 4.5.dp.toPx(),
+                                center = Offset(size.width * ratio, center)
+                            )
                         }
+                        Box {
+                            TextButton(
+                                onClick = { speedMenu = true },
+                                modifier = Modifier.height(34.dp).widthIn(min = 40.dp),
+                                contentPadding = PaddingValues(horizontal = 1.dp)
+                            ) {
+                                Text(host.speed.toString() + "×", fontSize = 11.sp, color = Color.White)
+                            }
+                            DropdownMenu(
+                                expanded = speedMenu,
+                                onDismissRequest = { speedMenu = false }
+                            ) {
+                                listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { rate ->
+                                    DropdownMenuItem(
+                                        text = { Text(rate.toString() + "×") },
+                                        onClick = { host.applySpeed(rate); speedMenu = false }
+                                    )
+                                }
+                            }
+                        }
+                        Box {
+                            IconButton(
+                                onClick = { lineMenu = true },
+                                modifier = Modifier.size(34.dp)
+                            ) {
+                                Icon(Icons.Outlined.List, "切换线路",
+                                    Modifier.size(22.dp), tint = Color.White)
+                            }
+                            DropdownMenu(
+                                expanded = lineMenu,
+                                onDismissRequest = { lineMenu = false },
+                                modifier = Modifier.heightIn(max = 220.dp)
+                                    .widthIn(min = 165.dp, max = 260.dp)
+                            ) {
+                                host.movieDetail?.lines.orEmpty().forEachIndexed { index, line ->
+                                    DropdownMenuItem(
+                                        text = { Text(line.name, maxLines = 1) },
+                                        onClick = {
+                                            host.selectLine(index, true)
+                                            lineMenu = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        IconButton(
+                            onClick = host::toggleFullscreen,
+                            modifier = Modifier.size(34.dp)
+                        ) {
+                            Icon(
+                                if (host.fullscreen) Icons.Outlined.FullscreenExit
+                                else Icons.Outlined.Fullscreen,
+                                "全屏", Modifier.size(22.dp), tint = Color.White
+                            )
+                        }
+                        // 正在播放时间和总时长合并为一组，固定在控制栏右下角。
+                        Text(
+                            clock(if (seeking) (fraction * duration).toLong() else position) +
+                                " / " + clock(duration),
+                            color = Color.White,
+                            fontSize = 10.sp,
+                            maxLines = 1
+                        )
                     }
                 }
             }
