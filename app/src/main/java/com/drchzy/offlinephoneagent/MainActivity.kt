@@ -744,7 +744,8 @@ private fun MovieTile(item: MovieItem, onClick: () -> Unit) {
 private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEpisode) -> Unit, busy: Boolean) {
     var lineIndex by remember(detail.movie.id) { mutableIntStateOf(0) }
     val line = detail.lines.getOrNull(lineIndex)
-    var episodesExpanded by remember(detail.movie.id, lineIndex) { mutableStateOf(false) }
+    var rangeIndex by remember(detail.movie.id, lineIndex) { mutableIntStateOf(0) }
+    var episodesExpanded by remember(detail.movie.id, lineIndex, rangeIndex) { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 23.dp)) {
         TextButton(onClick = onBack) {
             Icon(Icons.Outlined.ArrowBack, null, Modifier.size(18.dp))
@@ -791,8 +792,28 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                     )
                 }
             }
-            Spacer(Modifier.height(15.dp))
-            val allRows = line?.episodes.orEmpty().chunked(3)
+            Spacer(Modifier.height(12.dp))
+            val allEpisodes = line?.episodes.orEmpty()
+            val rangeCount = (allEpisodes.size + 99) / 100
+            if (rangeCount > 1) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)
+                ) {
+                    repeat(rangeCount) { index ->
+                        val first = index * 100 + 1
+                        val last = minOf((index + 1) * 100, allEpisodes.size)
+                        FilterChip(
+                            selected = rangeIndex == index,
+                            onClick = { rangeIndex = index },
+                            label = { Text("$" + "{first}–$" + "{last}", fontSize = 12.sp) }
+                        )
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+            }
+            val rangeEpisodes = allEpisodes.drop(rangeIndex * 100).take(100)
+            val allRows = rangeEpisodes.chunked(3)
             (if (episodesExpanded) allRows else allRows.take(3)).forEach { row ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     row.forEach { episode ->
@@ -821,7 +842,7 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                         contentDescription = null, modifier = Modifier.size(18.dp)
                     )
                     Spacer(Modifier.width(5.dp))
-                    Text(if (episodesExpanded) "收起剧集" else "展开全部 · 共 ${line?.episodes?.size ?: 0} 集")
+                    Text(if (episodesExpanded) "收起当前分段" else "展开本段 · 共 ${rangeEpisodes.size} 集")
                 }
             }
         }
