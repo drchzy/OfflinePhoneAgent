@@ -28,8 +28,21 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             val manager = AppWidgetManager.getInstance(context)
             val component = ComponentName(context, CodexUsageWidgetProvider::class.java)
             val ids = manager.getAppWidgetIds(component)
+            // App 页面已获取最新用量时，只重绘小组件，不重复发起第二次网络请求。
             if (ids.isNotEmpty()) {
-                updateAsync(context.applicationContext, manager, ids, null)
+                val tokens = CodexAuthManager(context).currentTokens()
+                val snapshot = CodexUsageCache.load(context, tokens)
+                ids.forEach { id ->
+                    manager.updateAppWidget(
+                        id,
+                        if (snapshot == null) baseViews(
+                            context, if (tokens == null) "尚未登录" else "尚无缓存", manager, id
+                        ) else usageViews(
+                            context, snapshot.usage, manager, id,
+                            "缓存 " + formatTime(snapshot.savedAtMs / 1000L)
+                        )
+                    )
+                }
             }
         }
 
@@ -39,20 +52,31 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             ids: IntArray,
             pending: PendingResult?
         ) {
+            val before = CodexUsageCache.load(
+                context, CodexAuthManager(context).currentTokens()
+            )
             ids.forEach { id ->
-                manager.updateAppWidget(
-                    id,
+                manager.updateAppWidget(id, if (before == null) {
                     baseViews(context, "正在刷新…", manager, id)
-                )
+                } else {
+                    usageViews(context, before.usage, manager, id,
+                        "正在刷新 · 仍显示缓存")
+                })
             }
 
             executor.execute {
                 try {
-                    val usage = CodexUsageClient(context).fetch()
+                    val fresh = CodexUsageClient(context).fetch()
+                    val tokens = CodexAuthManager(context).currentTokens()
+                    val cached = CodexUsageCache.load(context, tokens)
+                    val usage = CodexUsageCache.mergeFresh(fresh, cached)
+                    val stored = CodexUsageCache.save(context, tokens, usage)
                     ids.forEach { id ->
                         manager.updateAppWidget(
                             id,
-                            usageViews(context, usage, manager, id)
+                            usageViews(context, usage, manager, id,
+                                if (stored) "同步 " + formatTime(System.currentTimeMillis() / 1000L)
+                                else "同步成功，缓存写入失败")
                         )
                     }
                 } catch (e: Exception) {
@@ -61,10 +85,15 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
                     } else {
                         "刷新失败 · " + (e.message?.take(32) ?: "未知错误")
                     }
+                    val cached = CodexUsageCache.load(
+                        context, CodexAuthManager(context).currentTokens()
+                    )
                     ids.forEach { id ->
                         manager.updateAppWidget(
                             id,
-                            baseViews(context, msg, manager, id)
+                            if (cached == null) baseViews(context, msg, manager, id)
+                            else usageViews(context, cached.usage, manager, id,
+                                "刷新失败，仍显示缓存")
                         )
                     }
                 } finally {
@@ -77,14 +106,10 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             context: Context,
             usage: CodexUsage,
             manager: AppWidgetManager,
-            widgetId: Int
+            widgetId: Int,
+            status: String = "刷新 " + formatTime(System.currentTimeMillis() / 1000L)
         ): RemoteViews {
-            val views = baseViews(
-                context,
-                "刷新 " + formatTime(System.currentTimeMillis() / 1000L),
-                manager,
-                widgetId
-            )
+            val views = baseViews(context, status, manager, widgetId)
 
             views.setTextViewText(
                 R.id.widget_five_value,
