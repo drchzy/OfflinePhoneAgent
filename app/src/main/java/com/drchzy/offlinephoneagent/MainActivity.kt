@@ -1083,7 +1083,7 @@ private fun MoviePage(host: MainActivity) {
     Column(Modifier.fillMaxSize()) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 17.dp)
-                .padding(top = if (compact) 4.dp else 8.dp)
+                .padding(top = if (compact) 0.dp else 2.dp)
         ) {
             OutlinedTextField(
                 value = query,
@@ -1104,7 +1104,7 @@ private fun MoviePage(host: MainActivity) {
             )
             AnimatedVisibility(visible = !compact && history.isNotEmpty()) {
                 Column {
-                    Spacer(Modifier.height(5.dp))
+                    Spacer(Modifier.height(2.dp))
                     Row(
                         Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                         verticalAlignment = Alignment.CenterVertically,
@@ -1124,7 +1124,7 @@ private fun MoviePage(host: MainActivity) {
                     }
                 }
             }
-            Spacer(Modifier.height(7.dp))
+            Spacer(Modifier.height(3.dp))
             AnimatedVisibility(visible = !compact && recentMovies.isNotEmpty()) {
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1180,7 +1180,7 @@ private fun MoviePage(host: MainActivity) {
             if (host.movieMessage.isNotBlank()) {
                 Text(host.movieMessage, fontSize = 11.sp, color = Muted, maxLines = 2)
             }
-            Spacer(Modifier.height(7.dp))
+            Spacer(Modifier.height(3.dp))
         }
         if (host.movieLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
         if (host.movies.isEmpty() && !host.movieLoading) {
@@ -1286,30 +1286,37 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
     if (skipSettingsVisible) {
         MovieSkipSettingsDialog(detail.movie.id) { skipSettingsVisible = false }
     }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 23.dp)) {
-        TextButton(onClick = onBack) {
-            Icon(Icons.Outlined.ArrowBack, null, Modifier.size(18.dp))
-            Spacer(Modifier.width(7.dp))
-            Text("返回影片列表")
-        }
-        Spacer(Modifier.height(13.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(19.dp)) {
-            Surface(Modifier.width(125.dp).height(183.dp), shape = RoundedCornerShape(17.dp)) {
+    // 详情页返回统一使用顶栏左上角，不重复占据内容区的垂直空间。
+    val narrowDetail = LocalConfiguration.current.screenWidthDp < 390
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            .padding(horizontal = if (narrowDetail) 16.dp else 21.dp)
+            .padding(top = 3.dp, bottom = 18.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(if (narrowDetail) 12.dp else 16.dp)) {
+            Surface(
+                Modifier.width(if (narrowDetail) 102.dp else 114.dp)
+                    .height(if (narrowDetail) 150.dp else 165.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
                 if (detail.movie.cover.isNotBlank())
                     AsyncImage(model = detail.movie.cover, contentDescription = null, contentScale = ContentScale.Crop)
                 else Box(contentAlignment = Alignment.Center) { Icon(Icons.Outlined.Movie, null) }
             }
             Column(Modifier.weight(1f)) {
-                Text(detail.movie.name, fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground)
-                Spacer(Modifier.height(12.dp))
+                Text(
+                    detail.movie.name, fontSize = if (narrowDetail) 20.sp else 22.sp,
+                    fontWeight = FontWeight.Bold, maxLines = 3,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(Modifier.height(7.dp))
                 Text(detail.movie.year + "  ·  " + detail.movie.type, color = Muted, fontSize = 12.sp)
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(12.dp))
                 Text(detail.movie.dynamic, color = Champagne, fontSize = 12.sp)
             }
         }
         if (continueEpisode != null) {
-            Spacer(Modifier.height(13.dp))
+            Spacer(Modifier.height(9.dp))
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -1340,7 +1347,7 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                 }
             }
         }
-        Spacer(Modifier.height(13.dp))
+        Spacer(Modifier.height(9.dp))
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
@@ -1363,12 +1370,12 @@ private fun DetailPage(detail: MovieDetail, onBack: () -> Unit, onPlay: (MovieEp
                 Icon(Icons.Outlined.ChevronRight, null, Modifier.size(19.dp), tint = Muted)
             }
         }
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
         Text("影片简介", fontWeight = FontWeight.Bold, fontSize = 18.sp,
             color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(9.dp))
         Text(detail.movie.summary.ifBlank { "暂无简介" }, color = Muted, fontSize = 13.sp, lineHeight = 21.sp)
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(17.dp))
         Text("播放线路", fontWeight = FontWeight.Bold, fontSize = 18.sp,
             color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(12.dp))
