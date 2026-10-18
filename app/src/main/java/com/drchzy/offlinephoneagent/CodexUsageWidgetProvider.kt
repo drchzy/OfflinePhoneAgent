@@ -113,7 +113,7 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
 
             views.setTextViewText(
                 R.id.widget_five_value,
-                "5 小时  " + formatPercent(usage.fiveHour)
+                formatPercent(usage.fiveHour)
             )
             views.setTextViewText(
                 R.id.widget_five_reset,
@@ -121,7 +121,7 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             )
             views.setTextViewText(
                 R.id.widget_week_value,
-                "每周  " + formatPercent(usage.weekly)
+                formatPercent(usage.weekly)
             )
             views.setTextViewText(
                 R.id.widget_week_reset,
@@ -129,9 +129,13 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             )
             views.setTextViewText(
                 R.id.widget_compact_usage,
-                "5h " + formatPercent(usage.fiveHour) +
-                    "   ·   周 " + formatPercent(usage.weekly)
+                "5小时 " + formatPercent(usage.fiveHour) +
+                    "  ·  每周 " + formatPercent(usage.weekly)
             )
+            views.setProgressBar(R.id.widget_five_bar, 100,
+                usage.fiveHour?.remainingPercent?.roundToInt()?.coerceIn(0, 100) ?: 0, false)
+            views.setProgressBar(R.id.widget_week_bar, 100,
+                usage.weekly?.remainingPercent?.roundToInt()?.coerceIn(0, 100) ?: 0, false)
             return views
         }
 
@@ -161,11 +165,13 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
         ): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_codex_usage)
 
-            views.setTextViewText(R.id.widget_five_value, "5 小时  --")
+            views.setTextViewText(R.id.widget_five_value, "--")
             views.setTextViewText(R.id.widget_five_reset, "重置 --")
-            views.setTextViewText(R.id.widget_week_value, "每周  --")
+            views.setTextViewText(R.id.widget_week_value, "--")
             views.setTextViewText(R.id.widget_week_reset, "重置 --")
-            views.setTextViewText(R.id.widget_compact_usage, "5h --   ·   周 --")
+            views.setTextViewText(R.id.widget_compact_usage, "5小时 --  ·  每周 --")
+            views.setProgressBar(R.id.widget_five_bar, 100, 0, false)
+            views.setProgressBar(R.id.widget_week_bar, 100, 0, false)
             views.setTextViewText(R.id.widget_status, status)
 
             val opacity = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
