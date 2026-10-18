@@ -210,7 +210,9 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
 
         private fun applySizeProfile(views: RemoteViews, options: Bundle) {
             val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 120)
-            val compact = minHeight in 1..94
+            val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 180)
+            // 不只看高度：窄小的 2 列小组件不能挤入两个完整百分比面板。
+            val compact = minHeight < 118 || minWidth < 185
 
             views.setViewVisibility(
                 R.id.widget_usage_row,
