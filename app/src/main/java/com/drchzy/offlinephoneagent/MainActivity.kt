@@ -635,6 +635,166 @@ private fun SectionTitle(eyebrow: String, title: String, subtitle: String) {
     }
 }
 
+/**
+ * 一级导航：启动后先选择 Codex 或 Video。
+ * 横屏 / 平板双列，普通手机纵向双大卡片。
+ */
+@Composable
+private fun YoYoHomePage(onCodex: () -> Unit, onVideo: () -> Unit) {
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val tablet = maxWidth >= 600.dp
+        val compactHeight = maxHeight < 560.dp
+        val horizontal = if (tablet) 32.dp else 20.dp
+        Column(
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+                .padding(horizontal = horizontal)
+                .padding(top = if (compactHeight) 8.dp else 18.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(if (compactHeight) 14.dp else 24.dp)
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.yoyo_launcher),
+                    contentDescription = "YoYo",
+                    modifier = Modifier.size(if (compactHeight) 66.dp else 88.dp)
+                        .clip(RoundedCornerShape(22.dp)),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(Modifier.width(17.dp))
+                Column {
+                    Text(
+                        "欢迎来到 YoYo",
+                        fontSize = if (tablet) 29.sp else 24.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "你的个人空间 · 选择要进入的功能",
+                        fontSize = 12.sp, color = Muted
+                    )
+                }
+            }
+            if (tablet) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(18.dp)
+                ) {
+                    YoYoFeatureCard(
+                        title = "Codex",
+                        subtitle = "AI 额度与账户",
+                        detail = "用量统计 · 重置卡 · 本地缓存",
+                        icon = Icons.Outlined.AutoAwesome,
+                        onClick = onCodex,
+                        modifier = Modifier.weight(1f),
+                        minHeight = if (compactHeight) 175.dp else 255.dp
+                    )
+                    YoYoFeatureCard(
+                        title = "Video",
+                        subtitle = "影音世界",
+                        detail = "影片搜索 · 播放记录 · 投屏",
+                        icon = Icons.Outlined.PlayCircleOutline,
+                        onClick = onVideo,
+                        modifier = Modifier.weight(1f),
+                        minHeight = if (compactHeight) 175.dp else 255.dp
+                    )
+                }
+            } else {
+                YoYoFeatureCard(
+                    title = "Codex",
+                    subtitle = "AI 额度与账户",
+                    detail = "用量统计 · 重置卡 · 本地缓存",
+                    icon = Icons.Outlined.AutoAwesome,
+                    onClick = onCodex,
+                    modifier = Modifier.fillMaxWidth(),
+                    minHeight = if (compactHeight) 153.dp else 197.dp
+                )
+                YoYoFeatureCard(
+                    title = "Video",
+                    subtitle = "影音世界",
+                    detail = "影片搜索 · 播放记录 · 投屏",
+                    icon = Icons.Outlined.PlayCircleOutline,
+                    onClick = onVideo,
+                    modifier = Modifier.fillMaxWidth(),
+                    minHeight = if (compactHeight) 153.dp else 197.dp
+                )
+            }
+            Text(
+                "点击卡片进入，二级页面可从屏幕左右边缘滑动返回",
+                color = Muted, fontSize = 11.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun YoYoFeatureCard(
+    title: String,
+    subtitle: String,
+    detail: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    minHeight: androidx.compose.ui.unit.Dp = 190.dp
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = minHeight),
+        shape = RoundedCornerShape(27.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp
+    ) {
+        Box(
+            Modifier.fillMaxWidth().heightIn(min = minHeight)
+                .background(
+                    Brush.linearGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = .46f),
+                            MaterialTheme.colorScheme.surface,
+                            MaterialTheme.colorScheme.surface
+                        )
+                    )
+                ).padding(21.dp)
+        ) {
+            Column(
+                Modifier.align(Alignment.CenterStart),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier.size(52.dp).clip(RoundedCornerShape(18.dp))
+                        .background(Champagne.copy(alpha = .12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(icon, contentDescription = null,
+                        modifier = Modifier.size(30.dp), tint = Champagne)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        title, fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(subtitle, color = Champagne, fontSize = 12.sp)
+                }
+                Text(
+                    detail, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 11.sp
+                )
+            }
+            Icon(
+                Icons.Outlined.ArrowForward,
+                contentDescription = "进入" + title,
+                modifier = Modifier.align(Alignment.BottomEnd).size(25.dp),
+                tint = Champagne
+            )
+        }
+    }
+}
+
 @Composable
 private fun CodexPage(host: MainActivity) {
     var confirmLogout by remember { mutableStateOf(false) }
