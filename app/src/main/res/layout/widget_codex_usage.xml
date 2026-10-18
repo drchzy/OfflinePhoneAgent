@@ -18,60 +18,57 @@
         android:orientation="vertical"
         android:gravity="center_vertical"
         android:paddingStart="12dp"
-        android:paddingTop="9dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="9dp">
+        android:paddingEnd="12dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp">
 
+        <!-- YoYo 品牌头像与 CODEX 标题同一行；刷新按钮仍独立锚定右上角。 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingEnd="43dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/yoyo_launcher"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:text="CODEX"
-                android:textStyle="bold"
-                android:letterSpacing="0.08"
-                android:textSize="17sp"
-                android:textColor="#FFF4FAFF" />
-
-            <Button
-                android:id="@+id/widget_refresh"
-                android:layout_width="76dp"
-                android:layout_height="42dp"
-                android:background="@drawable/widget_refresh_bg"
-                android:gravity="center"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:paddingStart="13dp"
-                android:paddingEnd="13dp"
-                android:text="刷新"
-                android:textAllCaps="false"
+                android:textColor="#FFF4F0FA"
                 android:textStyle="bold"
                 android:textSize="14sp"
-                android:textColor="#FFFFFFFF" />
+                android:letterSpacing="0.07" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/widget_compact_usage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="1dp"
             android:singleLine="true"
-            android:text="5h --   ·   周 --"
+            android:ellipsize="end"
+            android:text="5小时 -- · 每周 --"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:textSize="15sp"
-            android:textColor="#FFEAF8FF"
+            android:textColor="#FFE6D3B4"
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/widget_usage_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -79,62 +76,94 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginEnd="4dp"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="@drawable/widget_quota_card_bg">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="5 小时"
+                    android:textColor="#FFD6CBDD"
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/widget_five_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="5 小时  --"
+                    android:text="--"
+                    android:textColor="#FFF7E8CA"
                     android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="#FFFFFFFF" />
+                    android:textSize="23sp"
+                    android:singleLine="true" />
+
+                <ProgressBar
+                    android:id="@+id/widget_five_bar"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressTint="#FFD9CBAF"
+                    android:progressBackgroundTint="#554C4658" />
 
                 <TextView
                     android:id="@+id/widget_five_reset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:singleLine="true"
+                    android:layout_marginTop="4dp"
                     android:text="重置 --"
-                    android:textSize="10sp"
-                    android:textColor="#FFA9C9DD" />
+                    android:textSize="9sp"
+                    android:textColor="#FFC3B7CC"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="1dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="6dp"
-                android:layout_marginEnd="9dp"
-                android:background="#405EDBFF"
-                android:text="" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginStart="4dp"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="@drawable/widget_quota_card_bg">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="每周"
+                    android:textColor="#FFD6CBDD"
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/widget_week_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="每周  --"
+                    android:text="--"
+                    android:textColor="#FFF7E8CA"
                     android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:textColor="#FFFFFFFF" />
+                    android:textSize="23sp"
+                    android:singleLine="true" />
+
+                <ProgressBar
+                    android:id="@+id/widget_week_bar"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressTint="#FFD9CBAF"
+                    android:progressBackgroundTint="#554C4658" />
 
                 <TextView
                     android:id="@+id/widget_week_reset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:singleLine="true"
+                    android:layout_marginTop="4dp"
                     android:text="重置 --"
-                    android:textSize="10sp"
-                    android:textColor="#FFA9C9DD" />
+                    android:textSize="9sp"
+                    android:textColor="#FFC3B7CC"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
             </LinearLayout>
         </LinearLayout>
 
@@ -142,10 +171,26 @@
             android:id="@+id/widget_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:singleLine="true"
-            android:text="等待刷新"
-            android:textSize="10sp"
-            android:textColor="#FF8BA9BE" />
+            android:ellipsize="end"
+            android:text="本地缓存 · 等待同步"
+            android:textSize="9sp"
+            android:textColor="#FFA99FAF" />
     </LinearLayout>
+
+    <!-- 独立于竖向额度内容，固定在卡片右上角，小尺寸也不会换行掉落。 -->
+    <TextView
+        android:id="@+id/widget_refresh"
+        android:layout_width="36dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:background="@drawable/widget_refresh_bg"
+        android:text="↻"
+        android:textSize="23sp"
+        android:textColor="#FFE9D6AF"
+        android:contentDescription="刷新 Codex 用量" />
 </FrameLayout>

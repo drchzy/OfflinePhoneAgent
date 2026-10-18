@@ -28,8 +28,21 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             val manager = AppWidgetManager.getInstance(context)
             val component = ComponentName(context, CodexUsageWidgetProvider::class.java)
             val ids = manager.getAppWidgetIds(component)
+            // App 页面已获取最新用量时，只重绘小组件，不重复发起第二次网络请求。
             if (ids.isNotEmpty()) {
-                updateAsync(context.applicationContext, manager, ids, null)
+                val tokens = CodexAuthManager(context).currentTokens()
+                val snapshot = CodexUsageCache.load(context, tokens)
+                ids.forEach { id ->
+                    manager.updateAppWidget(
+                        id,
+                        if (snapshot == null) baseViews(
+                            context, if (tokens == null) "尚未登录" else "尚无缓存", manager, id
+                        ) else usageViews(
+                            context, snapshot.usage, manager, id,
+                            "缓存 " + formatTime(snapshot.savedAtMs / 1000L)
+                        )
+                    )
+                }
             }
         }
 
@@ -39,20 +52,31 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             ids: IntArray,
             pending: PendingResult?
         ) {
+            val before = CodexUsageCache.load(
+                context, CodexAuthManager(context).currentTokens()
+            )
             ids.forEach { id ->
-                manager.updateAppWidget(
-                    id,
+                manager.updateAppWidget(id, if (before == null) {
                     baseViews(context, "正在刷新…", manager, id)
-                )
+                } else {
+                    usageViews(context, before.usage, manager, id,
+                        "正在刷新 · 仍显示缓存")
+                })
             }
 
             executor.execute {
                 try {
-                    val usage = CodexUsageClient(context).fetch()
+                    val fresh = CodexUsageClient(context).fetch()
+                    val tokens = CodexAuthManager(context).currentTokens()
+                    val cached = CodexUsageCache.load(context, tokens)
+                    val usage = CodexUsageCache.mergeFresh(fresh, cached)
+                    val stored = CodexUsageCache.save(context, tokens, usage)
                     ids.forEach { id ->
                         manager.updateAppWidget(
                             id,
-                            usageViews(context, usage, manager, id)
+                            usageViews(context, usage, manager, id,
+                                if (stored) "同步 " + formatTime(System.currentTimeMillis() / 1000L)
+                                else "同步成功，缓存写入失败")
                         )
                     }
                 } catch (e: Exception) {
@@ -61,10 +85,15 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
                     } else {
                         "刷新失败 · " + (e.message?.take(32) ?: "未知错误")
                     }
+                    val cached = CodexUsageCache.load(
+                        context, CodexAuthManager(context).currentTokens()
+                    )
                     ids.forEach { id ->
                         manager.updateAppWidget(
                             id,
-                            baseViews(context, msg, manager, id)
+                            if (cached == null) baseViews(context, msg, manager, id)
+                            else usageViews(context, cached.usage, manager, id,
+                                "刷新失败，仍显示缓存")
                         )
                     }
                 } finally {
@@ -77,18 +106,14 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             context: Context,
             usage: CodexUsage,
             manager: AppWidgetManager,
-            widgetId: Int
+            widgetId: Int,
+            status: String = "刷新 " + formatTime(System.currentTimeMillis() / 1000L)
         ): RemoteViews {
-            val views = baseViews(
-                context,
-                "刷新 " + formatTime(System.currentTimeMillis() / 1000L),
-                manager,
-                widgetId
-            )
+            val views = baseViews(context, status, manager, widgetId)
 
             views.setTextViewText(
                 R.id.widget_five_value,
-                "5 小时  " + formatPercent(usage.fiveHour)
+                formatPercent(usage.fiveHour)
             )
             views.setTextViewText(
                 R.id.widget_five_reset,
@@ -96,7 +121,7 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             )
             views.setTextViewText(
                 R.id.widget_week_value,
-                "每周  " + formatPercent(usage.weekly)
+                formatPercent(usage.weekly)
             )
             views.setTextViewText(
                 R.id.widget_week_reset,
@@ -104,9 +129,13 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
             )
             views.setTextViewText(
                 R.id.widget_compact_usage,
-                "5h " + formatPercent(usage.fiveHour) +
-                    "   ·   周 " + formatPercent(usage.weekly)
+                "5小时 " + formatPercent(usage.fiveHour) +
+                    "  ·  每周 " + formatPercent(usage.weekly)
             )
+            views.setProgressBar(R.id.widget_five_bar, 100,
+                usage.fiveHour?.remainingPercent?.roundToInt()?.coerceIn(0, 100) ?: 0, false)
+            views.setProgressBar(R.id.widget_week_bar, 100,
+                usage.weekly?.remainingPercent?.roundToInt()?.coerceIn(0, 100) ?: 0, false)
             return views
         }
 
@@ -117,7 +146,8 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
 
         private fun formatReset(window: UsageWindow?): String {
             val seconds = window?.resetAtSeconds?.takeIf { it > 0 } ?: return "--"
-            return formatTime(seconds)
+            return java.text.SimpleDateFormat("M/d HH:mm", Locale.getDefault())
+                .format(Date(seconds * 1000L))
         }
 
         private fun formatTime(epochSeconds: Long): String {
@@ -136,11 +166,13 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
         ): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_codex_usage)
 
-            views.setTextViewText(R.id.widget_five_value, "5 小时  --")
+            views.setTextViewText(R.id.widget_five_value, "--")
             views.setTextViewText(R.id.widget_five_reset, "重置 --")
-            views.setTextViewText(R.id.widget_week_value, "每周  --")
+            views.setTextViewText(R.id.widget_week_value, "--")
             views.setTextViewText(R.id.widget_week_reset, "重置 --")
-            views.setTextViewText(R.id.widget_compact_usage, "5h --   ·   周 --")
+            views.setTextViewText(R.id.widget_compact_usage, "5小时 --  ·  每周 --")
+            views.setProgressBar(R.id.widget_five_bar, 100, 0, false)
+            views.setProgressBar(R.id.widget_week_bar, 100, 0, false)
             views.setTextViewText(R.id.widget_status, status)
 
             val opacity = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -178,7 +210,9 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
 
         private fun applySizeProfile(views: RemoteViews, options: Bundle) {
             val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 120)
-            val compact = minHeight in 1..94
+            val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 180)
+            // 不只看高度：窄小的 2 列小组件不能挤入两个完整百分比面板。
+            val compact = minHeight < 118 || minWidth < 185
 
             views.setViewVisibility(
                 R.id.widget_usage_row,
@@ -200,7 +234,8 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        updateAsync(context.applicationContext, appWidgetManager, appWidgetIds, null)
+        // 首次添加、Launcher 周期刷新都先使用缓存，避免卡片每次出现时请求网络。
+        refreshAll(context.applicationContext)
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -209,12 +244,8 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
         appWidgetId: Int,
         newOptions: Bundle
     ) {
-        updateAsync(
-            context.applicationContext,
-            appWidgetManager,
-            intArrayOf(appWidgetId),
-            null
-        )
+        // 拉伸和缩小仅调整布局，不触发网络同步。右上角按钮仍可主动刷新。
+        refreshAll(context.applicationContext)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
