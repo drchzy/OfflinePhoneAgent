@@ -231,7 +231,8 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        updateAsync(context.applicationContext, appWidgetManager, appWidgetIds, null)
+        // 首次添加、Launcher 周期刷新都先使用缓存，避免卡片每次出现时请求网络。
+        refreshAll(context.applicationContext)
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -240,12 +241,8 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
         appWidgetId: Int,
         newOptions: Bundle
     ) {
-        updateAsync(
-            context.applicationContext,
-            appWidgetManager,
-            intArrayOf(appWidgetId),
-            null
-        )
+        // 拉伸和缩小仅调整布局，不触发网络同步。右上角按钮仍可主动刷新。
+        refreshAll(context.applicationContext)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
