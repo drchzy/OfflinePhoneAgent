@@ -375,7 +375,7 @@ private fun OfflineApplication(host: MainActivity) {
                         Modifier.fillMaxHeight()
                             .padding(start = 17.dp, end = 17.dp, top = 20.dp, bottom = 15.dp)
                     ) {
-                        Text("OFFLINE", fontSize = 23.sp,
+                        Text("YoYo", fontSize = 23.sp,
                             fontWeight = FontWeight.Black, letterSpacing = 3.sp)
                         Text("YOUR PERSONAL SPACE", fontSize = 10.sp,
                             letterSpacing = 2.sp, color = Muted)
@@ -415,7 +415,7 @@ private fun OfflineApplication(host: MainActivity) {
                             onClick = { scope.launch { drawerState.close() }; host.updateNow() }
                         )
                         Spacer(Modifier.height(9.dp))
-                        Text("OfflinePhoneAgent", fontSize = 12.sp,
+                        Text("YoYo", fontSize = 12.sp,
                             fontWeight = FontWeight.Medium)
                         Text("v" + BuildConfig.VERSION_NAME, fontSize = 10.sp, color = Muted)
                     }
