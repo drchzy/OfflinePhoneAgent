@@ -22,18 +22,34 @@
         android:paddingTop="7dp"
         android:paddingBottom="7dp">
 
-        <!-- 给右上角绝对定位的刷新按钮预留空间，不让文字挤压按钮。 -->
-        <TextView
+        <!-- YoYo 品牌头像与 CODEX 标题同一行；刷新按钮仍独立锚定右上角。 -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="43dp"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:text="CODEX"
-            android:textColor="#FFF4F0FA"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:letterSpacing="0.07" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingEnd="43dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/yoyo_launcher"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="CODEX"
+                android:textColor="#FFF4F0FA"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.07" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/widget_compact_usage"
