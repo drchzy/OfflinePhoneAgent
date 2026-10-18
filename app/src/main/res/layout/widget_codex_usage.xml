@@ -22,32 +22,18 @@
         android:paddingTop="7dp"
         android:paddingBottom="7dp">
 
-        <LinearLayout
+        <!-- 给右上角绝对定位的刷新按钮预留空间，不让文字挤压按钮。 -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="CODEX"
-                android:textColor="#FFF4F0FA"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:letterSpacing="0.07" />
-
-            <TextView
-                android:id="@+id/widget_refresh"
-                android:layout_width="35dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:background="@drawable/widget_refresh_bg"
-                android:text="↻"
-                android:textSize="23sp"
-                android:textColor="#FFE9D6AF"
-                android:contentDescription="刷新 Codex 用量" />
-        </LinearLayout>
+            android:paddingEnd="43dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="CODEX"
+            android:textColor="#FFF4F0FA"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:letterSpacing="0.07" />
 
         <TextView
             android:id="@+id/widget_compact_usage"
@@ -176,4 +162,19 @@
             android:textSize="9sp"
             android:textColor="#FFA99FAF" />
     </LinearLayout>
+
+    <!-- 独立于竖向额度内容，固定在卡片右上角，小尺寸也不会换行掉落。 -->
+    <TextView
+        android:id="@+id/widget_refresh"
+        android:layout_width="36dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:background="@drawable/widget_refresh_bg"
+        android:text="↻"
+        android:textSize="23sp"
+        android:textColor="#FFE9D6AF"
+        android:contentDescription="刷新 Codex 用量" />
 </FrameLayout>
