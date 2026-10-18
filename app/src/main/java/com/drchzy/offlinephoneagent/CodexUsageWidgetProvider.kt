@@ -146,7 +146,8 @@ class CodexUsageWidgetProvider : AppWidgetProvider() {
 
         private fun formatReset(window: UsageWindow?): String {
             val seconds = window?.resetAtSeconds?.takeIf { it > 0 } ?: return "--"
-            return formatTime(seconds)
+            return java.text.SimpleDateFormat("M/d HH:mm", Locale.getDefault())
+                .format(Date(seconds * 1000L))
         }
 
         private fun formatTime(epochSeconds: Long): String {
