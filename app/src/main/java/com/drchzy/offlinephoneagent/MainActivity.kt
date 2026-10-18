@@ -88,6 +88,9 @@ class MainActivity : ComponentActivity() {
         private set
     var usage by mutableStateOf<CodexUsage?>(null)
         private set
+    var codexLastSyncedAt by mutableLongStateOf(0L)
+        private set
+    private var activeCodexAccountKey: String? = null
     var movies by mutableStateOf<List<MovieItem>>(emptyList())
         private set
     var movieLoading by mutableStateOf(false)
@@ -104,9 +107,10 @@ class MainActivity : ComponentActivity() {
         val auth = CodexAuthManager(this)
         loggedIn = auth.currentTokens() != null
         codexAccountName = if (loggedIn) auth.displayName() else ""
+        restoreCodexUsageCache()
         MovieHttpLog.initialize(this)
         setContent { OfflineApplication(this) }
-        if (loggedIn) refreshCodex()
+        // 每次打开只读本地缓存；由用户点击刷新按钮主动联网。
         AppUpdater.checkForUpdate(this, silent = true)
     }
 
@@ -115,6 +119,22 @@ class MainActivity : ComponentActivity() {
         val auth = CodexAuthManager(this)
         loggedIn = auth.currentTokens() != null
         codexAccountName = if (loggedIn) auth.displayName() else ""
+        val key = CodexUsageCache.accountKey(auth.currentTokens())
+        if (activeCodexAccountKey != key) restoreCodexUsageCache()
+    }
+
+    /** 登录身份切换时重新绑定缓存；没有缓存时不继承其他账户的额度。 */
+    private fun restoreCodexUsageCache() {
+        val tokens = CodexAuthManager(applicationContext).currentTokens()
+        activeCodexAccountKey = CodexUsageCache.accountKey(tokens)
+        val cached = CodexUsageCache.load(applicationContext, tokens)
+        usage = cached?.usage
+        codexLastSyncedAt = cached?.savedAtMs ?: 0L
+        codexStatus = when {
+            tokens == null -> "登录后即可同步用量"
+            cached != null -> "已加载本地缓存 · " + formatCodexSyncTime(cached.savedAtMs)
+            else -> "尚无本地用量数据，请点击旁边的刷新按钮"
+        }
     }
 
     override fun onDestroy() {
@@ -143,7 +163,7 @@ class MainActivity : ComponentActivity() {
                     codexAccountName = auth.displayName()
                     codexLoading = false
                     codeInfo = ""
-                    codexStatus = "账号已连接"
+                    restoreCodexUsageCache()
                     refreshCodex()
                 }
             } catch (e: Exception) {
@@ -156,24 +176,41 @@ class MainActivity : ComponentActivity() {
     }
 
     fun refreshCodex() {
-        if (codexLoading) return
+        if (codexLoading || !loggedIn) return
         codexLoading = true
-        codexStatus = "正在同步用量…"
+        codexStatus = if (usage == null) "正在首次同步用量…" else
+            "正在刷新 · 仍显示上次保存的数据"
         executor.execute {
             try {
                 val fresh = CodexUsageClient(applicationContext).fetch()
+                val tokens = CodexAuthManager(applicationContext).currentTokens()
+                val cached = CodexUsageCache.load(applicationContext, tokens)
+                val merged = CodexUsageCache.mergeFresh(fresh, cached)
+                val stored = CodexUsageCache.save(applicationContext, tokens, merged)
+                val savedAt = if (stored) System.currentTimeMillis() else 0L
                 runOnUiThread {
-                    usage = fresh
+                    usage = merged
                     loggedIn = true
                     codexAccountName = CodexAuthManager(applicationContext).displayName()
+                    activeCodexAccountKey = CodexUsageCache.accountKey(tokens)
+                    if (stored) codexLastSyncedAt = savedAt
                     codexLoading = false
-                    codexStatus = "同步成功 · " + DateFormat.getTimeInstance(DateFormat.SHORT).format(Date())
+                    codexStatus = when {
+                        !stored -> "数据已更新，但写入本地缓存失败"
+                        !fresh.resetDetailsReliable -> "额度已刷新 · 重置卡沿用缓存 · " +
+                            formatCodexSyncTime(savedAt)
+                        else -> "同步成功 · " + formatCodexSyncTime(savedAt)
+                    }
                     CodexUsageWidgetProvider.refreshAll(applicationContext)
                 }
             } catch (e: Exception) {
                 runOnUiThread {
                     codexLoading = false
-                    codexStatus = "同步失败：" + (e.message ?: "请重试")
+                    codexStatus = if (usage != null) {
+                        "刷新失败，继续显示缓存：" + (e.message ?: "请重试")
+                    } else {
+                        "刷新失败：" + (e.message ?: "请重试")
+                    }
                 }
             }
         }
@@ -183,8 +220,11 @@ class MainActivity : ComponentActivity() {
     fun logoutCodex() {
         if (codexLoading || !loggedIn) return
         CodexAuthManager(applicationContext).logout()
+        CodexUsageCache.clear(applicationContext)
         loggedIn = false
         codexAccountName = ""
+        activeCodexAccountKey = null
+        codexLastSyncedAt = 0L
         usage = null
         codeInfo = ""
         codexStatus = "已退出登录"
@@ -514,8 +554,26 @@ private fun CodexPage(host: MainActivity) {
                             maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                     Text(host.codexStatus, fontSize = 12.sp, color = Muted, maxLines = 3)
+                    if (host.codexLastSyncedAt > 0L) {
+                        Text(
+                            "上次成功同步：${formatCodexSyncTime(host.codexLastSyncedAt)}",
+                            fontSize = 11.sp, color = Muted, maxLines = 1
+                        )
+                    }
                 }
                 if (host.loggedIn) {
+                    IconButton(
+                        onClick = host::refreshCodex,
+                        enabled = !host.codexLoading,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        if (host.codexLoading) {
+                            CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                        } else {
+                            Icon(Icons.Outlined.Refresh, contentDescription = "刷新 Codex 用量",
+                                tint = Champagne, modifier = Modifier.size(21.dp))
+                        }
+                    }
                     IconButton(
                         onClick = { confirmLogout = true },
                         enabled = !host.codexLoading,
@@ -1371,3 +1429,7 @@ private fun MovieHistoryDialog(
         confirmButton = { TextButton(onClick = onDismiss) { Text("完成") } }
     )
 }
+
+/** 用手机当前时区显示上次成功缓存时间。 */
+private fun formatCodexSyncTime(ms: Long): String =
+    DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(ms))
