@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.AnimatedVisibility
@@ -344,7 +345,7 @@ private fun OfflineApplication(host: MainActivity) {
         surfaceVariant = Color(0xFFECEAE6), onSurfaceVariant = Color(0xFF71726F)
     )
     MaterialTheme(colorScheme = scheme) {
-        var page by rememberSaveable { mutableStateOf("Codex") }
+        var page by rememberSaveable { mutableStateOf("首页") }
         var showSettings by remember { mutableStateOf(false) }
         var showAbout by remember { mutableStateOf(false) }
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -365,6 +366,15 @@ private fun OfflineApplication(host: MainActivity) {
                 lerp(Color(0xFF22182D), Color(0xFF10151E), glow)
             )
         ) else Brush.verticalGradient(listOf(Paper, Color(0xFFF2F0F8)))
+        BackHandler(enabled = page != "首页" || drawerState.isOpen) {
+            if (drawerState.isOpen) {
+                scope.launch { drawerState.close() }
+            } else if (page == "Movie" && host.detail != null) {
+                host.closeDetail()
+            } else {
+                page = "首页"
+            }
+        }
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -393,6 +403,15 @@ private fun OfflineApplication(host: MainActivity) {
                             }
                         }
                         Spacer(Modifier.height(25.dp))
+                        NavigationDrawerItem(
+                            icon = { Icon(Icons.Outlined.Home, null) },
+                            label = { Text("YoYo 首页") }, selected = page == "首页",
+                            onClick = {
+                                page = "首页"; host.closeDetail()
+                                scope.launch { drawerState.close() }
+                            }
+                        )
+                        Spacer(Modifier.height(5.dp))
                         NavigationDrawerItem(
                             icon = { Icon(Icons.Outlined.AutoAwesome, null) },
                             label = { Text("Codex") }, selected = page == "Codex",
@@ -462,13 +481,58 @@ private fun OfflineApplication(host: MainActivity) {
                             .height(54.dp).padding(horizontal = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { scope.launch { drawerState.open() } },
-                            modifier = Modifier.size(44.dp)) {
-                            Icon(Icons.Outlined.Menu, "打开侧栏", Modifier.size(23.dp), tint = foreground)
+                        if (page == "首页") {
+                            IconButton(onClick = { scope.launch { drawerState.open() } },
+                                modifier = Modifier.size(44.dp)) {
+                                Icon(Icons.Outlined.Menu, "打开侧栏",
+                                    Modifier.size(24.dp), tint = foreground)
+                            }
+                        } else {
+                            IconButton(
+                                onClick = {
+                                    if (page == "Movie" && host.detail != null) host.closeDetail()
+                                    else page = "首页"
+                                },
+                                modifier = Modifier.size(44.dp)
+                            ) {
+                                Icon(Icons.Outlined.ArrowBack, "返回上一页",
+                                    Modifier.size(25.dp), tint = foreground)
+                            }
                         }
-                        Spacer(Modifier.width(11.dp))
-                        Text(page, fontSize = 20.sp, fontWeight = FontWeight.SemiBold,
-                            color = foreground, modifier = Modifier.weight(1f))
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            when {
+                                page == "首页" -> "YoYo"
+                                page == "Movie" && host.detail != null -> "影片详情"
+                                page == "Movie" -> "Video"
+                                else -> page
+                            },
+                            fontSize = 20.sp, fontWeight = FontWeight.SemiBold,
+                            color = foreground, modifier = Modifier.weight(1f),
+                            maxLines = 1
+                        )
+                        if (page != "首页") {
+                            IconButton(
+                                onClick = { host.closeDetail(); page = "首页" },
+                                modifier = Modifier.size(45.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.yoyo_launcher),
+                                    contentDescription = "返回 YoYo 首页",
+                                    modifier = Modifier.size(36.dp)
+                                        .clip(RoundedCornerShape(11.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        } else {
+                            Image(
+                                painter = painterResource(R.drawable.yoyo_launcher),
+                                contentDescription = "YoYo Logo",
+                                modifier = Modifier.size(37.dp)
+                                    .clip(RoundedCornerShape(11.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
             ) { padding ->
@@ -482,23 +546,36 @@ private fun OfflineApplication(host: MainActivity) {
                                 .pointerInput(target, host.detail) {
                                     var offset = 0f
                                     var edge = false
+                                    var fromRight = false
                                     detectHorizontalDragGestures(
                                         onDragStart = {
-                                            edge = it.x < 52.dp.toPx()
+                                            edge = it.x <= 30.dp.toPx() ||
+                                                it.x >= size.width - 30.dp.toPx()
                                             offset = 0f
+                                            fromRight = it.x >= size.width - 30.dp.toPx()
                                         },
                                         onHorizontalDrag = { _, amount -> offset += amount },
                                         onDragEnd = {
-                                            if (edge && offset > 100.dp.toPx()) {
-                                                if (target == "Movie" && host.detail != null) host.closeDetail()
-                                                else if (target != "Codex") page = "Codex"
-                                                else scope.launch { drawerState.open() }
+                                            val swipeBack = edge && (
+                                                (!fromRight && offset > 90.dp.toPx()) ||
+                                                (fromRight && offset < -90.dp.toPx())
+                                            )
+                                            if (swipeBack) {
+                                                if (target == "Movie" && host.detail != null) {
+                                                    host.closeDetail()
+                                                } else if (target != "首页") {
+                                                    page = "首页"
+                                                }
                                             }
                                         }
                                     )
                                 }
                         ) {
                             when (target) {
+                                "首页" -> YoYoHomePage(
+                                    onCodex = { page = "Codex" },
+                                    onVideo = { host.closeDetail(); page = "Movie" }
+                                )
                                 "Codex" -> CodexPage(host)
                                 "Movie" -> MoviePage(host)
                                 else -> NetworkLogPage()
