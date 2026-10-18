@@ -52,6 +52,7 @@ object AppUpdater {
                     if (activity.isFinishing || activity.isDestroyed) return@runOnUiThread
                     if (newest != null && newest.versionCode > BuildConfig.VERSION_CODE) {
                         AlertDialog.Builder(activity)
+                            .setIcon(R.drawable.yoyo_launcher)
                             .setTitle("发现新版本")
                             .setMessage(
                                 "当前版本：" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")\n" +
@@ -71,6 +72,7 @@ object AppUpdater {
                             "当前是正式版，GitHub 没有比它更新的正式 Release。"
                         }
                         AlertDialog.Builder(activity)
+                            .setIcon(R.drawable.yoyo_launcher)
                             .setTitle("检查更新")
                             .setMessage(
                                 "当前版本：" + BuildConfig.VERSION_NAME +
@@ -85,6 +87,7 @@ object AppUpdater {
                     activity.runOnUiThread {
                         if (activity.isFinishing || activity.isDestroyed) return@runOnUiThread
                         AlertDialog.Builder(activity)
+                            .setIcon(R.drawable.yoyo_launcher)
                             .setTitle("检查更新失败")
                             .setMessage(e.message ?: "网络异常，请检查 GitHub 连接")
                             .setPositiveButton("确定", null)
@@ -195,6 +198,7 @@ object AppUpdater {
         )
         container.addView(downloadedText)
         val dialog = AlertDialog.Builder(activity)
+                            .setIcon(R.drawable.yoyo_launcher)
             .setTitle("正在下载 · " + info.versionName)
             .setView(container)
             .setNegativeButton("取消下载") { _, _ ->
@@ -306,6 +310,7 @@ object AppUpdater {
                     dialog.dismiss()
                     if (!cancelled.get() && !activity.isFinishing && !activity.isDestroyed) {
                         AlertDialog.Builder(activity)
+                            .setIcon(R.drawable.yoyo_launcher)
                             .setTitle("更新下载失败")
                             .setMessage(e.message ?: "网络异常，请重试")
                             .setPositiveButton("重试") { _, _ -> prepareDownload(activity, info) }
