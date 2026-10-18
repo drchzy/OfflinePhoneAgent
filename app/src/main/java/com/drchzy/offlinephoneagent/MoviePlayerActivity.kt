@@ -531,6 +531,8 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
     var speedMenu by remember { mutableStateOf(false) }
     var lineMenu by remember { mutableStateOf(false) }
     var showCast by remember { mutableStateOf(false) }
+    var castScanNumber by remember { mutableIntStateOf(0) }
+    var connectedCastDevice by remember { mutableStateOf<DlnaDevice?>(null) }
     var castBusy by remember { mutableStateOf(false) }
     var castDevices by remember { mutableStateOf<List<DlnaDevice>>(emptyList()) }
     var castMessage by remember { mutableStateOf("") }
@@ -598,69 +600,181 @@ private fun MoviePlayerScreen(host: MoviePlayerActivity) {
             gestureLabel = ""
         }
     }
-    LaunchedEffect(showCast) {
+    LaunchedEffect(showCast, castScanNumber) {
         if (showCast) {
             castBusy = true
             castMessage = ""
-            castDevices = withContext(Dispatchers.IO) {
-                runCatching { DlnaCast.discover(context) }.getOrElse {
-                    castMessage = it.message ?: "设备发现失败"
-                    emptyList()
-                }
+            val result = withContext(Dispatchers.IO) {
+                runCatching { DlnaCast.discover(context) }
             }
             castBusy = false
+            result.onSuccess { castDevices = it }
+                .onFailure {
+                    castDevices = emptyList()
+                    castMessage = it.message ?: "局域网设备扫描失败"
+                }
         }
     }
     if (showCast) {
         AlertDialog(
             onDismissRequest = { showCast = false },
-            title = { Text("DLNA 投屏") },
-            text = {
-                Column {
-                    Text("请连接与电视相同的 Wi-Fi。仅支持可直接访问的视频链接；部分需登录的播放线路无法投屏。",
-                        fontSize = 12.sp, lineHeight = 18.sp)
-                    Spacer(Modifier.height(12.dp))
-                    if (castBusy) LinearProgressIndicator(Modifier.fillMaxWidth())
-                    else if (castDevices.isEmpty()) Text(
-                        castMessage.ifBlank { "没有发现 DLNA 电视或投影设备。请确认设备支持 UPnP/AVTransport。" },
-                        fontSize = 12.sp
-                    )
-                    else castDevices.forEach { device ->
-                        TextButton(onClick = {
-                            castBusy = true
-                            scope.launch {
-                                val result = withContext(Dispatchers.IO) {
-                                    runCatching { DlnaCast.play(device, host.mediaUrl) }
-                                }
-                                castBusy = false
-                                result.onSuccess {
-                                    host.playback?.pause()
-                                    showCast = false
-                                    android.widget.Toast.makeText(context,
-                                        "已发送投屏指令至 " + device.name,
-                                        android.widget.Toast.LENGTH_LONG).show()
-                                }.onFailure {
-                                    castMessage = it.message ?: "投屏失败"
-                                }
-                            }
-                        }) {
-                            Icon(Icons.Outlined.Cast, null, Modifier.size(18.dp))
-                            Spacer(Modifier.width(7.dp))
-                            Text(device.name)
-                        }
-                    }
-                    if (castMessage.isNotBlank() && castDevices.isNotEmpty()) {
-                        Text(castMessage, color = MaterialTheme.colorScheme.error, fontSize = 11.sp)
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.Cast, null, Modifier.size(23.dp), tint = AccentPlayer)
+                    Spacer(Modifier.width(8.dp))
+                    Text("局域网投屏", modifier = Modifier.weight(1f))
+                    IconButton(onClick = { castScanNumber++ }, enabled = !castBusy) {
+                        Icon(Icons.Outlined.Refresh, "重新搜索设备", Modifier.size(23.dp))
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { showCast = false }) { Text("关闭") } },
-            dismissButton = {
-                TextButton(onClick = {
-                    showCast = false
-                    showCast = true
-                }) { Text("刷新") }
-            }
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("支持 DLNA / UPnP 电视、盒子及投影仪。请连接同一 Wi-Fi，关闭路由器 AP 隔离。",
+                        fontSize = 12.sp, lineHeight = 18.sp)
+                    if (castBusy) {
+                        LinearProgressIndicator(Modifier.fillMaxWidth())
+                    }
+                    if (!castBusy && castDevices.isEmpty()) {
+                        Text(castMessage.ifBlank {
+                            "未发现可用设备，请确认电视已打开 DLNA/投屏功能后重新搜索。"
+                        }, fontSize = 12.sp)
+                    }
+                    if (castDevices.isNotEmpty()) {
+                        Column(
+                            Modifier.fillMaxWidth().heightIn(max = 250.dp)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            castDevices.forEach { device ->
+                                val connected = connectedCastDevice?.controlUrl == device.controlUrl
+                                Surface(
+                                    onClick = {
+                                        if (!castBusy) {
+                                            castBusy = true
+                                            castMessage = "正在连接 " + device.name
+                                            val currentPosition = host.playback?.currentPosition ?: 0L
+                                            scope.launch {
+                                                val outcome = withContext(Dispatchers.IO) {
+                                                    runCatching {
+                                                        DlnaCast.play(device, host.mediaUrl)
+                                                        if (currentPosition > 5_000L) {
+                                                            runCatching {
+                                                                DlnaCast.seek(device, currentPosition)
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                castBusy = false
+                                                outcome.onSuccess {
+                                                    connectedCastDevice = device
+                                                    host.playback?.pause()
+                                                    castMessage = "已向 " + device.name + " 发送播放指令"
+                                                }.onFailure {
+                                                    castMessage = "连接失败：" + (it.message ?: "未知错误")
+                                                }
+                                            }
+                                        }
+                                    },
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = if (connected) AccentPlayer.copy(alpha = .18f)
+                                    else SoftPlayer
+                                ) {
+                                    Row(Modifier.fillMaxWidth().padding(10.dp),
+                                        verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(Icons.Outlined.Tv, null, Modifier.size(21.dp),
+                                            tint = AccentPlayer)
+                                        Spacer(Modifier.width(9.dp))
+                                        Column(Modifier.weight(1f)) {
+                                            Text(device.name, fontSize = 13.sp,
+                                                maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                            Text(if (connected) "已连接" else "DLNA 播放设备",
+                                                fontSize = 10.sp, color = HintPlayer)
+                                        }
+                                        Icon(if (connected) Icons.Outlined.CheckCircle
+                                            else Icons.Outlined.ChevronRight,
+                                            null, Modifier.size(20.dp), tint = AccentPlayer)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    connectedCastDevice?.let { device ->
+                        HorizontalDivider()
+                        Text("电视控制 · " + device.name, color = AccentPlayer,
+                            fontSize = 12.sp)
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(onClick = {
+                                castBusy = true
+                                scope.launch {
+                                    val r = withContext(Dispatchers.IO) {
+                                        runCatching { DlnaCast.resume(device) }
+                                    }
+                                    castBusy = false
+                                    castMessage = r.fold({ "已发送继续播放指令" },
+                                        { "播放失败：" + it.message })
+                                }
+                            }, enabled = !castBusy) {
+                                Icon(Icons.Outlined.PlayArrow, "电视播放")
+                            }
+                            IconButton(onClick = {
+                                castBusy = true
+                                scope.launch {
+                                    val r = withContext(Dispatchers.IO) {
+                                        runCatching { DlnaCast.pause(device) }
+                                    }
+                                    castBusy = false
+                                    castMessage = r.fold({ "已发送暂停指令" },
+                                        { "暂停失败：" + it.message })
+                                }
+                            }, enabled = !castBusy) {
+                                Icon(Icons.Outlined.Pause, "电视暂停")
+                            }
+                            IconButton(onClick = {
+                                castBusy = true
+                                val time = host.playback?.currentPosition ?: 0L
+                                scope.launch {
+                                    val r = withContext(Dispatchers.IO) {
+                                        runCatching { DlnaCast.seek(device, time) }
+                                    }
+                                    castBusy = false
+                                    castMessage = r.fold({ "已同步手机播放位置" },
+                                        { "进度同步失败：" + it.message })
+                                }
+                            }, enabled = !castBusy) {
+                                Icon(Icons.Outlined.Sync, "同步播放进度")
+                            }
+                            Spacer(Modifier.weight(1f))
+                            TextButton(onClick = {
+                                castBusy = true
+                                scope.launch {
+                                    val r = withContext(Dispatchers.IO) {
+                                        runCatching { DlnaCast.stop(device) }
+                                    }
+                                    castBusy = false
+                                    r.onSuccess {
+                                        connectedCastDevice = null
+                                        castMessage = "已停止投屏"
+                                    }.onFailure { castMessage = "停止失败：" + it.message }
+                                }
+                            }, enabled = !castBusy) { Text("停止") }
+                        }
+                    }
+                    if (castMessage.isNotBlank()) {
+                        Text(castMessage, fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Text(
+                        "视频须能被电视直接访问。需要专属请求头或认证的视频无法直接投屏；" +
+                            "Chromecast 专属协议不属于 DLNA 搜索。",
+                        fontSize = 10.sp, color = HintPlayer, lineHeight = 15.sp
+                    )
+                }
+            },
+            confirmButton = { TextButton(onClick = { showCast = false }) { Text("完成") } }
         )
     }
 
