@@ -506,238 +506,231 @@ private fun SectionTitle(eyebrow: String, title: String, subtitle: String) {
 
 @Composable
 private fun CodexPage(host: MainActivity) {
-    val textColor = MaterialTheme.colorScheme.onSurface
     var confirmLogout by remember { mutableStateOf(false) }
     if (confirmLogout) {
         AlertDialog(
             onDismissRequest = { confirmLogout = false },
             title = { Text("退出 Codex？") },
-            text = { Text("将清除本机保存的登录凭据和用量缓存。不会退出其他设备，也不会影响 Movie 配置。") },
+            text = { Text("将清除本机登录凭据及用量缓存，不影响 Movie 数据。") },
             confirmButton = {
-                TextButton(onClick = {
-                    confirmLogout = false
-                    host.logoutCodex()
-                }) { Text("确认退出") }
+                TextButton(onClick = { confirmLogout = false; host.logoutCodex() }) {
+                    Text("确认退出")
+                }
             },
             dismissButton = { TextButton(onClick = { confirmLogout = false }) { Text("取消") } }
         )
     }
+    val small = LocalConfiguration.current.screenHeightDp < 740
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-            .padding(start = 23.dp, end = 23.dp, top = 12.dp, bottom = 35.dp)
+            .padding(horizontal = if (small) 14.dp else 18.dp)
+            .padding(top = 6.dp, bottom = 15.dp),
+        verticalArrangement = Arrangement.spacedBy(if (small) 8.dp else 10.dp)
     ) {
-        Surface(
-            color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(24.dp),
-            tonalElevation = 2.dp
-        ) {
-            Row(
-                Modifier.fillMaxWidth().padding(21.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    Modifier.size(42.dp).clip(CircleShape).background(
-                        if (host.loggedIn) Champagne.copy(alpha = 0.19f)
-                        else Muted.copy(alpha = 0.12f)
-                    ), contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Outlined.AutoAwesome, null, tint = if (host.loggedIn) Champagne else Muted)
+        Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(18.dp)) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(34.dp).clip(CircleShape)
+                    .background(Champagne.copy(alpha = .16f)), contentAlignment = Alignment.Center) {
+                    Icon(Icons.Outlined.AutoAwesome, null, Modifier.size(19.dp), tint = Champagne)
                 }
-                Spacer(Modifier.width(15.dp))
+                Spacer(Modifier.width(9.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(if (host.loggedIn) "账户已连接" else "尚未连接账户",
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface)
-                    if (host.loggedIn && host.codexAccountName.isNotBlank()) {
-                        Text(host.codexAccountName, fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    }
-                    Text(host.codexStatus, fontSize = 12.sp, color = Muted, maxLines = 3)
+                    Text(
+                        if (host.loggedIn) host.codexAccountName.ifBlank { "Codex 账户已连接" }
+                        else "尚未连接 Codex",
+                        fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1, overflow = TextOverflow.Ellipsis
+                    )
+                    Text(host.codexStatus, fontSize = 10.sp, color = Muted,
+                        maxLines = 2, overflow = TextOverflow.Ellipsis)
                     if (host.codexLastSyncedAt > 0L) {
-                        Text(
-                            "上次成功同步：${formatCodexSyncTime(host.codexLastSyncedAt)}",
-                            fontSize = 11.sp, color = Muted, maxLines = 1
-                        )
+                        Text("缓存更新于 " + formatCodexSyncTime(host.codexLastSyncedAt),
+                            fontSize = 10.sp, color = Muted,
+                            maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
                 if (host.loggedIn) {
                     IconButton(
-                        onClick = host::refreshCodex,
-                        enabled = !host.codexLoading,
-                        modifier = Modifier.size(36.dp)
+                        onClick = host::refreshCodex, enabled = !host.codexLoading,
+                        modifier = Modifier.size(35.dp)
                     ) {
-                        if (host.codexLoading) {
-                            CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                        } else {
-                            Icon(Icons.Outlined.Refresh, contentDescription = "刷新 Codex 用量",
-                                tint = Champagne, modifier = Modifier.size(21.dp))
-                        }
+                        if (host.codexLoading) CircularProgressIndicator(
+                            Modifier.size(18.dp), strokeWidth = 2.dp)
+                        else Icon(Icons.Outlined.Refresh, "刷新用量",
+                            Modifier.size(23.dp), tint = Champagne)
                     }
                     IconButton(
-                        onClick = { confirmLogout = true },
-                        enabled = !host.codexLoading,
-                        modifier = Modifier.size(36.dp)
+                        onClick = { confirmLogout = true }, enabled = !host.codexLoading,
+                        modifier = Modifier.size(32.dp)
                     ) {
-                        Icon(Icons.Outlined.Logout, contentDescription = "退出 Codex",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(19.dp))
+                        Icon(Icons.Outlined.Logout, "退出登录", Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
         }
         if (host.codeInfo.isNotBlank()) {
-            Spacer(Modifier.height(12.dp))
-            Surface(
-                color = Champagne.copy(alpha = 0.12f),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(Modifier.fillMaxWidth().padding(18.dp)) {
-                    Text("浏览器授权码", fontSize = 12.sp, color = Muted)
-                    Text(host.codeInfo, fontSize = 25.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
+            Surface(color = Champagne.copy(alpha = .12f), shape = RoundedCornerShape(12.dp)) {
+                Column(Modifier.fillMaxWidth().padding(12.dp)) {
+                    Text("授权码 · 已复制", fontSize = 11.sp, color = Muted)
+                    Text(host.codeInfo, fontSize = 21.sp,
+                        fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
                 }
             }
         }
-        Spacer(Modifier.height(29.dp))
-        Text("使用额度", fontSize = 19.sp, fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground)
-        Spacer(Modifier.height(14.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            UsageCard("5 小时", host.usage?.fiveHour, Modifier.weight(1f))
-            UsageCard("每周", host.usage?.weekly, Modifier.weight(1f))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("使用额度", fontSize = 17.sp, fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f))
+            if (host.codexLastSyncedAt > 0L) {
+                Text("本地缓存", fontSize = 10.sp, color = Muted)
+            }
         }
-        Spacer(Modifier.height(20.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            UsageCard("5 小时", host.usage?.fiveHour, Modifier.weight(1f), small)
+            UsageCard("每周", host.usage?.weekly, Modifier.weight(1f), small)
+        }
         ResetCreditsSection(host.usage)
-        Spacer(Modifier.height(27.dp))
-        Text("快捷操作", fontSize = 19.sp, fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground)
-        Spacer(Modifier.height(15.dp))
-        Button(
-            onClick = { if (host.loggedIn) host.refreshCodex() else host.loginCodex() },
-            enabled = !host.codexLoading,
-            modifier = Modifier.fillMaxWidth().height(55.dp),
-            shape = RoundedCornerShape(17.dp)
-        ) {
-            if (host.codexLoading) CircularProgressIndicator(Modifier.size(19.dp), strokeWidth = 2.dp)
-            else Icon(if (host.loggedIn) Icons.Outlined.Refresh else Icons.Outlined.Login, null)
-            Spacer(Modifier.width(10.dp))
-            Text(if (host.loggedIn) "同步最新用量" else "连接 Codex", fontWeight = FontWeight.SemiBold)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (!host.loggedIn) {
+                Button(onClick = host::loginCodex,
+                    enabled = !host.codexLoading,
+                    modifier = Modifier.weight(1f).height(42.dp),
+                    shape = RoundedCornerShape(13.dp)) {
+                    Icon(Icons.Outlined.Login, null, Modifier.size(17.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("登录 Codex", fontSize = 12.sp)
+                }
+            }
+            OutlinedButton(onClick = host::pinWidget,
+                modifier = Modifier.weight(1f).height(42.dp),
+                shape = RoundedCornerShape(13.dp),
+                contentPadding = PaddingValues(horizontal = 7.dp)) {
+                Icon(Icons.Outlined.DashboardCustomize, null, Modifier.size(17.dp))
+                Spacer(Modifier.width(6.dp))
+                Text("添加桌面小组件", fontSize = 12.sp,
+                    maxLines = 1, color = MaterialTheme.colorScheme.onSurface)
+            }
         }
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(
-            onClick = host::pinWidget,
-            modifier = Modifier.fillMaxWidth().height(55.dp),
-            shape = RoundedCornerShape(17.dp)
-        ) {
-            Icon(Icons.Outlined.DashboardCustomize, null)
-            Spacer(Modifier.width(10.dp))
-            Text("添加桌面小组件", color = textColor)
-        }
-        Spacer(Modifier.height(25.dp))
-        Text(
-            "账户名称来自登录凭据；额度与重置卡来自当前账户的只读接口。",
-            fontSize = 11.sp, color = Muted, lineHeight = 18.sp
-        )
     }
 }
 
 @Composable
 private fun ResetCreditsSection(usage: CodexUsage?) {
-    val count = usage?.availableResetCount
     val cards = usage?.resetCards.orEmpty()
-    Column {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Codex 重置卡", fontSize = 19.sp, fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f))
-            Text(
-                if (count == null) "数量未知" else "可用 $count 张",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-        Spacer(Modifier.height(11.dp))
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface
-        ) {
-            Column(Modifier.padding(17.dp)) {
-                when {
-                    usage == null -> Text("登录后同步用量即可查看重置卡。", color = Muted, fontSize = 12.sp)
-                    count == 0 -> Text("暂无可用重置卡", color = Muted, fontSize = 12.sp)
-                    cards.isEmpty() -> Text(
-                        if (count == null) "接口未返回重置卡数量与到期信息"
-                        else "有 $count 张可用重置卡，但接口没有返回逐张到期时间",
-                        color = Muted, fontSize = 12.sp
-                    )
-                    else -> {
-                        cards.forEachIndexed { index, card ->
-                            if (index > 0) {
-                                Spacer(Modifier.height(9.dp))
-                                HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = .10f))
-                                Spacer(Modifier.height(9.dp))
-                            }
-                            Column(Modifier.fillMaxWidth()) {
-                                Text(
-                                    card.title.ifBlank { "重置卡 ${index + 1}" },
-                                    fontWeight = FontWeight.Medium, fontSize = 13.sp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    maxLines = 2, overflow = TextOverflow.Ellipsis
-                                )
-                                Spacer(Modifier.height(3.dp))
-                                val expiry = card.expiresAtSeconds?.let {
-                                    DateFormat.getDateTimeInstance(
-                                        DateFormat.MEDIUM, DateFormat.SHORT
-                                    ).format(Date(it * 1000L))
-                                }
-                                Text(
-                                    if (expiry == null) "到期时间：接口未提供"
-                                    else "到期时间：$expiry（本地时间）",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 12.sp
-                                )
-                            }
+    val count = usage?.availableResetCount
+    var expanded by remember { mutableStateOf(false) }
+    val ordered = remember(cards) {
+        cards.sortedBy { it.expiresAtSeconds ?: Long.MAX_VALUE }
+    }
+    Surface(modifier = Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(18.dp)) {
+        Column(Modifier.padding(horizontal = 13.dp, vertical = 10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Outlined.CreditCard, null, Modifier.size(18.dp), tint = Champagne)
+                Spacer(Modifier.width(6.dp))
+                Text("Codex 重置卡", fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f))
+                Text(if (count == null) "数量未知" else count.toString() + " 张可用",
+                    fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Champagne)
+                if (cards.size > 1) {
+                    IconButton(modifier = Modifier.size(30.dp),
+                        onClick = { expanded = !expanded }) {
+                        Icon(if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                            if (expanded) "收起" else "展开",
+                            Modifier.size(19.dp), tint = Champagne)
+                    }
+                }
+            }
+            Spacer(Modifier.height(4.dp))
+            when {
+                usage == null -> Text("暂无缓存，点击账户右侧刷新获取",
+                    color = Muted, fontSize = 11.sp)
+                count == 0 && cards.isEmpty() -> Text("当前没有可用重置卡",
+                    color = Muted, fontSize = 11.sp)
+                cards.isEmpty() -> Text("未取得单卡到期明细",
+                    color = Muted, fontSize = 11.sp)
+                else -> {
+                    (if (expanded) ordered else ordered.take(1)).forEachIndexed { index, card ->
+                        if (index > 0) {
+                            Spacer(Modifier.height(5.dp))
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .10f))
+                            Spacer(Modifier.height(5.dp))
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(card.title.ifBlank { "重置卡" },
+                                fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.weight(1f), maxLines = 1,
+                                overflow = TextOverflow.Ellipsis)
+                            Spacer(Modifier.width(7.dp))
+                            val expiry = card.expiresAtSeconds?.let {
+                                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                    .format(Date(it * 1000L))
+                            } ?: "时间未知"
+                            Text(expiry, fontSize = 10.sp, color = Muted, maxLines = 1)
+                        }
+                    }
+                    if (!expanded && cards.size > 1) {
+                        TextButton(onClick = { expanded = true },
+                            modifier = Modifier.height(27.dp),
+                            contentPadding = PaddingValues(horizontal = 2.dp)) {
+                            Text("展开其余 " + (cards.size - 1) + " 张到期明细", fontSize = 10.sp)
                         }
                     }
                 }
-                val note = usage?.resetCardsMessage.orEmpty()
-                if (note.isNotBlank()) {
-                    Spacer(Modifier.height(9.dp))
-                    Text(note, fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
+            }
+            val note = usage?.resetCardsMessage.orEmpty()
+            if (note.isNotBlank()) {
+                Spacer(Modifier.height(3.dp))
+                Text(note, fontSize = 10.sp, color = Muted,
+                    maxLines = if (expanded) 5 else 2,
+                    overflow = TextOverflow.Ellipsis)
             }
         }
     }
 }
 
 @Composable
-private fun UsageCard(title: String, window: UsageWindow?, modifier: Modifier = Modifier) {
+private fun UsageCard(
+    title: String, window: UsageWindow?,
+    modifier: Modifier = Modifier, compact: Boolean = false
+) {
     val remaining = (window?.remainingPercent?.toFloat() ?: 0f).coerceIn(0f, 100f)
-    val animated by animateFloatAsState(remaining / 100f, animationSpec = tween(800), label = title)
-    val onSurface = MaterialTheme.colorScheme.onSurface
-    Surface(modifier = modifier, color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(25.dp)) {
-        Column(Modifier.fillMaxWidth().padding(vertical = 23.dp, horizontal = 13.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(title, fontSize = 13.sp, color = Muted, fontWeight = FontWeight.Medium)
-            Spacer(Modifier.height(20.dp))
-            Box(Modifier.size(115.dp), contentAlignment = Alignment.Center) {
-                val track = onSurface.copy(alpha = 0.09f)
+    val progress by animateFloatAsState(remaining / 100f,
+        animationSpec = tween(650), label = title)
+    val ring = if (compact) 77.dp else 88.dp
+    Surface(modifier = modifier, color = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(18.dp)) {
+        Column(Modifier.fillMaxWidth().padding(vertical = 10.dp, horizontal = 7.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(title, fontSize = 12.sp, color = Muted, fontWeight = FontWeight.Medium)
+            Spacer(Modifier.height(5.dp))
+            Box(Modifier.size(ring), contentAlignment = Alignment.Center) {
                 Canvas(Modifier.fillMaxSize()) {
-                    drawArc(track, -90f, 360f, false, style = Stroke(8.dp.toPx(), cap = StrokeCap.Round))
-                    drawArc(Champagne, -90f, 360f * animated, false, style = Stroke(8.dp.toPx(), cap = StrokeCap.Round))
+                    drawArc(Color.White.copy(alpha = .10f), -90f, 360f, false,
+                        style = Stroke(6.dp.toPx(), cap = StrokeCap.Round))
+                    drawArc(Champagne, -90f, 360f * progress, false,
+                        style = Stroke(6.dp.toPx(), cap = StrokeCap.Round))
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(if (window == null) "--" else remaining.toInt().toString() + "%",
-                        fontWeight = FontWeight.Bold, fontSize = 27.sp, color = onSurface)
-                    Text("可用额度", fontSize = 10.sp, color = Muted)
+                        fontSize = if (compact) 22.sp else 25.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface)
+                    Text("可用", fontSize = 10.sp, color = Muted)
                 }
             }
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(7.dp))
             val reset = window?.resetAtSeconds?.takeIf { it > 0 }?.let {
-                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(it * 1000))
+                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                    .format(Date(it * 1000L))
             } ?: "等待同步"
-            Text("重置 · " + reset, fontSize = 10.sp, color = Muted, maxLines = 2)
+            Text("重置 · " + reset, fontSize = 10.sp, color = Muted,
+                maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
