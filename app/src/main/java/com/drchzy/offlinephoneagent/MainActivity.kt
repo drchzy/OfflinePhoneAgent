@@ -377,6 +377,7 @@ private fun OfflineApplication(host: MainActivity) {
         }
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = page == "首页",
             drawerContent = {
                 ModalDrawerSheet(
                     modifier = Modifier.width(drawerWidth)
@@ -421,7 +422,11 @@ private fun OfflineApplication(host: MainActivity) {
                         NavigationDrawerItem(
                             icon = { Icon(Icons.Outlined.Movie, null) },
                             label = { Text("Movie") }, selected = page == "Movie",
-                            onClick = { page = "Movie"; scope.launch { drawerState.close() } }
+                            onClick = {
+                                host.closeDetail()
+                                page = "Movie"
+                                scope.launch { drawerState.close() }
+                            }
                         )
                         Spacer(Modifier.height(5.dp))
                         val logging by MovieHttpLog.enabled.collectAsState()
