@@ -28,7 +28,9 @@ data class CodexUsage(
     // null: 接口未提供可用数量；0: 服务端明确表示没有可用重置卡。
     val availableResetCount: Int? = null,
     val resetCards: List<CodexResetCard> = emptyList(),
-    val resetCardsMessage: String = ""
+    val resetCardsMessage: String = "",
+    // 只有重置卡明细真正成功时，才允许覆盖本机已保存的逐张到期记录。
+    val resetDetailsReliable: Boolean = true
 )
 
 class CodexUsageClient(context: Context) {
@@ -89,7 +91,8 @@ class CodexUsageClient(context: Context) {
             val code = error.message?.takeIf { it.matches(Regex("HTTP [0-9]{3}")) }
             val explanation = if (code == null) "网络或解析错误" else code
             ResetCardsResult(null, emptyList(),
-                "重置卡明细不可用（$explanation），以下数量仅来自用量摘要")
+                "重置卡明细不可用（$explanation），以下数量仅来自用量摘要",
+                detailsReliable = false)
         }
         // 服务端可用数量优先以本次明细接口为准；不可用时回退到用量摘要。
         val actualCount = details.availableCount ?: summaryCount
@@ -103,7 +106,7 @@ class CodexUsageClient(context: Context) {
         if (actualCount == null && notices.isEmpty()) notices += "服务器没有提供可用重置卡数量"
         val cardMessage = notices.joinToString("；")
         val rate = root.optJSONObject("rate_limit") ?: return CodexUsage(
-            null, null, actualCount, details.cards, cardMessage
+            null, null, actualCount, details.cards, cardMessage, details.detailsReliable
         )
         val windows = listOf(
             rate.optJSONObject("primary_window"),
@@ -127,7 +130,8 @@ class CodexUsageClient(context: Context) {
                 weekly == null -> weekly = item
             }
         }
-        return CodexUsage(fiveHour, weekly, actualCount, details.cards, cardMessage)
+        return CodexUsage(fiveHour, weekly, actualCount, details.cards, cardMessage,
+            details.detailsReliable)
     }
 
     /** 接受服务端的 RFC3339/ISO8601 格式，也兼容秒/毫秒 Unix 时间戳。 */
@@ -152,7 +156,8 @@ class CodexUsageClient(context: Context) {
     private data class ResetCardsResult(
         val availableCount: Int?,
         val cards: List<CodexResetCard>,
-        val message: String
+        val message: String,
+        val detailsReliable: Boolean
     )
 
     /** 只读 GET：仅查询重置卡，不执行 consume，不使用任何兑换接口。 */
@@ -211,7 +216,10 @@ class CodexUsageClient(context: Context) {
                     notes += "$withoutExpiry 张未提供有效到期时间"
                 }
             }
-            return ResetCardsResult(count, cards, notes.joinToString("；"))
+            return ResetCardsResult(
+                count, cards, notes.joinToString("；"),
+                detailsReliable = array != null || count == 0
+            )
         } finally {
             conn.disconnect()
         }
