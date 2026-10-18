@@ -25,6 +25,7 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -52,6 +53,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -238,7 +240,7 @@ class MainActivity : ComponentActivity() {
             val component = ComponentName(this, CodexUsageWidgetProvider::class.java)
             if (manager.requestPinAppWidget(component, null, null)) return
         }
-        Toast.makeText(this, "请长按桌面，在小组件列表中选择 OfflinePhoneAgent", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "请长按桌面，在小组件列表中选择 YoYo", Toast.LENGTH_LONG).show()
     }
 
     fun loadMovies(keyword: String = "") {
@@ -344,6 +346,7 @@ private fun OfflineApplication(host: MainActivity) {
     MaterialTheme(colorScheme = scheme) {
         var page by rememberSaveable { mutableStateOf("Codex") }
         var showSettings by remember { mutableStateOf(false) }
+        var showAbout by remember { mutableStateOf(false) }
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -375,10 +378,20 @@ private fun OfflineApplication(host: MainActivity) {
                         Modifier.fillMaxHeight()
                             .padding(start = 17.dp, end = 17.dp, top = 20.dp, bottom = 15.dp)
                     ) {
-                        Text("YoYo", fontSize = 23.sp,
-                            fontWeight = FontWeight.Black, letterSpacing = 3.sp)
-                        Text("YOUR PERSONAL SPACE", fontSize = 10.sp,
-                            letterSpacing = 2.sp, color = Muted)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(R.drawable.yoyo_launcher),
+                                contentDescription = "YoYo 品牌头像",
+                                modifier = Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
+                            )
+                            Spacer(Modifier.width(11.dp))
+                            Column {
+                                Text("YoYo", fontSize = 23.sp,
+                                    fontWeight = FontWeight.Black, letterSpacing = 2.sp)
+                                Text("YOUR PERSONAL SPACE", fontSize = 10.sp,
+                                    letterSpacing = 1.4.sp, color = Muted)
+                            }
+                        }
                         Spacer(Modifier.height(25.dp))
                         NavigationDrawerItem(
                             icon = { Icon(Icons.Outlined.AutoAwesome, null) },
@@ -415,9 +428,25 @@ private fun OfflineApplication(host: MainActivity) {
                             onClick = { scope.launch { drawerState.close() }; host.updateNow() }
                         )
                         Spacer(Modifier.height(9.dp))
-                        Text("YoYo", fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium)
-                        Text("v" + BuildConfig.VERSION_NAME, fontSize = 10.sp, color = Muted)
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .clickable { showAbout = true }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.yoyo_launcher),
+                                contentDescription = null,
+                                modifier = Modifier.size(26.dp).clip(RoundedCornerShape(8.dp))
+                            )
+                            Spacer(Modifier.width(9.dp))
+                            Column {
+                                Text("YoYo · 关于", fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium)
+                                Text("v" + BuildConfig.VERSION_NAME,
+                                    fontSize = 10.sp, color = Muted)
+                            }
+                        }
                     }
                 }
             }
@@ -478,6 +507,31 @@ private fun OfflineApplication(host: MainActivity) {
                     }
                 }
             }
+        }
+        if (showAbout) {
+            AlertDialog(
+                onDismissRequest = { showAbout = false },
+                icon = {
+                    Image(
+                        painter = painterResource(R.drawable.yoyo_launcher),
+                        contentDescription = "YoYo",
+                        modifier = Modifier.size(80.dp)
+                            .clip(RoundedCornerShape(22.dp))
+                    )
+                },
+                title = { Text("YoYo", color = MaterialTheme.colorScheme.onSurface) },
+                text = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("个人空间 · Codex · Movie",
+                            fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("版本 " + BuildConfig.VERSION_NAME,
+                            fontSize = 12.sp, color = Muted)
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showAbout = false }) { Text("完成") }
+                }
+            )
         }
         if (showSettings) {
             SettingsPanel(
