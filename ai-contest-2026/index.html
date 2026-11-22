@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.15 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.16 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -853,6 +853,16 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 }
 #practice49-super-intro .war51-title span:not(.mint){font-size:inherit;line-height:inherit;font-weight:inherit}
 
+
+/* V4.16: longer human + AI team headline, keep Super App warroom inside the slide */
+#practice49-super-intro .war51-title{line-height:1.15}
+#practice49-super-intro .war51-lead{margin-top:8px}
+#practice49-super-intro .war51-stage{height:386px;margin-top:14px}
+#practice49-super-intro .war51-innovations{margin-top:11px;padding-top:12px}
+#practice49-super-intro .war51-footnote{margin-top:9px}
+/* SRS links: SVG gradients now use userSpaceOnUse, so zero-height horizontal paths paint reliably */
+#srs51 .srs-lines path{stroke-width:2.8;stroke-dasharray:7 8}
+
 </style>
 </head>
 <body>
@@ -866,7 +876,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.15</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.16</span></header>
   <div class="cover45-main">
     <div class="reveal" data-step="0">
       <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
@@ -1214,8 +1224,8 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <div class="srs-stage reveal" data-step="2" role="img" aria-label="福州科技馆福小科 APP 部署时的跨端音视频排障协同图：AI 借助 Playwright MCP、SSH MCP（含 SRS 日志分析）、数据库 MCP、ADB/Android 工具以及 GitHub MCP（检索 SRS 源码），AI 中心向 H5、PC、Android、SRS、Java/达梦及 Nginx 六端发起检查；六端的日志与测试结果再回传供 AI 关联分析。">
     <svg viewBox="0 0 1432 328" preserveAspectRatio="none" aria-hidden="true">
       <defs>
-        <linearGradient id="srsEdgeL" x1="0" x2="1"><stop offset="0" stop-color="#72b9df" stop-opacity=".48"/><stop offset="1" stop-color="#8eeac8" stop-opacity=".95"/></linearGradient>
-        <linearGradient id="srsEdgeR" x1="0" x2="1"><stop offset="0" stop-color="#8eeac8" stop-opacity=".95"/><stop offset="1" stop-color="#72b9df" stop-opacity=".48"/></linearGradient>
+        <linearGradient id="srsEdgeL" gradientUnits="userSpaceOnUse" x1="493" y1="164" x2="326" y2="164"><stop offset="0" stop-color="#72b9df" stop-opacity=".48"/><stop offset="1" stop-color="#8eeac8" stop-opacity=".95"/></linearGradient>
+        <linearGradient id="srsEdgeR" gradientUnits="userSpaceOnUse" x1="939" y1="164" x2="1106" y2="164"><stop offset="0" stop-color="#8eeac8" stop-opacity=".95"/><stop offset="1" stop-color="#72b9df" stop-opacity=".48"/></linearGradient>
         <marker id="srsOutboundArrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L10 6 L1 11 Z" fill="#9beccd"/></marker>
       </defs>
       <g fill="none" stroke-width="2.3" stroke-linecap="round" class="srs-lines">
@@ -1275,7 +1285,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">约70秒。本案例明确属于福州科技馆「福小科 APP」在部署过程中的音视频联调。现场表现为呼叫接通但无画面。本页一次性显示故障证据、AI/MCP跨端分析与修复结论，保留连线动效；顶部深色日志条引用用户 2026-11-03 提供的原始 SRS WARN 日志，保留原始时间戳、4043(HttpsRead)、Failed to read data from HTTPS stream、http_hooks_on_play 与 on_play failed 等关键字，删去内部编号、真实 URL 与请求数据；该日志只能证明当时确实有 HTTPS Hook 读取失败现象，不能单独证明 SSE 配置即为唯一根因。讲解中心的专业能力映射：Playwright MCP 用于浏览器端 WebRTC 验证，SSH MCP 用于远程获取并分析 SRS 运行日志、核查 Nginx 配置；GitHub MCP 用于检索 SRS 源码、核对日志与错误处理路径；DB MCP 辅助达梦数据核对，ADB/Android 工具用于真机日志与操作；这些组合帮助串联 H5、PC、Android、SRS、Java/达梦和 Nginx/SSH 六类检查入口，辅助拆分任务与交叉验证。将其称为AI+多MCP协同诊断，不夸大为多个独立AI Agent真实并发；若要声称某个具体MCP服务在该次故障中真实执行，需核对工具调用日志，ADB 不必强称为 MCP。用户确认的实际排查结论：Nginx HTTPS 下 SSE 相关配置与 SRS 使用的 HTTPS 路径/行为发生干扰；曾在公共配置段使用的 proxy_buffering off;（关闭响应缓冲）与 proxy_cache off;（关闭代理缓存）被限定到 SSE 专属 location，SRS HTTPS 路径不再施加两项 SSE 专有设置，配置调整并跨端复测后画面恢复。页面 /sse/ 仅为脱敏示意，并非已证实的线上 URI；不得把用户口述的“chain”当作 Nginx 指令。当前没有原始 nginx.conf 完整 diff，不能断言是哪一条指令单独导致故障；现场应展示脱敏配置、日志及复测证据。图中六根箭头统一从 AI 中心指向外部六端，表示 AI 主动派发/调用排查任务，而非媒体流传输方向；工具执行产生的日志、截图、配置及状态再返回给 AI，用于跨系统分析，因此真实调用是有请求也有反馈。突出人掌握最终变更、配置审查和复验，AI 主要承担跨系统证据组织与排查协调。隐去 IP、流 ID、token。</template>
 </section>
 
-<section class="slide bg-blue" id="practice49-super-intro" data-title="人指挥AI团队｜Super App 多 Agent 协同研发" data-chapter="实践 05 / Super App · 1/3" data-time="70">
+<section class="slide bg-blue" id="practice49-super-intro" data-title="人+AI团队：把 Super App 从“个人会话”变成协作型研发团队" data-chapter="实践 05 / Super App · 1/3" data-time="70">
   <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
     <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
     <div class="deck46-header-logo" title="恒锋信息 Logo">
@@ -1285,7 +1295,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   </div>
   
 <header class="hdr"><i class="stripe"></i><span class="eyebrow">09 / PRACTICE 05 · 实践五 · SUPER APP / 1 OF 3</span><span class="section-tag">AI 作战 · 项目与角色架构</span></header>
-<h2 class="war51-title">人指挥<span class="mint">AI团队</span>。</h2>
+<h2 class="war51-title">人+<span class="mint">AI团队</span>：把 Super App 从“个人会话”<br>变成协作型研发团队。</h2>
 <p class="war51-lead">基于旧 H5 / Android 资产推进 Flutter 跨端重构；保留原型、接口协议与现有业务，不让多个 AI 各写各的。</p>
 <div class="war51-stage">
   <div class="war51-project reveal" data-step="0">
