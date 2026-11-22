@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.9 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.10 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -509,6 +509,55 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 .pr49-evidence-table span{font-size:16px;color:#c1dae3;line-height:1.43}
 .pr49-evidence-table small{font-size:15px;color:#d7ba9f;line-height:1.4}
 
+
+/* V4.10: accurate hf-ai-seed inventory, slide six height recalibration */
+#asset5 .seed50-header{margin-bottom:9px}
+#asset5 .seed50-title{font-size:48px;line-height:1.16;letter-spacing:-.038em;max-width:1390px}
+#asset5 .seed50-lead{font-size:19px;color:#bed6df;line-height:1.4;margin-top:7px}
+#asset5 .seed50-lead strong{color:#d3f8e6}
+#asset5 .seed50-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;margin-top:13px}
+#asset5 .seed50-metrics>div{display:flex;align-items:center;gap:11px;min-width:0;min-height:70px;background:rgba(23,77,78,.5);border:1px solid rgba(127,215,194,.28);border-radius:13px;padding:10px 14px;position:relative}
+#asset5 .seed50-metrics strong{font-size:39px;line-height:1;color:#a6efcd;letter-spacing:-.065em;font-weight:820}
+#asset5 .seed50-metrics span{font-size:17px;color:#e2f4ed;font-weight:720}
+#asset5 .seed50-metrics small{position:absolute;left:65px;bottom:8px;font-size:11.5px;color:#a3bfc9;white-space:nowrap}
+#asset5 .seed50-main{height:428px;min-height:0;margin-top:13px;display:grid;grid-template-columns:1.04fr .96fr;gap:14px}
+#asset5 .seed50-treecard,#asset5 .seed50-skillcard,#asset5 .seed50-mcpcard,#asset5 .seed50-startcard{min-width:0;overflow:hidden;background:rgba(17,43,61,.9);border:1px solid rgba(142,202,209,.26);border-radius:16px}
+#asset5 .seed50-treecard{padding:14px 18px 11px}
+#asset5 .seed50-card-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+#asset5 .seed50-card-head strong{font-size:19px;color:#edf9f7;line-height:1.3}
+#asset5 .seed50-card-head>span{font-size:12px;color:#95dec9;letter-spacing:.06em;white-space:nowrap}
+#asset5 .seed50-tree{display:flex;flex-direction:column;gap:0;margin-top:9px}
+#asset5 .seed50-line{display:grid;grid-template-columns:219px 1fr;gap:10px;align-items:center;min-height:21.7px}
+#asset5 .seed50-line>span{font:700 14px/1.35 ui-monospace,Consolas,"Microsoft YaHei",monospace;letter-spacing:-.02em;white-space:pre;color:#b3e3ef}
+#asset5 .seed50-line>small{font-size:12.2px;line-height:1.2;color:#b2cbd5}
+#asset5 .seed50-line.root>span,#asset5 .seed50-line.highlighted>span{color:#a5f0c9}
+#asset5 .seed50-line.root>span{font-size:16px}
+#asset5 .seed50-line.top>span{color:#b9f1db}
+#asset5 .seed50-tree-tip{padding:9px 11px 5px;margin-top:8px;border-top:1px solid rgba(141,210,206,.2);font-size:12.6px;color:#cae9e4;line-height:1.32}
+#asset5 .seed50-tree-tip code{font-size:12px;color:#a8e6d7;font-family:ui-monospace,Consolas,monospace}
+#asset5 .seed50-tree-tip>span{display:block;margin-top:4px;color:#8db4c3;font-size:11.6px}
+#asset5 .seed50-detail{display:grid;grid-template-rows:190px 86px 134px;gap:9px;min-height:0}
+#asset5 .seed50-skillcard{padding:13px 15px}
+#asset5 .seed50-skillgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:11px}
+#asset5 .seed50-skill{padding:8px 8px 7px;border:1px solid rgba(118,207,198,.22);border-radius:9px;background:rgba(42,112,110,.12);min-width:0}
+#asset5 .seed50-skill code{font:700 12.7px/1.18 ui-monospace,Consolas,monospace;color:#c4f4e5;display:block;white-space:nowrap;letter-spacing:-.04em}
+#asset5 .seed50-skill>span{font-size:12px;color:#a5c5d2;display:block;margin-top:3px}
+#asset5 .seed50-mcpcard{padding:10px 14px}
+#asset5 .seed50-mcpcard .seed50-card-head strong{font-size:17px}
+#asset5 .seed50-mcps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#asset5 .seed50-mcps span{font-size:12.6px;padding:4px 10px;border:1px solid rgba(119,205,215,.25);background:rgba(74,135,155,.16);color:#cfedf0;border-radius:7px}
+#asset5 .seed50-mcpcard p{font-size:11px;line-height:1.2;color:#99b8c4;margin-top:5px}
+#asset5 .seed50-startcard{padding:11px 15px}
+#asset5 .seed50-startcard .seed50-card-head strong{font-size:17px}
+#asset5 .seed50-startgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:9px}
+#asset5 .seed50-startgrid span{font:650 12.4px/1.35 ui-monospace,Consolas,"Microsoft YaHei",monospace;padding:6px 7px;border:1px solid rgba(113,215,169,.2);border-radius:7px;color:#c5ecdb;background:rgba(33,110,84,.15);white-space:nowrap}
+#asset5 .seed50-startcard p{font-size:12px;line-height:1.35;color:#d5e9df;margin-top:8px}
+#asset5 .seed50-outcome{display:flex;align-items:center;gap:15px;padding:11px 16px;border:1px solid rgba(139,226,194,.32);border-radius:12px;background:rgba(26,92,80,.25);margin-top:11px;min-height:43px}
+#asset5 .seed50-outcome>b{font-size:15px;color:#a3edcb;white-space:nowrap}
+#asset5 .seed50-outcome>span{font-size:15px;color:#deefea;white-space:nowrap}
+#asset5 .seed50-outcome>i{font-style:normal;color:rgba(144,213,199,.55)}
+#asset5 .seed50-outcome>strong{font-size:15px;line-height:1.25;color:#dcefe9;font-weight:650}
+
 </style>
 </head>
 <body>
@@ -522,7 +571,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.9</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.10</span></header>
   <div class="cover45-main">
     <div class="reveal" data-step="0">
       <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
@@ -693,29 +742,70 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-<header class="hdr" style="margin-bottom:12px"><i class="stripe"></i><span class="eyebrow">05 / PRACTICE 01 · AI-SEED</span><span class="section-tag">AI 种子 · 项目初始化与资产传承</span></header>
-<h2 style="font-size:50px;line-height:1.14"><span class="mint">AI-SEED</span>：让 AI 一进项目就懂工程规范。</h2>
-<p class="lead" style="font-size:19px;margin-top:8px">以项目资产传承为“种子”：新 Agent 自动有规范可读、有工具可用、有过程可查。</p>
-<div class="asset43-gen reveal" data-step="0">
-  <div class="asset43-genbox"><b>V1</b><strong>微尚养老商城</strong><small>初代积累</small></div><div class="asset43-genarrow">→</div>
-  <div class="asset43-genbox"><b>V2</b><strong>沈阳文旅</strong><small>扩展迭代</small></div><div class="asset43-genarrow">→</div>
-  <div class="asset43-genbox"><b>V3</b><strong>福州科技馆</strong><small>继承完善</small></div>
-</div>
-<div class="asset43-layout">
-  <div class="asset43-pane reveal" data-step="1">
-    <div class="asset43-head"><strong>AI-SEED · 工程种子目录</strong><span>hf-fzkjg / 工程约定示意</span></div>
-    <div class="asset43-tree"><div class="asset43-line root"><span class="path">hf-fzkjg/</span><span class="desc">默认工程上下文 / 项目代码</span></div><div class="asset43-line important"><span class="path">├─ AGENTS.md</span><span class="desc">项目指导、技术栈、规则与经验</span></div><div class="asset43-line "><span class="path">├─ docs/</span><span class="desc">生命周期知识与研发记录</span></div><div class="asset43-line level2"><span class="path">│  ├─ skills/</span><span class="desc">业务、平台、生成、测试与修复</span></div><div class="asset43-line level2"><span class="path">│  ├─ mcp/</span><span class="desc">数据库 / SSH / 浏览器工具接入</span></div><div class="asset43-line level2"><span class="path">│  ├─ dev/</span><span class="desc">需求、功能、架构与接口契约</span></div><div class="asset43-line level2"><span class="path">│  ├─ task/</span><span class="desc">迭代清单、计划、功能卡与看板</span></div><div class="asset43-line level2"><span class="path">│  ├─ test/</span><span class="desc">测试用例与回归验收记录</span></div><div class="asset43-line level2"><span class="path">│  ├─ migration/</span><span class="desc">SQL变更和数据库迁移</span></div><div class="asset43-line level2"><span class="path">│  ├─ change/</span><span class="desc">功能变更、Bug整改及复盘</span></div><div class="asset43-line level2 important"><span class="path">│  └─ deploy/</span><span class="desc">构建、环境部署、发布与回滚</span></div></div>
-    <div class="asset43-rule"><b>AGENTS.md · 给新成员与新 AI 的统一指导</b><p>项目概况/目录/技术栈/环境；代码风格→前后端 Skills；测试/Bug 修复→相应 Skills；构建→docs/deploy；经验教训、编码与中文安全规范。</p></div>
+  <header class="hdr seed50-header"><i class="stripe"></i><span class="eyebrow">05 / PRACTICE 01 · AI-SEED</span><span class="section-tag">AI 种子 · 项目初始化与资产传承</span></header>
+  <h2 class="seed50-title"><span class="mint">AI-SEED</span>：让 AI 进入项目就懂工程规范。</h2>
+  <p class="seed50-lead">把工程规范、通用 Skills、MCP 入口与研发记录打包为可接入新项目、也可接入历史项目的<strong> AI 工程种子</strong>。</p>
+  <div class="seed50-metrics reveal" data-step="0" aria-label="当前AI-SEED工程规模及手册能力">
+    <div><strong>47</strong><span>项目文件</span><small>当前工程快照</small></div>
+    <div><strong>9</strong><span>研发 Skills</span><small>唯一真身 docs/skills/</small></div>
+    <div><strong>11</strong><span>手册能力</span><small>AI-SEED.md</small></div>
+    <div><strong>7</strong><span>使用模式</span><small>初始化 / 接入 / 体检等</small></div>
+    <div><strong>12</strong><span>选择题</span><small>4 道必问，其余按需</small></div>
   </div>
-  <div class="asset43-right">
-    <div class="asset43-mini reveal" data-step="2"><h3>业务资产 · 商城可扩展架构</h3><p class="explain">产品 / SKU、订单、库存、支付、票券、售后；多业态策略扩展、模块边界、接口契约与交易规则。</p></div>
-    <div class="asset43-mini reveal" data-step="3"><h3>研发 Skills · 工程知识可复用</h3><div class="asset43-chips"><span>商城核心业态扩展</span><span>研发平台开发</span><span>前端代码生成</span><span>后端代码生成</span><span>接口文档 Skill</span><span>禅道 Bug 修复</span><span>测试用例 Skill</span></div><p class="explain" style="margin-top:6px">核心业务开发、框架生成、接口文档、质量测试与缺陷修复。</p></div>
-    <div class="asset43-mini reveal" data-step="4"><h3>MCP · 可调用的专业工具</h3><div class="asset43-chips mcp"><span>mysql-mcp</span><span>dm-mcp</span><span>kingbase-mcp</span><span>ssh-mcp</span><span>playwright</span><span>agent-browser</span><span>GitHub MCP</span></div><p class="explain" style="font-size:12.8px;margin-top:6px">让项目工具成为 AI 的眼睛与双手：查询数据、观察运行、操作浏览器、检索源码。</p></div>
+  <div class="seed50-main">
+    <div class="seed50-treecard reveal" data-step="0">
+      <div class="seed50-card-head"><strong>可直接复制到项目根目录的种子结构</strong><span>PROJECT SKELETON</span></div>
+      <div class="seed50-tree" aria-label="hf-ai-seed 真实目录结构，展示主要文件与目录">
+<div class="seed50-line root"><span>hf-ai-seed/</span><small>可移植的 AI 工程种子</small></div>
+<div class="seed50-line top"><span>├─ AGENTS.md</span><small>项目规则入口与约束模板</small></div>
+<div class="seed50-line top"><span>├─ CLAUDE.md</span><small>仅包含 @AGENTS.md</small></div>
+<div class="seed50-line folder"><span>└─ docs/</span><small>项目全生命周期资产</small></div>
+<div class="seed50-line nested"><span>　 ├─ README.md</span><small>目录索引与命名约定</small></div>
+<div class="seed50-line nested highlighted"><span>　 ├─ AI-SEED.md</span><small>11 项能力 · 7 种模式 · 初始化问答</small></div>
+<div class="seed50-line nested"><span>　 ├─ skills/</span><small>9 个 Skills · _index.md</small></div>
+<div class="seed50-line nested"><span>　 ├─ change/</span><small>变更记录 / 会话 / 模板</small></div>
+<div class="seed50-line nested"><span>　 ├─ migration/</span><small>SQL 迁移命名与执行记录</small></div>
+<div class="seed50-line nested"><span>　 ├─ task/</span><small>board.md + plan/ 任务计划</small></div>
+<div class="seed50-line nested"><span>　 ├─ test/</span><small>测试模板 + bug/ 缺陷索引</small></div>
+<div class="seed50-line nested"><span>　 ├─ design/</span><small>设计模板 + db/ 设计索引</small></div>
+<div class="seed50-line nested"><span>　 ├─ deploy/</span><small>build.md + ops.md</small></div>
+<div class="seed50-line nested"><span>　 ├─ mcp/</span><small>5 类 MCP 接入说明</small></div>
+<div class="seed50-line nested"><span>　 └─ tools/</span><small>fetch_zentao_bug.py</small></div>
+      </div>
+      <div class="seed50-tree-tip">复制：<code>AGENTS.md</code> + <code>CLAUDE.md</code> + <code>docs/</code><span>仅展示关键目录和文件，非全部 47 个文件逐项展开</span></div>
+    </div>
+    <div class="seed50-detail">
+      <div class="seed50-skillcard reveal" data-step="0">
+        <div class="seed50-card-head"><strong>9 个可调用 Skills</strong><span>docs/skills/</span></div>
+        <div class="seed50-skillgrid">
+<div class="seed50-skill"><code>hf-feature-dev</code><span>增量功能开发</span></div>
+<div class="seed50-skill"><code>hf-bug-fix</code><span>禅道 Bug 修复</span></div>
+<div class="seed50-skill"><code>hf-backend-generator</code><span>后端代码生成</span></div>
+<div class="seed50-skill"><code>hf-frontend-generator</code><span>前端页面生成</span></div>
+<div class="seed50-skill"><code>hf-mall-dev</code><span>商城模块开发</span></div>
+<div class="seed50-skill"><code>hf-module-tester</code><span>模块测试</span></div>
+<div class="seed50-skill"><code>hfrdp-dev-skill</code><span>研发平台开发</span></div>
+<div class="seed50-skill"><code>showdoc</code><span>接口文档</span></div>
+<div class="seed50-skill"><code>wechat-message</code><span>企业微信通知</span></div>
+        </div>
+      </div>
+      <div class="seed50-mcpcard reveal" data-step="0">
+        <div class="seed50-card-head"><strong>5 类 MCP 能力入口</strong><span>docs/mcp/README.md</span></div>
+        <div class="seed50-mcps"><span>MySQL</span><span>SSH</span><span>达梦 DM</span><span>Kingbase</span><span>Playwright</span></div>
+        <p>工具登记与接入说明，不等于五类工具都已在每个项目完成调用验证。</p>
+      </div>
+      <div class="seed50-startcard reveal" data-step="0">
+        <div class="seed50-card-head"><strong>一句话触发，按项目画像交互初始化</strong><span>HOW TO START</span></div>
+        <div class="seed50-startgrid">
+          <span>用 AI-SEED.md 初始化项目</span><span>用 AI-SEED.md 接入历史项目</span>
+          <span>用 AI-SEED.md 看看这个项目</span><span>用 AI-SEED.md 做项目体检</span>
+        </div>
+        <p>先看项目扫描结果 → 必答 4 题 / 其他按需 → 人工确认 → 替换 AGENTS.md 占位符。</p>
+      </div>
+    </div>
   </div>
-</div>
-<div class="asset43-gate reveal" data-step="5"><b>种子传承闭环</b><span>经验提炼</span><i>→</i><span>通用性/安全审查</span><i>→</i><span>版本化入库</span><i>→</i><span>新项目初始化</span><i>→</i><span>反馈纠偏迭代</span></div>
-
-<template class="speaker-note">案例1 AI-SEED（AI种子）是用户确认的工程名称，目标“让 AI 进入项目就懂工程规范”。展示之前的项目资产传承（微尚养老商城→沈阳文旅→福州科技馆），左侧继续按目标目录归纳 AGENTS.md、docs/skills、docs/mcp、dev、task、test、migration、change、deploy。右侧已有商城架构、技能与工具配置。三项可核数量：历史沈阳文旅工程11个项目级Skill、福州科技馆生成Skill文档4份、商城74张微任务卡；都是静态审计资产/任务规模，不是AI-SEED自动创建数量、已交付数或节约工时。当前需要补录AI-SEED一键初始化前后截图、一次真实初始化日志和新Agent按规范完成小任务的耗时，才能形成真实提效数据。约85秒。重点是 AI-SEED 项目初始化与资产传承，用户明确指定的三代：微尚养老商城V1→沈阳文旅V2→福州科技馆V3，表示跨不同业务项目的经验、规范、能力继承，不是同一商品的版本发布。原始资产盘点表明历史文旅工程存在11个项目级Skill，新科技馆工程有前后端生成Skill、商城核心架构设计、74张商城微任务卡；有已登记MCP配置但不是每个都已实测。左侧hf-fzkjg/为项目初始化规范及现有资产结构的结合展示：AGENTS.md存放项目概况、结构、技术栈、环境、编码风格规范（关联前后端Skill）、测试修复（关联测试与Bug Skill）、构建部署（关联docs/deploy）、经验教训与中文编码安全；docs/skills存核心业态、平台、前后端生成、文档、测试、Bug修复Skill；docs/mcp为MCP工具能力记录；docs/dev存需求与功能、商城架构、API契约等；docs/task为迭代清单、计划和任务看板；docs/test为测试与复验；docs/migration为SQL迭代；docs/change为功能变更、Bug整改和复盘；docs/deploy为部署环境、发布与回滚。注意盘点中真实商城子工程有docs/tasks（复数），整合目录图使用目标统一规范task/，不能把建议展示的全部路径声称为当前物理目录实测。右侧业务资产应突出商城核心产品/库存/订单/支付/票券/售后中心，多业态策略扩展、模块拆分和接口契约，不能说商城仅仅是CRUD。Skills示例含商城核心业态扩展、研发平台开发、前后端代码生成、接口文档、禅道Bug修复和测试用例；注意名字为展示标签，不是完整Git逐条校验路径。MCP mysql-mcp、dm-mcp、kingbase-mcp、ssh-mcp、playwright、agent-browser、GitHub MCP是不同类型专业接入，不能把安装第三方MCP算自研。人的责任：筛选业务知识、审核安全敏感数据与许可证、判定代码和规范兼容性、批准版本化推广，回收项目反馈持续升级。不要声称完整Super App多Agent流程已经并入科技馆初始化。</template>
+  <div class="seed50-outcome reveal" data-step="0"><b>资产传承路径</b><span>微尚养老商城 → 沈阳文旅 → 福州科技馆</span><i>｜</i><strong>经验不只留在聊天记录，而进入新项目的默认工程上下文。</strong></div>
+  <template class="speaker-note">约85秒。实践一正式名称 AI-SEED（AI种子），目标“让AI进入项目就懂工程规范”。本页结构与规模采用用户2026-11-23提供的当前工程清单：hf-ai-seed 共47个文件、9个Skill；根目录AGENTS.md为项目规则模板，CLAUDE.md只有@AGENTS.md一行；docs/README.md为索引；docs/AI-SEED.md含11项能力、7种使用模式、项目画像扫描、12个选择题（初始化必问4题，其余按需）和占位符替换。9个Skill的唯一真身在docs/skills/，包括hf-feature-dev、hf-bug-fix、hf-backend-generator、hf-frontend-generator、hf-mall-dev、hf-module-tester、hfrdp-dev-skill、showdoc、wechat-message；最后者包含5个脚本。其它目录职责：change含总变更记录、README及模板，migration有数据库脚本模板和执行记录命名约定，task有board.md唯一任务看板和plan模板，test包含bug索引，design含db索引，deploy有build.md与ops.md，mcp/README仅登记MySQL、SSH、DM、Kingbase、Playwright五类MCP，tools含禅道抓取脚本，其凭据从环境变量读取。实际使用步骤：将AGENTS.md、CLAUDE.md、docs/复制到目标项目根目录；输入“用AI-SEED.md初始化项目/接入历史项目/看看这个项目/做项目体检”之一；先审阅项目扫描结果，逐个回答选择题，初始化后替换AGENTS.md里的占位符。跨项目传承路径仍为微尚养老商城→沈阳文旅→福州科技馆；不能把三者说成同一个产品版本。47、9、11、7、12属于用户提供的工程与手册清单规模，不是效率提升百分比、成功运行次数或自动生成文件数；提效需以初始化前后时间/规范缺漏/重复沟通轮次进行对照测量。图中只展开主要文件和目录，不是47个文件完整逐项树。整套Super App多Agent作战流程仍是独立实践，不宣称已整合进AI-SEED。</template>
 </section>
 
 <section class="slide bg-blue" id="practice49-mall" data-title="AI 赋能业务工程化研发｜福州科技馆商城" data-chapter="实践 02 / 商城工程化" data-time="84">
