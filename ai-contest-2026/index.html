@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V3.4 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V3.5 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -78,6 +78,32 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 .srs-mcp-source b{color:#aff4d3;font-size:17px}
 .srs-mcp-source small{font-size:12px;text-align:right;max-width:245px;white-space:normal;line-height:1.22}
 .srs-hub .srs-hub-bottom{margin-top:5px;padding:6px 0 0}
+
+/* V3.5: SSE-only Nginx directive scope - before/after comparison */
+.srs-stage{height:340px;margin-top:12px}
+.srs-stage .srs-tool{height:84px}
+.srs-stage .srs-tool[style*="269px"]{top:255px!important}
+.srs-stage .srs-hub{top:27px;height:282px}
+.srs-outcome{display:flex;flex-direction:column;align-items:stretch;gap:7px;min-height:0;margin-top:8px;padding:9px 12px}
+.srs-outcome-top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:22px}
+.srs-outcome-label{min-width:0;display:flex;flex-direction:row;align-items:center;gap:12px}
+.srs-outcome-label strong{font-size:17px}
+.srs-outcome-status{font-size:14px;white-space:nowrap;color:var(--mint);font-weight:700}
+.srs-config-flow{display:grid;grid-template-columns:1fr 26px 1.22fr .9fr;align-items:stretch;gap:8px;width:100%}
+.srs-config-card{min-width:0;border-radius:9px;padding:7px 10px;border:1px solid rgba(143,217,219,.24);background:rgba(8,32,49,.88)}
+.srs-config-title{display:block;font-size:12px;line-height:17px;color:#b7d9df;white-space:nowrap;margin-bottom:3px;font-weight:660}
+.srs-config-card code{display:block;font:600 14px/17px ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;letter-spacing:-.025em}
+.srs-config-card code span{display:block}
+.srs-config-before code{color:#ffccd0}
+.srs-config-after{border-color:rgba(133,242,191,.48);background:rgba(17,61,60,.73)}
+.srs-config-after code{color:#b2f7d4}
+.srs-config-indent{padding-left:16px}
+.srs-config-arrow{display:flex;align-items:center;justify-content:center;color:var(--mint);font-size:27px}
+.srs-config-result{display:flex;flex-direction:column;justify-content:center}
+.srs-config-result strong{font-size:16px;line-height:20px;color:var(--mint)}
+.srs-config-result small{font-size:12px;line-height:16px;color:#c6e0e2;margin-top:4px}
+.srs-evidence{font-size:12px;margin-top:4px;line-height:1.4}
+.srs-evidence code{font-size:12px;color:#b6f8e5}
 
 </style>
 </head>
@@ -229,19 +255,30 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
     <div class="srs-tool srs-right" style="top:269px"><span class="srs-tag">06 / SERVER</span><strong>Nginx / SSH</strong><small>反向代理、协议配置、服务器日志</small></div>
   </div>
 
-  <div class="srs-outcome reveal" data-step="2" role="group" aria-label="实际排查结论与配置调整">
-    <div class="srs-outcome-label"><span class="srs-outcome-kicker">实际排查结论</span><strong>HTTPS / SSE 配置交互影响 SRS</strong></div>
-    <div class="srs-outcome-track"><span>定位 Nginx SSE 配置作用范围</span><span class="srs-chevron">→</span><span>从原公共配置段移除，移至对应 <code>location</code></span><span class="srs-chevron">→</span><b>调整后问题解决</b></div>
+  <div class="srs-outcome reveal" data-step="2" role="group" aria-label="Nginx HTTPS 下 SSE 配置修复前后对照">
+    <div class="srs-outcome-top">
+      <div class="srs-outcome-label"><span class="srs-outcome-kicker">实际修复结论</span><strong>将 SSE 专属反向代理指令从共享层移至独立 location</strong></div>
+      <span class="srs-outcome-status">✓ 人工修改配置、联调复验后画面恢复</span>
+    </div>
+    <div class="srs-config-flow">
+      <div class="srs-config-card srs-config-before">
+        <span class="srs-config-title">调整前 · 公共配置段（作用范围过大）</span>
+        <code><span>proxy_buffering off;</span><span>proxy_cache off;</span></code>
+      </div>
+      <div class="srs-config-arrow" aria-hidden="true">→</div>
+      <div class="srs-config-card srs-config-after">
+        <span class="srs-config-title">调整后 · 仅放入 SSE 的 location（路径为示意）</span>
+        <code><span>location /sse/ {</span><span class="srs-config-indent">proxy_buffering off;</span><span class="srs-config-indent">proxy_cache off;</span><span>}</span></code>
+      </div>
+      <div class="srs-config-card srs-config-result">
+        <span class="srs-config-title">SRS HTTPS 路径</span>
+        <strong>剔除上述 SSE 专属指令</strong>
+        <small>保持 SRS 路径自身配置；AI 辅助定位，人决定修改并复验</small>
+      </div>
+    </div>
   </div>
-  <div class="srs-decisions reveal" data-step="3">
-    <span><b class="cyan">人</b> 明确现象与边界</span>
-    <span class="srs-chevron">→</span>
-    <span><b class="mint">AI + MCP</b> 协同六端查证</span>
-    <span class="srs-chevron">→</span>
-    <span><b class="amber">人</b> 调整 SSE 配置并验证恢复</span>
-  </div>
-  <p class="micro srs-evidence">现场可展示：脱敏 Nginx 调整前后配置、SRS 日志和复测记录。具体 Nginx 指令以实际配置为准，不将单条 4043 日志当成完整因果证明。</p>
-  <template class="speaker-note">约70秒。本案例明确属于福州科技馆「福小科 APP」在部署过程中的音视频联调。现场表现为呼叫接通但无画面。讲解中心的专业能力映射：Playwright MCP 用于浏览器端 WebRTC 验证，SSH MCP 用于远程获取并分析 SRS 运行日志、核查 Nginx 配置；GitHub MCP 用于检索 SRS 源码、核对日志与错误处理路径；DB MCP 辅助达梦数据核对，ADB/Android 工具用于真机日志与操作；这些组合帮助串联 H5、PC、Android、SRS、Java/达梦和 Nginx/SSH 六类检查入口，辅助拆分任务与交叉验证。若要声称某个具体 MCP 服务在该次故障中真实执行，需核对工具调用日志，ADB 不必强称为 MCP。用户确认的实际排查结论：Nginx HTTPS 下 SSE 相关配置与 SRS 使用的 HTTPS 路径/行为互相影响；将 SSE 相关配置从原先的公共配置段（用户口述为“chain”）移出，限定在对应 location 内，调整后问题解决。不要擅自把“chain”解释为 Nginx 的合法指令或编造具体语法；现场展示脱敏的修改前后配置以及复测记录，补足因果证据。突出人掌握最终变更、配置审查和复验，AI 主要承担跨系统证据组织与排查协调。隐去 IP、流 ID、token。</template>
+  <p class="micro srs-evidence">两项指令：<code>proxy_buffering off;</code>（关闭响应缓冲）与 <code>proxy_cache off;</code>（关闭代理缓存）。<code>/sse/</code> 为脱敏路径示意；具体故障因果以原始配置与复测记录为证。</p>
+  <template class="speaker-note">约70秒。本案例明确属于福州科技馆「福小科 APP」在部署过程中的音视频联调。现场表现为呼叫接通但无画面。讲解中心的专业能力映射：Playwright MCP 用于浏览器端 WebRTC 验证，SSH MCP 用于远程获取并分析 SRS 运行日志、核查 Nginx 配置；GitHub MCP 用于检索 SRS 源码、核对日志与错误处理路径；DB MCP 辅助达梦数据核对，ADB/Android 工具用于真机日志与操作；这些组合帮助串联 H5、PC、Android、SRS、Java/达梦和 Nginx/SSH 六类检查入口，辅助拆分任务与交叉验证。若要声称某个具体 MCP 服务在该次故障中真实执行，需核对工具调用日志，ADB 不必强称为 MCP。用户确认的实际排查结论：Nginx HTTPS 下 SSE 相关配置与 SRS 使用的 HTTPS 路径/行为发生干扰；曾在公共配置段使用的 proxy_buffering off;（关闭响应缓冲）与 proxy_cache off;（关闭代理缓存）被限定到 SSE 专属 location，SRS HTTPS 路径不再施加两项 SSE 专有设置，配置调整并跨端复测后画面恢复。页面 /sse/ 仅为脱敏示意，并非已证实的线上 URI；不得把用户口述的“chain”当作 Nginx 指令。当前没有原始 nginx.conf 完整 diff，不能断言是哪一条指令单独导致故障；现场应展示脱敏配置、日志及复测证据。突出人掌握最终变更、配置审查和复验，AI 主要承担跨系统证据组织与排查协调。隐去 IP、流 ID、token。</template>
 </section>
 
 <section class="slide" data-title="从人与人到人主导多 AI 协同" data-chapter="协作理念 / 决策重心" data-time="45">
