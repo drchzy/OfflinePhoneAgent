@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.6 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.7 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -338,6 +338,30 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 #cover45 .cover46-theme strong{font-size:19px;color:#e7f6f3;font-weight:670}
 @media print{#stage .deck46-header-logo img{transition:none!important}}
 
+
+/* V4.7: preserve cover mainline inline after presenter, with date below */
+#cover45 .cover46-footer{justify-content:flex-start}
+#cover45 .cover46-report{align-items:flex-start;gap:11px}
+#cover45 .cover47-report-main{display:flex;align-items:center;gap:17px;white-space:nowrap}
+#cover45 .cover47-report-main strong{font-size:19px;color:#f0fcf9;letter-spacing:.02em}
+#cover45 .cover47-pipe{height:19px;width:1px;background:rgba(148,222,216,.58);flex-shrink:0}
+#cover45 .cover47-line{font-size:19px;color:#d6eeee;letter-spacing:.014em;font-weight:590}
+#cover45 .cover46-report time{margin-top:1px}
+/* V4.7: bottom-right manual timer. Slide changes never affect elapsed time. */
+#chrome #clock47{display:flex;align-items:center;gap:8px;margin-left:6px;white-space:nowrap;padding-left:13px;border-left:1px solid rgba(153,201,220,.25)}
+#chrome #clock47 .clock47-label{font-size:12px;font-weight:740;color:#b5d2de;letter-spacing:.08em}
+#chrome #timer{font-size:18px;line-height:1;color:#b8f6da;min-width:63px;letter-spacing:.015em;font-variant-numeric:tabular-nums;font-weight:800}
+#chrome #clock47.running #timer{color:#93f4c6}
+#chrome #clock47 button{padding:7px 11px;min-width:43px;border-radius:9px}
+#chrome #clockStart{color:#b6f7d8;border-color:rgba(120,232,174,.39);background:rgba(50,156,106,.17)}
+#chrome #clockStop{color:#ffdfae;border-color:rgba(236,187,105,.33);background:rgba(124,86,45,.16)}
+#chrome #clockReset{color:#d2dfea}
+#chrome #clock47 button:disabled{opacity:.38;cursor:default;filter:grayscale(.3)}
+#chrome #clock47 button:disabled:hover{background:initial}
+#chrome #slidecounter{min-width:61px}
+@media(max-width:1040px){#chrome #timeText,#chrome #slide-progress{display:none}#chrome{gap:7px;padding:0 10px}#chrome button{padding:7px 8px}}
+@media(max-width:760px){#chrome #notesBtn,#chrome #overviewBtn,#chrome #currentChapter,#chrome .sep{display:none}#chrome #clock47{margin-left:auto;padding-left:7px;gap:5px}}
+
 </style>
 </head>
 <body>
@@ -351,7 +375,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.6</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.7</span></header>
   <div class="cover45-main">
     <div class="reveal" data-step="0">
       <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
@@ -383,10 +407,12 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
     <div class="cover45-label bottom">SHARED CONTEXT · SMART DELIVERY</div>
   </div>
   <div class="cover45-footer cover46-footer">
-    <div class="cover46-report"><strong>汇报人：智慧城市事业部 - 黄宗耀</strong><time datetime="2026-11-23">2026年11月23日</time></div>
-    <div class="cover46-theme"><span>主线</span><strong>降低重复沟通、交接与返工成本</strong></div>
+    <div class="cover46-report">
+      <div class="cover47-report-main"><strong>汇报人：智慧城市事业部 - 黄宗耀</strong><span class="cover47-pipe" aria-hidden="true"></span><span class="cover47-line">主线：降低重复沟通、交接与返工成本</span></div>
+      <time datetime="2026-11-23">2026年11月23日</time>
+    </div>
   </div>
-  <template class="speaker-note">约35秒。汇报人：智慧城市事业部黄宗耀。右侧动画中央改为HENGFENG × AI文字标识，外圈保留科技环绕。每页右上角放汇报人和恒锋信息Logo，品牌图片来自用户提供的链接，断网时使用文字标识。封面底部左侧为汇报人和2026年11月23日，右侧保留主线：降低重复沟通、交接与返工成本。开场不强调AI写了多少代码，而强调跨岗位围绕共享工程上下文协作。案例分为科技馆跨岗位实践与Super App多Agent工程化。本次更新封面排版和全篇统一页眉，其他页面的主体内容与交互保持不变。</template>
+  <template class="speaker-note">约35秒。汇报人：智慧城市事业部黄宗耀。右侧动画中央改为HENGFENG × AI文字标识，外圈保留科技环绕。每页右上角放汇报人和恒锋信息Logo，品牌图片来自用户提供的链接，断网时使用文字标识。封面底部左侧一行呈现汇报人：智慧城市事业部-黄宗耀｜主线：降低重复沟通、交接与返工成本；日期下一行，右侧不额外放内容。开场不强调AI写了多少代码，而强调跨岗位围绕共享工程上下文协作。案例分为科技馆跨岗位实践与Super App多Agent工程化。本次更新封面底部排版、全篇一次性显示页面内容、右下角手动计时器。计时从点击开始才启动，停止即暂停，重置归零；翻页与返回不重置。</template>
 </section>
 
 <section class="slide" data-title="效率瓶颈：跨岗位的重复转译" data-chapter="问题 / WHY" data-time="45">
@@ -898,18 +924,18 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 </main></div>
-<div id="chrome" role="toolbar" aria-label="演示控制"><span class="label" id="currentChapter">开场</span><span class="sep"></span><button id="prev" aria-label="上一页或上一步">← 上一步</button><button id="next" aria-label="下一步或下一页">下一步 →</button><span class="sep"></span><button id="overviewBtn" title="按 O 查看全部页面">总览 O</button><button id="notesBtn" title="按 N 查看演讲备注">备注 N</button><button id="fullscreenBtn" title="按 F 全屏">全屏 F</button><div id="slide-progress"><span></span></div><span class="label" id="timeText">目标 15:00</span><span id="timer">00:00</span><span id="slidecounter">01 / 17</span></div>
+<div id="chrome" role="toolbar" aria-label="演示控制"><span class="label" id="currentChapter">开场</span><span class="sep"></span><button id="prev" aria-label="上一页">← 上一页</button><button id="next" aria-label="下一页">下一页 →</button><span class="sep"></span><button id="overviewBtn" title="按 O 查看全部页面">总览 O</button><button id="notesBtn" title="按 N 查看演讲备注">备注 N</button><button id="fullscreenBtn" title="按 F 全屏">全屏 F</button><div id="slide-progress"><span></span></div><span class="label" id="timeText">目标 15:00</span><span id="slidecounter">01 / 17</span><div id="clock47" role="group" aria-label="汇报累计耗时"><span class="clock47-label">耗时</span><span id="timer" role="timer" aria-live="off" aria-label="已用时间">00:00</span><button id="clockStart" type="button" title="开始或继续累计计时">开始</button><button id="clockStop" type="button" title="暂停计时" disabled>停止</button><button id="clockReset" type="button" title="清零并停止计时">重置</button></div></div>
 <div id="notes" aria-live="polite"><h4>演讲者备注</h4><p></p></div>
 <div id="overview"><button class="ov-back">返回演示 ×</button><h2>幻灯片总览 <span style="font-size:15px;color:#a4baca;vertical-align:middle">点击页面直接跳转 · 正文 17 页 / 附录 4 页</span></h2><div class="slides-list"></div></div>
 <script>
 (()=>{
-const stage=document.getElementById('stage');const slides=[...document.querySelectorAll('.slide')];const mainSlides=slides.filter(s=>!s.dataset.appendix);const n=mainSlides.length;let index=0,fragment=-1,overview=false;let started=Date.now();const progress=document.querySelector('#slide-progress span');const navC=document.getElementById('currentChapter');const counter=document.getElementById('slidecounter');const notesEl=document.getElementById('notes');
+const stage=document.getElementById('stage');const slides=[...document.querySelectorAll('.slide')];const mainSlides=slides.filter(s=>!s.dataset.appendix);const n=mainSlides.length;let index=0,overview=false;const progress=document.querySelector('#slide-progress span');const navC=document.getElementById('currentChapter');const counter=document.getElementById('slidecounter');const notesEl=document.getElementById('notes');
 function fit(){const w=window.innerWidth,h=window.innerHeight-50;const scale=Math.min(w/1600,h/900);const x=(w-1600*scale)/2,y=(h-900*scale)/2;stage.style.transform=`translate(${x}px,${y}px) scale(${scale})`;}window.addEventListener('resize',fit);fit();
-function steps(s){return [...new Set([...s.querySelectorAll('[data-step]')].map(e=>Number(e.dataset.step)))].sort((a,b)=>a-b)}
-function render(){slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.querySelectorAll('.reveal').forEach(e=>e.classList.toggle('visible',i===index&&Number(e.dataset.step)<=fragment));});const slide=slides[index];navC.textContent=slide.dataset.chapter||'正文';counter.textContent=`${String(index+1).padStart(2,'0')} / ${index<n?n:slides.length}${index>=n?'  附录':''}`;progress.style.width=`${Math.min((index+1)/n,1)*100}%`;const tmpl=slide.querySelector('template.speaker-note');notesEl.querySelector('p').textContent=tmpl?.content?.textContent?.trim()||'暂无备注';document.querySelectorAll('.ov-item').forEach((x,i)=>x.classList.toggle('active',i===index));document.title=`${slide.dataset.title}｜AI协作竞赛答辩`}
-function goto(i){if(i<0||i>=slides.length)return;index=i;fragment=-1;render()}
-function next(){const arr=steps(slides[index]);let nextFrag=arr.find(k=>k>fragment);if(nextFrag!==undefined){fragment=nextFrag;render()}else goto(index+1)}
-function prev(){const arr=steps(slides[index]);const earlier=arr.filter(k=>k<fragment);if(earlier.length){fragment=earlier[earlier.length-1];render()}else if(fragment>=0){fragment=-1;render()}else if(index>0){index--;const prevSteps=steps(slides[index]);fragment=prevSteps.length?prevSteps[prevSteps.length-1]:-1;render()}}
+// Each slide's complete content appears on entry; motion transitions remain active.
+function render(){slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.querySelectorAll('.reveal').forEach(e=>e.classList.toggle('visible',i===index));});const slide=slides[index];navC.textContent=slide.dataset.chapter||'正文';counter.textContent=`${String(index+1).padStart(2,'0')} / ${index<n?n:slides.length}${index>=n?'  附录':''}`;progress.style.width=`${Math.min((index+1)/n,1)*100}%`;const tmpl=slide.querySelector('template.speaker-note');notesEl.querySelector('p').textContent=tmpl?.content?.textContent?.trim()||'暂无备注';document.querySelectorAll('.ov-item').forEach((x,i)=>x.classList.toggle('active',i===index));document.title=`${slide.dataset.title}｜AI协作竞赛答辩`}
+function goto(i){if(i<0||i>=slides.length)return;index=i;render()}
+function next(){goto(index+1)}
+function prev(){goto(index-1)}
 document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
 function setOverview(v){overview=v;document.getElementById('overview').classList.toggle('show',v);if(v)fillOverview()}
 const list=document.querySelector('#overview .slides-list');function fillOverview(){list.innerHTML='';slides.forEach((s,i)=>{let b=document.createElement('button');b.className='ov-item'+(i===index?' active':'');b.innerHTML=`<span>${String(i+1).padStart(2,'0')} / ${s.dataset.appendix?'APPENDIX':s.dataset.chapter}</span><b>${s.dataset.title}</b>`;b.onclick=()=>{goto(i);setOverview(false)};list.appendChild(b)})}
@@ -917,8 +943,18 @@ document.getElementById('overviewBtn').onclick=()=>setOverview(!overview);docume
 document.getElementById('fullscreenBtn').onclick=()=>{if(document.fullscreenElement){document.exitFullscreen?.()}else{document.documentElement.requestFullscreen?.().catch(()=>{})}};
 window.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){if(!overview){e.preventDefault();next()}}else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){if(!overview){e.preventDefault();prev()}}else if(e.key.toLowerCase()==='o'){setOverview(!overview)}else if(e.key.toLowerCase()==='n'){notesEl.classList.toggle('show')}else if(e.key.toLowerCase()==='f'){document.getElementById('fullscreenBtn').click()}else if(e.key==='Escape'){setOverview(false);notesEl.classList.remove('show')}else if(e.key==='Home'){goto(0)}else if(e.key==='End'){goto(n-1)}});
 document.getElementById('frame').addEventListener('click',e=>{if(e.target.closest('button,a'))return;if(e.shiftKey)prev();else next()});let touchX=null;window.addEventListener('touchstart',e=>{touchX=e.changedTouches[0]?.screenX??null},{passive:true});window.addEventListener('touchend',e=>{if(touchX===null)return;let d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>65){if(d<0)next();else prev()}touchX=null},{passive:true});
-function formatTime(seconds){return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}setInterval(()=>{let t=Math.floor((Date.now()-started)/1000);document.getElementById('timer').textContent=formatTime(t);document.getElementById('timer').style.color=t>900?'#f6d18b':'#95bac9'},1000);
-window.deck={goto,next,prev,slides:slides.length,mainSlides:n};render();
+// Cumulative, manually controlled clock: never starts on opening or navigating slides.
+const clockView=document.getElementById('timer'),clockStart=document.getElementById('clockStart'),clockStop=document.getElementById('clockStop'),clockReset=document.getElementById('clockReset'),clockBox=document.getElementById('clock47');
+let clockSavedMs=0,clockSince=0,clockRunning=false;
+function clockElapsed(){return clockSavedMs+(clockRunning?performance.now()-clockSince:0)}
+function formatTime(seconds){return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
+function showClock(){const t=Math.floor(clockElapsed()/1000);clockView.textContent=formatTime(t);clockView.style.color=t>900?'#f6d18b':'#b8f6da';clockStart.disabled=clockRunning;clockStop.disabled=!clockRunning;clockBox.classList.toggle('running',clockRunning)}
+function startClock(){if(!clockRunning){clockSince=performance.now();clockRunning=true;showClock()}}
+function stopClock(){if(clockRunning){clockSavedMs=clockElapsed();clockRunning=false;showClock()}}
+function resetClock(){clockSavedMs=0;clockSince=0;clockRunning=false;showClock()}
+clockStart.onclick=startClock;clockStop.onclick=stopClock;clockReset.onclick=resetClock;
+setInterval(showClock,250);
+window.deck={goto,next,prev,slides:slides.length,mainSlides:n,startClock,stopClock,resetClock};render();showClock();
 })();
 </script>
 </body></html>
