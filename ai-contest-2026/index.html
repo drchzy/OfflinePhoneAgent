@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.4 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.5 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -259,16 +259,104 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 /* V4.4: docs/deploy tree node */
 #asset5 .asset43-layout{height:462px}
 #asset5 .asset43-right{grid-template-rows:95px 185px 164px}
+
+/* V4.5 – cover: Hengfeng brand × AI animation (CSS-only, offline fallback) */
+#cover45 .cover45-main{position:relative;z-index:4;margin-top:110px;max-width:1050px}
+#cover45 .cover45-main h1{font-size:85px;line-height:1.17}
+#cover45 .cover45-kicker{margin-bottom:25px;color:var(--cyan)}
+#cover45 .cover45-subtitle{font-size:33px;margin-top:33px;color:#d3e6ee}
+#cover45 .cover45-tags{display:flex;gap:12px;margin-top:38px}
+#cover45 .cover45-brand{position:absolute;z-index:2;top:165px;right:47px;width:480px;height:480px;pointer-events:none}
+#cover45 .cover45-aura{position:absolute;inset:46px;border-radius:50%;background:radial-gradient(circle,rgba(87,225,202,.28) 0%,rgba(78,147,211,.18) 35%,transparent 71%);filter:blur(19px);animation:cover45Breathe 5.2s ease-in-out infinite}
+#cover45 .cover45-orbit{position:absolute;border-radius:50%;border:1px dashed rgba(126,227,215,.28)}
+#cover45 .cover45-orbit.outer{inset:23px;border-style:dashed;border-color:rgba(142,207,236,.31);animation:cover45Spin 36s linear infinite}
+#cover45 .cover45-orbit.inner{inset:73px;border-style:solid;border-color:rgba(120,244,205,.25);box-shadow:0 0 0 18px rgba(91,174,174,.025);animation:cover45SpinReverse 28s linear infinite}
+#cover45 .cover45-orbit.inner::before,#cover45 .cover45-orbit.inner::after{content:"";position:absolute;width:11px;height:11px;border-radius:100%;background:var(--mint);box-shadow:0 0 20px rgba(155,243,208,.8)}
+#cover45 .cover45-orbit.inner::before{top:17px;left:57px}
+#cover45 .cover45-orbit.inner::after{bottom:33px;right:37px;width:7px;height:7px;background:var(--blue)}
+#cover45 .cover45-connections{position:absolute;inset:0;width:100%;height:100%;opacity:.75}
+#cover45 .cover45-logo-card{position:absolute;z-index:3;left:121px;top:125px;width:238px;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(159,234,213,.34);background:linear-gradient(140deg,rgba(21,64,79,.95),rgba(15,37,59,.97));box-shadow:0 25px 65px rgba(0,0,0,.25),0 0 50px rgba(103,226,202,.09);border-radius:30px;animation:cover45Float 6s ease-in-out infinite}
+#cover45 .cover45-company-logo{position:relative;width:208px;height:130px;display:flex;align-items:center;justify-content:center}
+#cover45 .cover45-company-logo img{position:relative;z-index:2;max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .45s}
+#cover45 .cover45-company-logo.has-logo img{opacity:1}
+#cover45 .cover45-logo-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;transition:opacity .4s}
+#cover45 .cover45-company-logo.has-logo .cover45-logo-fallback{opacity:0}
+#cover45 .cover45-logo-monogram{font-size:55px;line-height:1;letter-spacing:-.085em;font-weight:850;background:linear-gradient(120deg,#91f2c7,#7adcf1);-webkit-background-clip:text;background-clip:text;color:transparent}
+#cover45 .cover45-logo-text{font-weight:760;font-size:22px;letter-spacing:.12em;color:#dcf8ee}
+#cover45 .cover45-logo-caption{font-size:16px;letter-spacing:.16em;font-weight:760;color:#acd9df;margin-top:9px}
+#cover45 .cover45-logo-caption span{color:#9eedc5;margin:0 5px}
+#cover45 .cover45-ai-badge{position:absolute;z-index:5;right:25px;top:64px;width:118px;height:115px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transform:rotate(9deg);border:1px solid rgba(154,235,214,.55);background:linear-gradient(138deg,#2d8f96,#245977);box-shadow:0 12px 45px rgba(29,160,156,.32),inset 0 0 25px rgba(255,255,255,.06);border-radius:23px;animation:cover45Badge 5.4s ease-in-out infinite}
+#cover45 .cover45-ai-badge strong{font-size:49px;line-height:1;color:#edfff8;letter-spacing:-.07em}
+#cover45 .cover45-ai-badge small{font-size:9px;font-weight:760;letter-spacing:.12em;color:#c5f2e8}
+#cover45 .cover45-ai-star{position:absolute;top:-16px;right:-12px;color:var(--mint);font-size:24px}
+#cover45 .cover45-sat{position:absolute;width:7px;height:7px;border-radius:100%;background:var(--cyan);box-shadow:0 0 17px rgba(127,229,237,.85);animation:cover45Spark 5.5s ease-in-out infinite}
+#cover45 .cover45-sat.p1{left:37px;top:181px}
+#cover45 .cover45-sat.p2{right:72px;bottom:55px;animation-delay:-1.7s}
+#cover45 .cover45-sat.p3{left:153px;bottom:21px;animation-delay:-2.9s}
+#cover45 .cover45-sat.p4{left:96px;top:78px;animation-delay:-4.1s}
+#cover45 .cover45-label{position:absolute;z-index:2;border:1px solid rgba(132,221,211,.22);background:rgba(16,45,63,.76);padding:8px 13px;border-radius:9px;font-size:12px;letter-spacing:.11em;color:#b3d4d6;white-space:nowrap}
+#cover45 .cover45-label.top{top:8px;left:102px}
+#cover45 .cover45-label.bottom{bottom:11px;right:72px}
+#cover45 .cover45-footer{position:absolute;left:84px;right:84px;bottom:66px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:25px}
+#cover45 .cover45-footnote{color:#91abba;font-size:14px;line-height:1.4;white-space:nowrap}
+#cover45 .cover45-presenter{display:flex;align-items:center;gap:13px;padding:10px 17px;border:1px solid rgba(146,228,204,.36);background:rgba(17,51,69,.76);border-radius:14px;box-shadow:0 15px 35px rgba(0,0,0,.17);color:#d3e7e9;white-space:nowrap;font-size:17px}
+#cover45 .cover45-presenter-label{font-size:13px;letter-spacing:.10em;color:var(--mint)}
+#cover45 .cover45-presenter i{height:19px;width:1px;background:rgba(144,212,205,.38)}
+#cover45 .cover45-presenter strong{font-size:19px;color:#f5fff9;letter-spacing:.06em}
+@keyframes cover45Breathe{0%,100%{transform:scale(.95);opacity:.72}50%{transform:scale(1.07);opacity:1}}
+@keyframes cover45Spin{to{transform:rotate(360deg)}}
+@keyframes cover45SpinReverse{to{transform:rotate(-360deg)}}
+@keyframes cover45Float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes cover45Badge{0%,100%{transform:translateY(0) rotate(9deg)}50%{transform:translateY(7px) rotate(5deg)}}
+@keyframes cover45Spark{0%,100%{opacity:.5;transform:scale(.65)}50%{opacity:1;transform:scale(1.5)}}
+@media(prefers-reduced-motion:reduce){#cover45 .cover45-aura,#cover45 .cover45-orbit,#cover45 .cover45-logo-card,#cover45 .cover45-ai-badge,#cover45 .cover45-sat{animation:none!important}}
+@media print{#cover45 .cover45-aura,#cover45 .cover45-orbit,#cover45 .cover45-logo-card,#cover45 .cover45-ai-badge,#cover45 .cover45-sat{animation:none!important}}
+
 </style>
 </head>
 <body>
 <div id="frame"><main id="stage" aria-label="AI团队研发协作答辩演示文稿">
 
-<section class="slide active bg-soft" data-title="从个人工具到团队研发基础设施" data-chapter="开场" data-time="35">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.4</span></header>
-  <div style="margin-top:110px;max-width:1060px"><div class="reveal" data-step="0"><p class="caps" style="margin-bottom:25px;color:var(--cyan)">从个体效率，走向组织协同</p><h1>从个人工具<br>到<span class="highlight">团队研发基础设施</span></h1></div><div class="reveal" data-step="1"><p style="margin-top:33px;font-size:33px;color:#d3e6ee">AI 驱动的跨岗位协作实践</p><div style="display:flex;gap:12px;margin-top:38px"><span class="pill mint">真实项目</span><span class="pill">多 Agent 工程实践</span><span class="pill gold">持续治理与复用</span></div></div></div>
-  <div class="orbit" aria-hidden="true" style="right:-140px;top:118px"></div><div class="sidenote">汇报视角：团队负责人 / 技术架构师　｜　主线：降低重复沟通、交接与返工成本</div>
-  <template class="speaker-note">35秒。不要开场就讲模型或代码。用一句话解释：我探索的不是AI替我写多少代码，而是AI如何让团队不同岗位围绕同一份可执行、可追溯的工程资产协作。随后交代案例有两条实践线：科技馆跨岗探索 + Super App多Agent工程化。</template>
+<section class="slide active bg-soft" id="cover45" data-title="从个人工具到团队研发基础设施" data-chapter="开场" data-time="35">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.5</span></header>
+  <div class="cover45-main">
+    <div class="reveal" data-step="0">
+      <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
+      <h1>从个人工具<br>到<span class="highlight">团队研发基础设施</span></h1>
+    </div>
+    <div class="reveal" data-step="1">
+      <p class="cover45-subtitle">AI 驱动的跨岗位协作实践</p>
+      <div class="cover45-tags"><span class="pill mint">真实项目</span><span class="pill">多 Agent 工程实践</span><span class="pill gold">持续治理与复用</span></div>
+    </div>
+  </div>
+  <div class="cover45-brand" aria-label="恒锋信息与 AI 融合的科技环绕动态标识">
+    <div class="cover45-aura"></div>
+    <div class="cover45-orbit outer"></div>
+    <div class="cover45-orbit inner"></div>
+    <svg class="cover45-connections" viewBox="0 0 480 480" aria-hidden="true">
+      <defs><linearGradient id="cover45edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#78dadd" stop-opacity=".08"/><stop offset="48%" stop-color="#97f4d0" stop-opacity=".75"/><stop offset="100%" stop-color="#73a8f8" stop-opacity=".25"/></linearGradient></defs>
+      <g fill="none" stroke="url(#cover45edge)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M113 115 Q240 35 371 123"/><path d="M372 125 Q449 238 379 370"/><path d="M381 369 Q242 446 113 366"/><path d="M111 364 Q33 243 112 116"/>
+        <path stroke-dasharray="4 9" d="M112 116 L366 363 M371 122 L113 366"/>
+      </g><g fill="#96f3d1"><circle cx="113" cy="115" r="4"/><circle cx="372" cy="125" r="3.5"/><circle cx="379" cy="370" r="4"/><circle cx="113" cy="366" r="3.5"/></g>
+    </svg>
+    <div class="cover45-logo-card">
+      <div class="cover45-company-logo">
+        <div class="cover45-logo-fallback" aria-hidden="true"><span class="cover45-logo-monogram">HF</span><span class="cover45-logo-text">恒锋信息</span></div>
+        <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" alt="恒锋信息 Logo" loading="eager" decoding="async" onload="this.parentElement.classList.add('has-logo')" onerror="this.parentElement.classList.add('logo-unavailable')">
+      </div>
+      <div class="cover45-logo-caption">HENGFENG <span>×</span> AI</div>
+    </div>
+    <div class="cover45-ai-badge"><span class="cover45-ai-star">✦</span><strong>AI</strong><small>COLLABORATION</small></div>
+    <span class="cover45-sat p1"></span><span class="cover45-sat p2"></span><span class="cover45-sat p3"></span><span class="cover45-sat p4"></span>
+    <div class="cover45-label top">HUMAN × AGENT</div>
+    <div class="cover45-label bottom">SHARED CONTEXT · SMART DELIVERY</div>
+  </div>
+  <div class="cover45-footer">
+    <div class="cover45-footnote">汇报视角：团队负责人 / 技术架构师　｜　主线：降低重复沟通、交接与返工成本</div>
+    <div class="cover45-presenter"><span class="cover45-presenter-label">汇报人</span><span>智慧城市事业部</span><i></i><strong>黄宗耀</strong></div>
+  </div>
+  <template class="speaker-note">约35秒。汇报人：智慧城市事业部黄宗耀。右侧以恒锋信息官方Logo来源图片结合AI环绕动效呼应主题：团队协作与AI共同演进；联网时显示原品牌图，离线或图片不可用时展示简化文字标记，不冒充官方Logo。开场不强调AI写了多少代码，而强调跨岗位围绕共享工程上下文协作。案例分为科技馆跨岗位实践与Super App多Agent工程化。仅封面增加品牌视觉和署名，其他页面结构保持不变。</template>
 </section>
 
 <section class="slide" data-title="效率瓶颈：跨岗位的重复转译" data-chapter="问题 / WHY" data-time="45">
