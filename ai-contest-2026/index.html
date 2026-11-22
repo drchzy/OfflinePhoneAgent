@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V3.0 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V3.1 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -26,6 +26,28 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 #notes{position:fixed;right:16px;bottom:65px;width:min(470px,90vw);max-height:min(590px,75vh);overflow:auto;border-radius:16px;padding:23px 25px;background:rgba(12,27,41,.97);color:#e3eef2;border:1px solid rgba(162,213,224,.33);box-shadow:0 22px 70px rgba(0,0,0,.55);z-index:60;display:none}#notes.show{display:block}#notes h4{font-size:15px;color:var(--mint);letter-spacing:.1em;margin:0 0 13px}#notes p{font-size:14px;line-height:1.65;white-space:pre-wrap}#overview{position:fixed;inset:0;background:rgba(4,11,21,.98);z-index:50;overflow:auto;display:none;padding:48px 55px 75px}#overview.show{display:block}#overview h2{font-size:37px;margin-bottom:25px}#overview .slides-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}#overview .ov-item{border:1px solid var(--line);border-radius:16px;padding:21px;background:#13293e;color:white;text-align:left;min-height:145px;cursor:pointer;transition:transform .2s,background .2s}#overview .ov-item:hover{transform:translateY(-4px);background:#1e3e55}#overview .ov-item.active{border-color:var(--mint)}#overview .ov-item b{display:block;font-size:17px;line-height:1.45;margin-top:14px}#overview .ov-item span{font-size:12px;color:var(--mint);letter-spacing:.12em}#overview .ov-back{position:fixed;right:45px;top:30px;border:1px solid var(--line);background:#163148;color:white;padding:11px 19px;border-radius:12px;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.slide,.reveal,.orbit::before{animation:none!important;transition:none!important}}
 @media print{html,body{height:auto!important;overflow:visible!important;background:white!important}#frame{position:static!important;overflow:visible!important}#stage{position:static!important;transform:none!important;height:auto!important;width:auto!important}.slide{position:relative!important;visibility:visible!important;opacity:1!important;transform:none!important;page-break-after:always!important;width:1600px;height:900px;overflow:hidden!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}.reveal{opacity:1!important;transform:none!important;filter:none!important}#chrome,#notes,#overview{display:none!important}}
+
+/* SRS / 福小科：AI + MCP 六端协同排障图 */
+.srs-stage{height:394px;margin-top:25px;position:relative;border:1px solid rgba(130,216,221,.19);border-radius:25px;overflow:hidden;background:radial-gradient(540px 310px at 50% 50%,rgba(63,166,149,.13),transparent 73%),linear-gradient(120deg,rgba(13,43,65,.68),rgba(9,30,48,.8))}
+.srs-stage>svg{position:absolute;inset:0;width:100%;height:100%;opacity:.92}
+.srs-lines path{stroke-dasharray:8 9;animation:srsFlow 13s linear infinite}
+@keyframes srsFlow{to{stroke-dashoffset:-340}}
+.srs-tool{position:absolute;width:295px;height:93px;border:1px solid rgba(145,205,225,.31);border-radius:16px;background:linear-gradient(135deg,rgba(28,60,77,.98),rgba(15,39,59,.98));padding:10px 18px;display:flex;flex-direction:column;gap:1px;box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.srs-left{left:31px}.srs-right{right:31px}
+.srs-tool .srs-tag{font-size:12px;line-height:17px;letter-spacing:.11em;color:var(--cyan);font-weight:700}
+.srs-tool strong{font-size:21px;line-height:28px;letter-spacing:-.02em}
+.srs-tool small{font-size:15px;line-height:21px;color:#a9c6d1;white-space:nowrap}
+.srs-hub{position:absolute;left:50%;top:91px;transform:translateX(-50%);width:446px;height:214px;border-radius:27px;border:1px solid rgba(137,245,203,.73);background:linear-gradient(145deg,rgba(33,99,99,.97),rgba(14,54,70,.98));box-shadow:0 0 64px rgba(96,233,189,.17),0 18px 30px rgba(0,0,0,.22);display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px}
+.srs-hub-tag{font-size:14px;font-weight:800;letter-spacing:.18em;color:#a3f5cf}
+.srs-hub h3{font-size:31px;margin:11px 0 9px}
+.srs-hub p{color:#d4eee8;font-size:18px;line-height:1.5}
+.srs-hub-bottom{border-top:1px solid rgba(180,241,225,.3);width:93%;margin-top:auto;padding:10px 0 2px;font-size:16px;letter-spacing:.03em;color:#a9f2d2}
+.srs-decisions{display:flex;gap:15px;align-items:center;justify-content:space-between;min-height:57px;margin-top:17px;padding:10px 17px;border:1px solid rgba(133,205,202,.21);border-radius:14px;background:rgba(20,52,65,.64)}
+.srs-decisions span{font-size:17px;color:#c9e3e7;white-space:nowrap}
+.srs-decisions b{font-size:19px}
+.srs-decisions .srs-chevron{font-size:27px;color:#8de7c5}
+@media (prefers-reduced-motion:reduce){.srs-lines path{animation:none}}
+
 </style>
 </head>
 <body>
@@ -131,34 +153,53 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">40秒。这里提到自己参与技术选型、架构评审的负责人职责即可。现场需出示一条原始“需求→AI方案→人工决定”的记录，才能作为三环节证据之一。不要凭空复述当时模型回答。</template>
 </section>
 
-<section class="slide bg-blue" data-title="SRS：多工具协同排查跨系统复杂故障" data-chapter="工程深度 / SRS疑难联调" data-time="60">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 工程深度 / SRS疑难联调</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+<section class="slide bg-blue" data-title="SRS：AI + MCP 跨端音视频协同排障" data-chapter="工程深度 / 福小科音视频联调" data-time="60">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 工程深度 / 福小科音视频联调</span><span class="pill mint" style="margin-left:auto">跨端协作实战</span></header>
 
-  <h2>跨系统故障，不能只凭<span class="amber">一条报错</span>定根因。</h2>
-  <p class="lead">真实问题切入：SRS RTC 播放 on_play 回调出现 HttpsRead / 4043；需要把客户端、流媒体、业务 API 与代理配置串起来查。</p>
-  <div class="grid" style="grid-template-columns:1fr 1.1fr;gap:27px;margin-top:30px">
-    <div class="panel reveal" data-step="0">
-      <div class="caps cyan">故障链路 / 多层定位</div>
-      <div class="timeline" style="grid-template-columns:1fr;margin-top:14px;gap:9px">
-        <div class="item" style="padding:9px 13px"><b style="font-size:20px">浏览器 / App / ADB</b><p class="micro">操作、网络请求、终端行为</p></div>
-        <div class="item" style="padding:9px 13px"><b style="font-size:20px">SRS RTC / HTTP Hook</b><p class="micro">on_play 请求、返回值与超时链路</p></div>
-        <div class="item" style="padding:9px 13px"><b style="font-size:20px">Nginx / HTTPS / API</b><p class="micro">证书、端口、协议、反向代理与业务回调</p></div>
-      </div>
+  <h2>一次音视频联调，<span class="mint">AI 串起六类现场工具</span>。</h2>
+  <p class="lead reveal" data-step="0" style="margin-top:13px;max-width:1360px">真实场景：<b style="color:#f0f7fc">福小科 APP 呼叫已接通，却没有画面</b>。单看某一端日志无法解释整条链路，需要跨客户端、流媒体、业务和服务器逐层取证。</p>
+
+  <div class="srs-stage reveal" data-step="1" role="img" aria-label="福小科 APP 跨端音视频排障协同图：AI 通过 MCP 分别协调 H5 WebRTC 测试页、PC 客户端、Android 真机和 ADB、SRS 控制台、Java 与达梦数据库、Nginx 与 SSH 六类现场工具，收集信息并提出排查假设。">
+    <svg viewBox="0 0 1432 394" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="srsEdgeL" x1="0" x2="1"><stop offset="0" stop-color="#72b9df" stop-opacity=".48"/><stop offset="1" stop-color="#8eeac8" stop-opacity=".95"/></linearGradient>
+        <linearGradient id="srsEdgeR" x1="0" x2="1"><stop offset="0" stop-color="#8eeac8" stop-opacity=".95"/><stop offset="1" stop-color="#72b9df" stop-opacity=".48"/></linearGradient>
+        <marker id="srsDot" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5"><circle cx="2.5" cy="2.5" r="2.1" fill="#9beccd"/></marker>
+      </defs>
+      <g fill="none" stroke-width="2.3" stroke-linecap="round" class="srs-lines">
+        <path d="M326 79 C419 79 422 142 493 150" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
+        <path d="M326 197 C407 197 423 196 493 196" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
+        <path d="M326 315 C419 315 422 255 493 244" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
+        <path d="M939 150 C1015 143 1026 79 1106 79" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
+        <path d="M939 196 C1018 196 1027 197 1106 197" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
+        <path d="M939 244 C1015 254 1026 315 1106 315" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
+      </g>
+    </svg>
+    <div class="srs-tool srs-left" style="top:33px"><span class="srs-tag">01 / H5</span><strong>WebRTC 测试页</strong><small>推拉流验证、请求与媒体状态</small></div>
+    <div class="srs-tool srs-left" style="top:151px"><span class="srs-tag">02 / DESKTOP</span><strong>PC 客户端</strong><small>呼叫行为、端到端表现</small></div>
+    <div class="srs-tool srs-left" style="top:269px"><span class="srs-tag">03 / DEVICE</span><strong>Android 真机 / ADB</strong><small>设备日志、权限与网络状态</small></div>
+
+    <div class="srs-hub">
+      <div class="srs-hub-tag">AI AGENT × MCP TOOLS</div>
+      <h3>跨端排障协调中枢</h3>
+      <p>拆分排查任务 · 调用工具查询<br>汇总日志与配置 · 交叉验证假设</p>
+      <div class="srs-hub-bottom">症状 → 证据 → 假设 → 验证建议</div>
     </div>
-    <div class="panel reveal" data-step="1">
-      <div class="caps mint">人主导排障，AI 拆解检查路径</div>
-      <div class="col" style="margin-top:17px;gap:14px">
-        <p class="small"><b>01  收集证据</b> · 脱敏日志、请求时间、服务状态与配置快照</p>
-        <p class="small"><b>02  交叉验证</b> · SSH/MCP、接口查询、反向代理与客户端对照</p>
-        <p class="small"><b>03  逐层排除</b> · 区分网络/TLS问题与业务 Hook 拒绝</p>
-        <p class="small"><b>04  记录结论</b> · 修复验证、限制条件、后续排障 SOP</p>
-      </div>
-    </div>
+
+    <div class="srs-tool srs-right" style="top:33px"><span class="srs-tag">04 / STREAMING</span><strong>SRS 独立控制台</strong><small>RTC 状态、流信息、Hook 日志</small></div>
+    <div class="srs-tool srs-right" style="top:151px"><span class="srs-tag">05 / BUSINESS</span><strong>Java / 达梦数据库</strong><small>接口回调、业务状态与数据核对</small></div>
+    <div class="srs-tool srs-right" style="top:269px"><span class="srs-tag">06 / SERVER</span><strong>Nginx / SSH</strong><small>反向代理、协议配置、服务器日志</small></div>
   </div>
-  <div class="rule reveal" data-step="2">技术价值：让 AI 协助组织<strong>复杂排查任务</strong>，人根据真实日志和安全边界决定下一步，而不是让模型猜一个根因。</div>
-  <p class="micro">证据边界：已见 SRS 4043/HttpsRead 日志；最终唯一根因、修复 commit 与全场景结果待核，不写成已经全部闭环。</p>
 
-  <template class="speaker-note">约60秒。SRS 是 AI+MCP 跨系统疑难排障案例，必须在主讲出现。现场使用脱敏原始日志、代理配置及 AI 提议的排查顺序。不能把假设写成最终根因，不暴露真实IP/流ID/token。</template>
+  <div class="srs-decisions reveal" data-step="2">
+    <span><b class="cyan">人</b> 明确现象、排查范围和安全边界</span>
+    <span class="srs-chevron">→</span>
+    <span><b class="mint">AI + MCP</b> 协调多端检查、关联证据</span>
+    <span class="srs-chevron">→</span>
+    <span><b class="amber">人</b> 审核配置调整、决策修复并组织复验</span>
+  </div>
+  <p class="micro" style="margin-top:14px">排障线索示例：SRS on_play 回调 HttpsRead / 4043、Nginx/SSE 配置等；这些是检查点，不预设单一根因。完整修复记录与多端复验结果以脱敏原始证据为准。</p>
+  <template class="speaker-note">约60秒。先讲福小科 APP“呼叫接通却没画面”的跨端难题，再随动效出现 AI+MCP 与六类工具的协同图，最后强调人掌握优先级、安全边界、修复方案和最终复验。可以举 H5 测试页、PC、Android/ADB、SRS、Java/达梦、Nginx/SSH 分层验证的真实工作方式。4043/HttpsRead 与 Nginx/SSE 仅是排查线索，不能未经证实就说是最终根因；展示时需脱敏 IP、流 ID、token。</template>
 </section>
 
 <section class="slide" data-title="从人与人到人主导多 AI 协同" data-chapter="协作理念 / 决策重心" data-time="45">
