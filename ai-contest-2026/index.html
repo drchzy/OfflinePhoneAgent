@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.1 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.2 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -155,13 +155,48 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 #wf4 .wf4-assets-caption{font-size:13px!important;color:#bad9d5!important;line-height:1.35!important;white-space:nowrap;margin-top:4px}
 #wf4 .wf4-assets-caption strong{color:#d5fff1;font-weight:680}
 
+
+/* V4.2 · two-slide story: people-led roles → transferable engineering assets */
+#wf4 .wf4-inherit{display:flex;align-items:center;gap:15px;padding:15px 19px;margin-top:13px;border:1px solid rgba(145,240,195,.42);border-radius:15px;background:linear-gradient(90deg,rgba(30,101,89,.40),rgba(20,55,76,.87))}
+#wf4 .wf4-inherit-title{width:190px;min-width:190px;display:flex;flex-direction:column;gap:4px}
+#wf4 .wf4-inherit-title strong{font-size:21px;color:#eafff6}
+#wf4 .wf4-inherit-title small{font-size:13px;color:#a1f1cf;letter-spacing:.05em}
+#wf4 .wf4-inherit-path{display:flex;align-items:center;gap:12px;flex:1}
+#wf4 .wf4-inherit-path span{font-weight:710;font-size:19px;color:#ecfdf7;white-space:nowrap}
+#wf4 .wf4-inherit-path i{font-style:normal;color:#9ef6cd;font-size:25px}
+#wf4 .wf4-inherit-outro{margin-left:auto;color:#b8d9d7;font-size:15px;white-space:nowrap}
+#wf5 .wf5-topline{display:flex;gap:15px;align-items:center;margin-top:11px}
+#wf5 .wf5-gens{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr;gap:10px;align-items:center;margin-top:20px}
+#wf5 .wf5-generation{display:flex;align-items:center;gap:14px;background:rgba(19,53,70,.89);border:1px solid rgba(147,201,218,.25);padding:12px 18px;border-radius:17px;min-height:76px}
+#wf5 .wf5-generation:last-child{border-color:rgba(136,235,199,.44);background:rgba(34,95,87,.33)}
+#wf5 .wf5-num{font-size:34px;font-weight:800;line-height:1;color:#88eaca;letter-spacing:-.07em}
+#wf5 .wf5-generation strong{font-size:24px;display:block;line-height:1.22}
+#wf5 .wf5-generation small{display:block;font-size:14px;color:#adc7cd;margin-top:3px}
+#wf5 .wf5-arrow{text-align:center;color:#94ebca;font-size:30px}
+#wf5 .wf5-asset-title{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}
+#wf5 .wf5-assets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,163px);gap:12px}
+#wf5 .wf5-asset{padding:15px 19px;border-radius:17px;border:1px solid rgba(139,195,213,.22);background:rgba(19,49,69,.85);min-width:0}
+#wf5 .wf5-asset:nth-child(3n+2){background:rgba(21,57,73,.85)}
+#wf5 .wf5-asset .wf5-kicker{color:#81cbdc;font-weight:770;font-size:13px;letter-spacing:.08em}
+#wf5 .wf5-asset h3{font-size:24px;line-height:1.2;margin:6px 0 8px}
+#wf5 .wf5-asset p{font-size:16.6px;line-height:1.43;color:#bcd6df}
+#wf5 .wf5-asset strong{color:#eaf9f4;font-weight:700}
+#wf5 .wf5-cycle{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 14px;border:1px solid rgba(133,236,194,.38);border-radius:13px;background:rgba(32,101,93,.23)}
+#wf5 .wf5-cycle b{font-size:15px;color:#b9f7dc;letter-spacing:.04em;margin-right:11px}
+#wf5 .wf5-cycle span{font-size:16px;color:#e8f5f0;white-space:nowrap}
+#wf5 .wf5-cycle i{font-style:normal;color:#90d6ca;font-size:18px}
+#wf5 .wf5-gate{display:flex;align-items:center;gap:12px;margin-top:10px;padding:9px 13px;border-radius:12px;background:rgba(31,53,67,.92);border:1px solid rgba(161,209,223,.22)}
+#wf5 .wf5-gate b{color:#a4edcb;font-size:16px;white-space:nowrap}
+#wf5 .wf5-gate p{font-size:15px;color:#d1e3ea;line-height:1.35}
+#wf5 .wf5-note{font-size:13px;color:#8eaab9;margin-top:9px;line-height:1.3}
+
 </style>
 </head>
 <body>
 <div id="frame"><main id="stage" aria-label="AI团队研发协作答辩演示文稿">
 
 <section class="slide active bg-soft" data-title="从个人工具到团队研发基础设施" data-chapter="开场" data-time="35">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.1</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.2</span></header>
   <div style="margin-top:110px;max-width:1060px"><div class="reveal" data-step="0"><p class="caps" style="margin-bottom:25px;color:var(--cyan)">从个体效率，走向组织协同</p><h1>从个人工具<br>到<span class="highlight">团队研发基础设施</span></h1></div><div class="reveal" data-step="1"><p style="margin-top:33px;font-size:33px;color:#d3e6ee">AI 驱动的跨岗位协作实践</p><div style="display:flex;gap:12px;margin-top:38px"><span class="pill mint">真实项目</span><span class="pill">多 Agent 工程实践</span><span class="pill gold">持续治理与复用</span></div></div></div>
   <div class="orbit" aria-hidden="true" style="right:-140px;top:118px"></div><div class="sidenote">汇报视角：团队负责人 / 技术架构师　｜　主线：降低重复沟通、交接与返工成本</div>
   <template class="speaker-note">35秒。不要开场就讲模型或代码。用一句话解释：我探索的不是AI替我写多少代码，而是AI如何让团队不同岗位围绕同一份可执行、可追溯的工程资产协作。随后交代案例有两条实践线：科技馆跨岗探索 + Super App多Agent工程化。</template>
@@ -197,9 +232,9 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">55秒。围绕“我作为负责人跟谁协作”：产品、UI、开发、测试、项目经理。传统方式需一轮轮解释；目标是让AI先把过程产出结构化，成员依角色消费或修改。注意此页为目标协作模型，并非断言六岗位已经全部真实采用。</template>
 </section>
 
-<section class="slide bg-blue" id="wf4" data-title="人主导的五岗位 AI 协同与资产沉淀" data-chapter="协作模式 / 全链路升级" data-time="85">
+<section class="slide bg-blue" id="wf4" data-title="多岗位 × AI 协作：每一步都有人的关键决策" data-chapter="协作模式 / 全链路升级" data-time="85">
   <header class="hdr" style="margin-bottom:15px"><i class="stripe"></i><span class="eyebrow">03 / HUMAN-LED AI COLLABORATION</span><span class="section-tag">从跨岗位转译，到人主导的协同闭环</span></header>
-  <h2 style="font-size:53px;line-height:1.13">五个岗位 × AI 协同，<span class="mint">每一步都有人决策</span>。</h2>
+  <h2 style="font-size:53px;line-height:1.13">多岗位 × AI 协作，<span class="mint">每一步都有人决策</span>。</h2>
   <div class="wf4-past reveal" data-step="0" style="margin-top:16px"><b>过去 · 串行交接</b><span>产品需求</span><span class="arrow">→</span><span>UI / UX 图稿</span><span class="arrow">→</span><span>开发理解与实现</span><span class="arrow">→</span><span>测试</span><span class="arrow">→</span><span>项目归档</span><span style="margin-left:auto;color:#f1c7aa;font-size:14px">反复转述、等待与交接损耗</span></div>
   <div class="reveal" data-step="1" style="display:flex;justify-content:space-between;align-items:center;margin-top:15px"><div class="caps mint" style="font-size:15px">现在 / AI 辅助执行，人决定目标、取舍与质量门槛</div><span style="font-size:14px;color:#9db5c4">设计 → 产品 → 开发 → 测试 → 项目管理</span></div>
   <div class="wf4-grid">
@@ -209,26 +244,43 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
     <div class="wf4-card reveal " data-step="4"><div class="wf4-kicker">04 / TEST × AI</div><h3>测试 × AI</h3><div class="wf4-ai-label">AI 做什么</div><p class="wf4-exec"><strong>Playwright / 浏览器 MCP</strong> 自动化回归，结合 <strong>ADB 真机</strong>检查；原型截图、源码与实现对照及缺陷回派。</p><div class="wf4-human"><div class="wf4-human-label">人决定什么</div><p>制定测试标准，判定缺陷影响，决定退回、复测与质量准入。</p></div></div>
     <div class="wf4-card reveal " data-step="5"><div class="wf4-kicker">05 / PROJECT × AI</div><h3>项目管理 × AI</h3><div class="wf4-ai-label">AI 做什么</div><p class="wf4-exec">生成<strong>需求概述、数据库说明书、API 接口文档</strong>，整理任务进度、变更记录及交付清单。</p><div class="wf4-human"><div class="wf4-human-label">人决定什么</div><p>确定排期、里程碑和风险应对，审核文档，决定发布与签收。</p></div></div>
   </div>
-  <div class="wf4-asset reveal" data-step="6"><div><div class="wf4-kicker" style="color:var(--mint)">06 / ASSET REUSE</div><b>沉淀 × 复用</b></div><div><div class="wf4-lineage" aria-label="能力传承路径：养老商城第一版，文旅商城第二版，科技馆第三版"><span><b>V1 · 养老商城</b><small>第一版 · 实践起点</small></span><i>→</i><span><b>V2 · 文旅商城</b><small>第二版 · 复用迭代</small></span><i>→</i><span><b>V3 · 科技馆</b><small>第三版 · 传承完善</small></span></div><p class="wf4-assets-caption">沿项目迭代沉淀：<strong>通用 Skills · MCP · 角色提示卡 · 协作 SOP · 生命周期文档</strong></p></div><div class="wf4-human-asset"><div class="wf4-human-label">人决定什么</div><p style="margin-top:4px">选择可继承与公共共享的资产，审查适配性、安全与规范，再推广复用。</p></div></div>
+  <div class="wf4-inherit reveal" data-step="6">
+    <div class="wf4-inherit-title"><small>06 / 经验沉淀 · 进入下一页</small><strong>项目能力持续传承</strong></div>
+    <div class="wf4-inherit-path"><span>V1 · 养老商城</span><i>→</i><span>V2 · 文旅商城</span><i>→</i><span>V3 · 福州科技馆</span></div>
+    <div class="wf4-inherit-outro">实践经验 → 默认能力</div>
+  </div>
   <div class="wf4-demo reveal" data-step="7"><b>现场演示提示</b><span>可择重点展示：AI 设计素材、高保真 HTML、Super App 多 Agent 看板、自动化测试与文档产出。</span></div>
-  <template class="speaker-note">约85秒。这是全篇全链路协同总览，逐步展示：过去产品需求→UI/UX图稿→开发实现→测试→项目归档层层交接；现在将AI赋能于每个岗位，但必须同时说明人的决策。设计×AI：用户副业已实践通过AI生成UI/UE/UX方案、人物形象和素材，由人选择风格、定稿。产品×AI：需求生成高保真可交互HTML原型，产品负责人定义边界并实际体验、定验收标准。开发×AI：已有可视化一键初始化Skill；Super App独立实践由Lead统筹设计/架构/开发/测试/产品验收等Agent，拆标准化需求与功能任务卡、记录会话ID、Bug精准回派原开发Agent、复测复验；人设架构边界、角色规范和质量规则、关键纠偏并最终整体验收。测试×AI：浏览器Playwright MCP/ADB真机、自动化回归、原型截图和源码一致性核对、缺陷回派；人制定质量门槛并最终放行。产品验收Agent是后期加的质量升级节点，细节在后续专页。项目管理×AI：生成需求概述、数据库说明、接口文档和变更文档，人定排期、风险、发布签收。沉淀与跨项目复用按用户确认的三代传承顺序讲：V1养老商城是第一版实践起点，V2文旅商城是第二版复用迭代，V3福州科技馆是第三版继承与完善。这是能力与工程经验的传承，不是说三个不同项目是同一套已发布产品。跨代沉淀通用Skills、MCP、角色提示卡、研发协作SOP和全生命周期文档；人判断哪些可以继承、哪些要适配，审核敏感信息与是否进入公共资产库。注意副业UI实践、科技馆实际协作和Super App独立多Agent探索有场景差异，不能混成全面组织级部署。底部演示位仅提示，后续可从 Super App 页面切入现场真实工程。</template>
+  <template class="speaker-note">约85秒。这是全篇全链路协同总览，逐步展示：过去产品需求→UI/UX图稿→开发实现→测试→项目归档层层交接；现在将AI赋能于每个岗位，但必须同时说明人的决策。设计×AI：用户副业已实践通过AI生成UI/UE/UX方案、人物形象和素材，由人选择风格、定稿。产品×AI：需求生成高保真可交互HTML原型，产品负责人定义边界并实际体验、定验收标准。开发×AI：已有可视化一键初始化Skill；Super App独立实践由Lead统筹设计/架构/开发/测试/产品验收等Agent，拆标准化需求与功能任务卡、记录会话ID、Bug精准回派原开发Agent、复测复验；人设架构边界、角色规范和质量规则、关键纠偏并最终整体验收。测试×AI：浏览器Playwright MCP/ADB真机、自动化回归、原型截图和源码一致性核对、缺陷回派；人制定质量门槛并最终放行。产品验收Agent是后期加的质量升级节点，细节在后续专页。项目管理×AI：生成需求概述、数据库说明、接口文档和变更文档，人定排期、风险、发布签收。第六点只作自然过渡，不在本页展开资产清单：养老商城V1→文旅商城V2→福州科技馆V3，工程能力在不同项目中迭代传承。完整的产品设计资产、工程基座、AI工具、任务治理、质量验证和文档知识，以及人工审核与版本化迁移机制，留给下一页重点讲解。人始终决定哪些经验值得共享。注意副业UI实践、科技馆实际协作和Super App独立多Agent探索有场景差异，不能混成全面组织级部署。底部演示位仅提示，后续可从 Super App 页面切入现场真实工程。</template>
 </section>
 
-<section class="slide" data-title="从文旅 Skill 到科技馆研发标准" data-chapter="实践一 / Skills复用" data-time="48">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践一 / Skills复用</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+<section class="slide bg-alt" id="wf5" data-title="从项目经验到可继承的研发资产体系" data-chapter="能力沉淀 / 跨项目传承" data-time="85">
+  <header class="hdr" style="margin-bottom:16px"><i class="stripe"></i><span class="eyebrow">04 / REUSABLE ENGINEERING CAPABILITIES</span><span class="section-tag">不是几个工具，而是一套可继承、可治理的研发能力</span></header>
+  <h2 style="font-size:52px;line-height:1.15">让上一个项目的经验，成为下一个项目的<span class="mint">默认能力</span>。</h2>
+  <p class="lead" style="font-size:21px;margin-top:11px">项目经验不只沉淀为 Skill，更沉淀为设计规范、工程基座、协作机制、质量标准和完整的交付知识。</p>
 
-  <h2>把上个项目的经验，变成下个项目的<span class="mint">默认能力</span>。</h2>
-  <p class="lead">沈阳文旅沉淀前后端与框架 Skills，进入福州科技馆时，不再从零反复解释技术约束。</p>
-  <div class="grid four" style="margin-top:35px;gap:15px">
-    <div class="panel reveal" data-step="0"><div class="caps mint">01 / 沉淀</div><h3>文旅项目</h3><p class="small">前端组件 / 后端接口 / 基础框架 / 常见错误与约束</p></div>
-    <div class="panel reveal" data-step="1"><div class="caps cyan">02 / 复用</div><h3>工程规范</h3><p class="small">Skills、AGENTS.md、技术边界、接口契约及生成要求</p></div>
-    <div class="panel reveal" data-step="2"><div class="caps blue">03 / 初始化</div><h3>一键工程环境</h3><p class="small">docs、MCP、任务看板、测试脚本与部署变更记录</p></div>
-    <div class="panel reveal" data-step="3"><div class="caps mint">04 / 交接</div><h3>可执行资产</h3><p class="small">H5 调试示例、API 文档 Skill、源码与变更说明</p></div>
+  <div class="wf5-gens reveal" data-step="0">
+    <div class="wf5-generation"><span class="wf5-num">V1</span><div><strong>养老商城</strong><small>第一代 · 积累初始研发经验</small></div></div>
+    <div class="wf5-arrow">→</div>
+    <div class="wf5-generation"><span class="wf5-num">V2</span><div><strong>文旅商城</strong><small>第二代 · 规范化与复用迭代</small></div></div>
+    <div class="wf5-arrow">→</div>
+    <div class="wf5-generation"><span class="wf5-num">V3</span><div><strong>福州科技馆</strong><small>第三代 · 继承能力、持续完善</small></div></div>
   </div>
-  <div class="rule reveal" data-step="4" style="margin-top:35px">让新成员与新 Agent 从同一工程上下文开始，而不再反复追问“接口怎么调、组件怎么用、环境怎么跑”。</div>
-  <p class="small-rule">已实践：项目级规范及初始化资产；Super App 整套多 Agent 编排尚未并入该初始化流程。</p>
 
-  <template class="speaker-note">约48秒。强调业务复用和标准化，不把安装的第三方 Skill/MCP 都算自研成果；一键初始化文件目录存在与自动验收全部执行是两回事。现场可展示脱敏工程根目录和 AGENTS.md。</template>
+  <div class="wf5-asset-title reveal" data-step="1">
+    <span class="caps mint" style="font-size:15px">跨项目可沉淀的六层研发资产</span>
+    <span class="micro" style="font-size:14px">从“个人经验”转为“可复用的工程上下文”</span>
+  </div>
+  <div class="wf5-assets">      <div class="wf5-asset reveal" data-step="1"><div class="wf5-kicker">01 / PRODUCT · DESIGN</div><h3>产品与体验资产</h3><p>需求与交互规范、<strong>高保真 HTML 原型</strong>、UI / UX / UE、角色形象和页面素材</p></div>
+      <div class="wf5-asset reveal" data-step="1"><div class="wf5-kicker">02 / ENGINEERING</div><h3>技术与工程基座</h3><p>前后端框架与组件、<strong>可视化一键初始化</strong>、AGENTS.md、接口契约、H5 联调示例</p></div>
+      <div class="wf5-asset reveal" data-step="1"><div class="wf5-kicker">03 / AI CAPABILITIES</div><h3>AI 工具与角色能力</h3><p>跨项目 <strong>Skills、MCP</strong> 连接能力、岗位提示卡、角色约束及持续迭代版本</p></div>
+      <div class="wf5-asset reveal" data-step="2"><div class="wf5-kicker">04 / COLLABORATION</div><h3>协作流程与任务治理</h3><p>Lead / 多 Agent 工作流、<strong>标准化功能卡</strong>、任务会话索引、缺陷回派与反馈机制</p></div>
+      <div class="wf5-asset reveal" data-step="2"><div class="wf5-kicker">05 / QUALITY</div><h3>测试与验收标准</h3><p>Playwright 与 ADB、回归脚本、<strong>原型一致性对照</strong>、问题证据、复测验收规则</p></div>
+      <div class="wf5-asset reveal" data-step="2"><div class="wf5-kicker">06 / KNOWLEDGE</div><h3>项目知识与交付体系</h3><p>需求概述、数据库与 API 说明、部署规范、<strong>变更记录</strong>、问题复盘与生命周期文档</p></div>
+  </div>
+  <div class="wf5-cycle reveal" data-step="3"><b>传承机制</b><span>项目实践</span><i>→</i><span>知识提炼</span><i>→</i><span>人工审核</span><i>→</i><span>版本化入库</span><i>→</i><span>新项目初始化</span><i>→</i><span>反馈再迭代</span></div>
+  <div class="wf5-gate reveal" data-step="4"><b>人的决策与治理</b><p>决定哪些经验值得共享；审核通用性、兼容性与敏感信息；批准适配、发布和验收。AI 辅助整理、迁移和持续优化。</p></div>
+  <p class="wf5-note">边界：不同项目复用的是工程经验与能力，不代表同一产品逐版发布；Super App 多 Agent 全套编排尚未整体并入科技馆初始化流程。</p>
+  <template class="speaker-note">约85秒。紧接上一页多岗位×AI协同：协作中产生的成果不能随着一次任务结束而消失，关键是建立项目级到组织级的能力传承。这页的三代链以用户确认的顺序为准：养老商城第一版→文旅商城第二版→福州科技馆第三版，是研发经验、规范、模块和可复用资产的传承，不是三个项目组成单一产品的版本发布。六层研发资产按层次逐步亮相：一产品与设计资产：需求、可交互HTML、UI/UX/UE、IP形象素材；二工程基座：前后端组件与框架、项目级AGENTS.md、可视化一键初始化、接口契约、H5联调；三AI能力：Skills、Playwright/SSH/DB/GitHub等MCP工具适配、角色提示卡与版本演进；四协作治理：多Agent的Lead角色、任务/功能卡、会话ID、缺陷回派和工作流实践；五质量验证：自动化浏览器与ADB真机工具、原型源码和截图比对、质量证据和复验标准；六知识与交付：需求、数据库、API文档、部署/变更/故障记录及生命周期知识。强调并非所有资产已作为组织级公共包全面部署，且个人副业AI设计、文旅/养老/科技馆业务实践、Super App独立多Agent探索属于不同场景：展示的是已经积累、正在规范化和适合继续推广的能力体系。实际传承需要项目实践→提炼→人工审核→版本管理→新项目适配→反馈更新，不能直接复制生产密钥或客户数据。人必须负责选择值得复用的内容，审核通用性、兼容性、隐私安全和最终验收。Super App整套多Agent编排尚未并入科技馆一键初始化环境，不要过度宣称。实际证据可在后续工程规范、任务卡、SRS排障等页面进一步展开。</template>
 </section>
 
 <section class="slide" data-title="科技馆：产品先体验，开发交付可运行上下文" data-chapter="实践一 / 科技馆" data-time="56">
