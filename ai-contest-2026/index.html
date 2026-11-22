@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.7 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.8 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -362,6 +362,28 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 @media(max-width:1040px){#chrome #timeText,#chrome #slide-progress{display:none}#chrome{gap:7px;padding:0 10px}#chrome button{padding:7px 8px}}
 @media(max-width:760px){#chrome #notesBtn,#chrome #overviewBtn,#chrome #currentChapter,#chrome .sep{display:none}#chrome #clock47{margin-left:auto;padding-left:7px;gap:5px}}
 
+
+/* V4.8: historical-project-based five friction points on slide 2 */
+#pain48 .pain48-topline{margin-top:19px;display:flex;align-items:center;gap:15px;padding:11px 18px;border-radius:12px;border:1px solid rgba(137,205,204,.25);background:rgba(26,64,78,.58)}
+#pain48 .pain48-topline strong{font-size:16px;color:#a4eaca;margin-right:auto;white-space:nowrap;letter-spacing:.03em}
+#pain48 .pain48-topline span{font-size:15px;color:#cbdfe5;white-space:nowrap}
+#pain48 .pain48-topline i{font-style:normal;color:#89e6c0;font-size:19px}
+#pain48 .pain48-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px;margin-top:16px}
+#pain48 .pain48-card{position:relative;min-width:0;height:295px;display:flex;flex-direction:column;padding:18px 18px 15px;background:linear-gradient(155deg,rgba(26,58,76,.94),rgba(16,37,58,.96));border:1px solid rgba(143,198,208,.28);border-radius:17px;box-shadow:0 18px 40px rgba(0,0,0,.12);overflow:hidden}
+#pain48 .pain48-card:nth-child(2){border-top-color:rgba(117,189,242,.55)}
+#pain48 .pain48-card:nth-child(3){border-top-color:rgba(151,238,194,.7);background:linear-gradient(155deg,rgba(26,89,84,.43),rgba(17,43,61,.96))}
+#pain48 .pain48-card:nth-child(4){border-top-color:rgba(124,211,229,.55)}
+#pain48 .pain48-card:nth-child(5){border-top-color:rgba(163,228,182,.5)}
+#pain48 .pain48-index{display:flex;align-items:baseline;gap:9px;margin-bottom:13px}
+#pain48 .pain48-index>span{font-size:33px;font-weight:850;letter-spacing:-.055em;line-height:1;color:#9fe9d5}
+#pain48 .pain48-index small{font-size:12px;color:#a9d2dd;letter-spacing:.07em;font-weight:750}
+#pain48 .pain48-card h3{font-size:23px;line-height:1.24;min-height:58px;font-weight:730;letter-spacing:-.02em}
+#pain48 .pain48-card p{margin-top:12px;font-size:17px;color:#c2d8de;line-height:1.46}
+#pain48 .pain48-example{margin-top:auto;border-top:1px solid rgba(143,206,209,.22);padding-top:10px;color:#9bdac9;font-size:13px;line-height:1.4}
+#pain48 .pain48-conclusion{display:flex;align-items:center;gap:22px;border-left:3px solid #8fe8c8;background:rgba(27,99,85,.17);padding:15px 21px;margin-top:19px;border-radius:0 12px 12px 0}
+#pain48 .pain48-conclusion>span{font-size:16px;font-weight:800;color:#9debc8;letter-spacing:.07em;white-space:nowrap}
+#pain48 .pain48-conclusion strong{font-size:22px;color:#edf8f4;font-weight:690;line-height:1.35}
+
 </style>
 </head>
 <body>
@@ -375,7 +397,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.7</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.8</span></header>
   <div class="cover45-main">
     <div class="reveal" data-step="0">
       <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
@@ -415,7 +437,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">约35秒。汇报人：智慧城市事业部黄宗耀。右侧动画中央改为HENGFENG × AI文字标识，外圈保留科技环绕。每页右上角放汇报人和恒锋信息Logo，品牌图片来自用户提供的链接，断网时使用文字标识。封面底部左侧一行呈现汇报人：智慧城市事业部-黄宗耀｜主线：降低重复沟通、交接与返工成本；日期下一行，右侧不额外放内容。开场不强调AI写了多少代码，而强调跨岗位围绕共享工程上下文协作。案例分为科技馆跨岗位实践与Super App多Agent工程化。本次更新封面底部排版、全篇一次性显示页面内容、右下角手动计时器。计时从点击开始才启动，停止即暂停，重置归零；翻页与返回不重置。</template>
 </section>
 
-<section class="slide" data-title="效率瓶颈：跨岗位的重复转译" data-chapter="问题 / WHY" data-time="45">
+<section class="slide" id="pain48" data-title="效率瓶颈：跨岗位的重复转译" data-chapter="问题 / WHY" data-time="62">
   <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
     <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
     <div class="deck46-header-logo" title="恒锋信息 Logo">
@@ -423,17 +445,50 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">01 / THE PROBLEM</span></header>
-  <h2>研发效率的损耗，<br>不只发生在写代码的时候。</h2>
-  <p class="lead">需求、设计、开发、测试、项目交付不断交接；每一次交接，<span class="mint">都有机会重复解释、等待确认、误解返工。</span></p>
-  <div class="grid four" style="margin-top:61px">
-    <div class="panel reveal" data-step="0"><div class="caps mint">01 / 理解</div><h3 style="margin-top:19px">需求反复解释</h3><p class="small">静态原型难表达交互与异常分支</p></div>
-    <div class="panel reveal" data-step="1"><div class="caps mint">02 / 交接</div><h3 style="margin-top:19px">信息来回转译</h3><p class="small">接口、素材与业务规则分散在聊天记录里</p></div>
-    <div class="panel reveal" data-step="2"><div class="caps mint">03 / 验证</div><h3 style="margin-top:19px">问题发现太晚</h3><p class="small">到测试阶段才暴露实现偏差</p></div>
-    <div class="panel reveal" data-step="3"><div class="caps mint">04 / 沉淀</div><h3 style="margin-top:19px">经验不能复用</h3><p class="small">同一类错误在下一项目再次发生</p></div>
+  <header class="hdr" style="margin-bottom:18px"><i class="stripe"></i><span class="eyebrow">01 / THE PROBLEM</span><span class="section-tag">来自真实项目与 AI 研发协作的观察</span></header>
+  <h2 style="font-size:60px;line-height:1.14">研发效率的损耗，<br>不只发生在<span class="mint">写代码</span>的时候。</h2>
+  <p class="lead" style="font-size:23px;margin-top:15px;line-height:1.46;max-width:1360px">一条需求要经历产品、设计、前后端、测试、部署与交付；真正耗费精力的，往往是<span class="mint">反复理解、等待交接、验收返工与重新排障</span>。</p>
+
+  <div class="pain48-topline reveal" data-step="0">
+    <strong>看不见的研发成本</strong><span>需求理解</span><i>→</i><span>接口联调</span><i>→</i><span>质量验收</span><i>→</i><span>故障定位</span><i>→</i><span>知识传承</span>
   </div>
-  <div class="rule reveal" data-step="4">核心命题：如何让<span class="bold" style="color:white">重复沟通 → 共享上下文，口头交接 → 工程资产</span>？</div>
-  <template class="speaker-note">45秒。此页是问题定义，不要捏造“浪费了40%时间”之类的数据。可以用一次原型理解偏差或一次测试前置修复的小故事。强调消除的是低价值重复沟通，不是取消必须的评审。</template>
+  <div class="pain48-grid">
+    <div class="pain48-card reveal" data-step="0" aria-label="需求与原型：说得清，不等于看得懂">
+      <div class="pain48-index"><span>01</span><small>需求与原型</small></div>
+      <h3>说得清，不等于看得懂</h3>
+      <p>静态图难讲透完整交互、状态和异常分支；产品、UI、开发反复确认同一个需求。</p>
+      <div class="pain48-example">科技馆 APP · 高保真交互原型</div>
+    </div>
+    <div class="pain48-card reveal" data-step="1" aria-label="前后端交接：代码完成，不等于接口好接">
+      <div class="pain48-index"><span>02</span><small>前后端交接</small></div>
+      <h3>代码完成，不等于接口好接</h3>
+      <p>参数、契约、业务规则和调试环境分散，前端接手还要重新理解和反复联调。</p>
+      <div class="pain48-example">商城 · H5 调试页先跑通闭环</div>
+    </div>
+    <div class="pain48-card reveal" data-step="2" aria-label="测试与产品验收：功能通过，不等于体验达标">
+      <div class="pain48-index"><span>03</span><small>测试与产品验收</small></div>
+      <h3>功能通过，不等于体验达标</h3>
+      <p>页面布局、尺寸、交互与原型不一致，测试通过后仍可能被产品验收退回。</p>
+      <div class="pain48-example">Super App · 原型 / 源码 / 截图对照</div>
+    </div>
+    <div class="pain48-card reveal" data-step="3" aria-label="跨系统排障：一个故障，横跨多个系统">
+      <div class="pain48-index"><span>04</span><small>跨系统排障</small></div>
+      <h3>一个故障，横跨多个系统</h3>
+      <p>浏览器、App、SRS、网关与后端日志各在一处，定位问题需要拼齐证据。</p>
+      <div class="pain48-example">福小科 · SRS 4043 音视频联调</div>
+    </div>
+    <div class="pain48-card reveal" data-step="4" aria-label="项目交付与复用：项目交付，不等于经验留存">
+      <div class="pain48-index"><span>05</span><small>项目交付与复用</small></div>
+      <h3>项目交付，不等于经验留存</h3>
+      <p>工程约束、SQL 变更、Bug 修复与部署经验散落，换项目又从头解释一遍。</p>
+      <div class="pain48-example">微尚养老商城 → 沈阳文旅 → 福州科技馆</div>
+    </div>
+  </div>
+  <div class="pain48-conclusion reveal" data-step="5">
+    <span>真正的瓶颈</span>
+    <strong>不是某个岗位写得慢，而是相同的上下文在不同岗位和项目中<span class="mint">反复丢失、反复重建</span>。</strong>
+  </div>
+  <template class="speaker-note">约62秒。这页是问题陈述，不是汇报AI成果，也不要使用未核验的提效百分比。根据我们之前的真实研发讨论归纳五个场景：第一，产品/UI到开发的需求转译，静态原型、口头说明无法充分表达状态和异常交互，科技馆产品尝试用AI生成可点击HTML原型，让下一步能直接读取；第二，前后端接口交接常需再次确认入参、业务规则与部署环境，商城实际探索先由后端生成H5调试页、验证业务闭环，再交接口与示例给前端；第三，Super App研发曾出现开发和测试判定完成后，人工仍发现布局、间距与高保真原型不一致，因此加入产品验收Agent比对原型源码、设计截图和实现截图，并回派缺陷；第四，福小科音视频SRS曾出现4043(HttpsRead)错误，排查需要串联浏览器、Android/ADB、SRS/Nginx、后端和数据库上下文，不能断言本页已证明所有工具自动排障成功；第五，养老商城到沈阳文旅再到福州科技馆的复用探索中，框架约束、Skills、AGENTS.md、SQL、测试和部署知识需要结构化继承，不能把三个不同项目当作同一个版本发布。总之要减少跨角色、跨工具、跨项目的重复解释，让AI协助传递可执行上下文；人的评审和最终决策仍不可缺少。已实践与未来完整组织级推广需区分。转场第三页：所以AI不只服务写代码的开发人员，而应该围绕共享工程上下文连接所有岗位。</template>
 </section>
 
 <section class="slide bg-alt" id="collab3" data-title="AI 不只服务开发人员" data-chapter="协作全景 / WHO" data-time="58">
