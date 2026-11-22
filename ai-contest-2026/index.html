@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.5 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.6 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -312,13 +312,46 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 @media(prefers-reduced-motion:reduce){#cover45 .cover45-aura,#cover45 .cover45-orbit,#cover45 .cover45-logo-card,#cover45 .cover45-ai-badge,#cover45 .cover45-sat{animation:none!important}}
 @media print{#cover45 .cover45-aura,#cover45 .cover45-orbit,#cover45 .cover45-logo-card,#cover45 .cover45-ai-badge,#cover45 .cover45-sat{animation:none!important}}
 
+
+/* V4.6: Presenter and corporate logo repeated consistently on every slide */
+#stage .slide .deck46-header{position:absolute;z-index:11;top:16px;right:84px;display:flex;align-items:center;gap:18px;height:45px;white-space:nowrap;pointer-events:none}
+#stage .deck46-header-name{display:inline-flex;align-items:center;gap:10px;color:#c8dfe6;font-size:15px;line-height:1;font-weight:620;text-shadow:0 1px 10px rgba(0,0,0,.28)}
+#stage .deck46-header-name small{font-size:12px;color:var(--mint);letter-spacing:.08em;font-weight:750}
+#stage .deck46-header-logo{position:relative;width:133px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#f3fafb;border:1px solid rgba(182,232,235,.55);box-shadow:0 6px 20px rgba(3,14,22,.16);padding:5px 9px}
+#stage .deck46-header-logo img{position:relative;z-index:2;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .2s}
+#stage .deck46-header-logo.is-ready img{opacity:1}
+#stage .deck46-logo-fallback{position:absolute;z-index:1;color:#144958;font-size:20px;letter-spacing:.08em;font-weight:850}
+#stage .deck46-header-logo.is-ready .deck46-logo-fallback{opacity:0}
+/* V4.6: right orbital centerpiece is HENGFENG × AI, no duplicated logo */
+#cover45 .cover46-wordmark-card{gap:18px}
+#cover45 .cover46-wordmark{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;white-space:nowrap;text-shadow:0 1px 20px rgba(128,240,218,.18)}
+#cover45 .cover46-hf{font-size:26px;font-weight:810;letter-spacing:.035em;color:#effff8}
+#cover45 .cover46-times{font-size:25px;font-weight:570;color:#91efca}
+#cover45 .cover46-ai{font-size:39px;font-weight:850;line-height:1;color:#8ef2ca;letter-spacing:-.065em}
+#cover45 .cover46-wordmark-sub{font-size:11px;letter-spacing:.17em;color:#b9e4e5;font-weight:730;white-space:nowrap}
+#cover45 .cover46-footer{left:84px;right:84px;bottom:69px}
+#cover45 .cover46-report{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+#cover45 .cover46-report strong{font-size:19px;color:#effcf8;font-weight:670;letter-spacing:.025em}
+#cover45 .cover46-report time{font-size:16px;letter-spacing:.045em;color:#95b6c5}
+#cover45 .cover46-theme{display:flex;align-items:baseline;gap:12px;border-top:1px solid rgba(146,224,211,.3);padding-top:10px}
+#cover45 .cover46-theme span{font-size:15px;color:var(--mint);letter-spacing:.08em;font-weight:750}
+#cover45 .cover46-theme strong{font-size:19px;color:#e7f6f3;font-weight:670}
+@media print{#stage .deck46-header-logo img{transition:none!important}}
+
 </style>
 </head>
 <body>
 <div id="frame"><main id="stage" aria-label="AI团队研发协作答辩演示文稿">
 
 <section class="slide active bg-soft" id="cover45" data-title="从个人工具到团队研发基础设施" data-chapter="开场" data-time="35">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.5</span></header>
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.6</span></header>
   <div class="cover45-main">
     <div class="reveal" data-step="0">
       <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
@@ -340,26 +373,30 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
         <path stroke-dasharray="4 9" d="M112 116 L366 363 M371 122 L113 366"/>
       </g><g fill="#96f3d1"><circle cx="113" cy="115" r="4"/><circle cx="372" cy="125" r="3.5"/><circle cx="379" cy="370" r="4"/><circle cx="113" cy="366" r="3.5"/></g>
     </svg>
-    <div class="cover45-logo-card">
-      <div class="cover45-company-logo">
-        <div class="cover45-logo-fallback" aria-hidden="true"><span class="cover45-logo-monogram">HF</span><span class="cover45-logo-text">恒锋信息</span></div>
-        <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" alt="恒锋信息 Logo" loading="eager" decoding="async" onload="this.parentElement.classList.add('has-logo')" onerror="this.parentElement.classList.add('logo-unavailable')">
-      </div>
-      <div class="cover45-logo-caption">HENGFENG <span>×</span> AI</div>
+    <div class="cover45-logo-card cover46-wordmark-card">
+      <div class="cover46-wordmark" aria-label="HENGFENG x AI"><span class="cover46-hf">HENGFENG</span><span class="cover46-times">×</span><strong class="cover46-ai">AI</strong></div>
+      <div class="cover46-wordmark-sub">AI × TEAM COLLABORATION</div>
     </div>
     <div class="cover45-ai-badge"><span class="cover45-ai-star">✦</span><strong>AI</strong><small>COLLABORATION</small></div>
     <span class="cover45-sat p1"></span><span class="cover45-sat p2"></span><span class="cover45-sat p3"></span><span class="cover45-sat p4"></span>
     <div class="cover45-label top">HUMAN × AGENT</div>
     <div class="cover45-label bottom">SHARED CONTEXT · SMART DELIVERY</div>
   </div>
-  <div class="cover45-footer">
-    <div class="cover45-footnote">汇报视角：团队负责人 / 技术架构师　｜　主线：降低重复沟通、交接与返工成本</div>
-    <div class="cover45-presenter"><span class="cover45-presenter-label">汇报人</span><span>智慧城市事业部</span><i></i><strong>黄宗耀</strong></div>
+  <div class="cover45-footer cover46-footer">
+    <div class="cover46-report"><strong>汇报人：智慧城市事业部 - 黄宗耀</strong><time datetime="2026-11-23">2026年11月23日</time></div>
+    <div class="cover46-theme"><span>主线</span><strong>降低重复沟通、交接与返工成本</strong></div>
   </div>
-  <template class="speaker-note">约35秒。汇报人：智慧城市事业部黄宗耀。右侧以恒锋信息官方Logo来源图片结合AI环绕动效呼应主题：团队协作与AI共同演进；联网时显示原品牌图，离线或图片不可用时展示简化文字标记，不冒充官方Logo。开场不强调AI写了多少代码，而强调跨岗位围绕共享工程上下文协作。案例分为科技馆跨岗位实践与Super App多Agent工程化。仅封面增加品牌视觉和署名，其他页面结构保持不变。</template>
+  <template class="speaker-note">约35秒。汇报人：智慧城市事业部黄宗耀。右侧动画中央改为HENGFENG × AI文字标识，外圈保留科技环绕。每页右上角放汇报人和恒锋信息Logo，品牌图片来自用户提供的链接，断网时使用文字标识。封面底部左侧为汇报人和2026年11月23日，右侧保留主线：降低重复沟通、交接与返工成本。开场不强调AI写了多少代码，而强调跨岗位围绕共享工程上下文协作。案例分为科技馆跨岗位实践与Super App多Agent工程化。本次更新封面排版和全篇统一页眉，其他页面的主体内容与交互保持不变。</template>
 </section>
 
 <section class="slide" data-title="效率瓶颈：跨岗位的重复转译" data-chapter="问题 / WHY" data-time="45">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">01 / THE PROBLEM</span></header>
   <h2>研发效率的损耗，<br>不只发生在写代码的时候。</h2>
   <p class="lead">需求、设计、开发、测试、项目交付不断交接；每一次交接，<span class="mint">都有机会重复解释、等待确认、误解返工。</span></p>
@@ -374,6 +411,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-alt" id="collab3" data-title="AI 不只服务开发人员" data-chapter="协作全景 / WHO" data-time="58">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
 <header class="hdr"><i class="stripe"></i><span class="eyebrow">02 / COOPERATION MAP</span><span class="section-tag">从跨岗位角色到共享工程上下文</span></header>
 <h2>AI 不只服务开发人员。</h2>
 <p class="lead" style="font-size:24px;margin-top:14px">产品、设计、技术、开发、测试与交付共同使用需求、原型、任务及验证证据；<span class="mint">AI 连接上下文，人负责关键决策。</span></p>
@@ -392,6 +436,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-blue" id="wf4" data-title="多岗位 × AI 协作：每一步都有人的关键决策" data-chapter="协作模式 / 全链路升级" data-time="85">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr" style="margin-bottom:15px"><i class="stripe"></i><span class="eyebrow">03 / HUMAN-LED AI COLLABORATION</span><span class="section-tag">从跨岗位转译，到人主导的协同闭环</span></header>
   <h2 style="font-size:53px;line-height:1.13">多岗位 × AI 协作，<span class="mint">每一步都有人决策</span>。</h2>
   <div class="wf4-past reveal" data-step="0" style="margin-top:16px"><b>过去 · 串行交接</b><span>产品需求</span><span class="arrow">→</span><span>UI / UX 图稿</span><span class="arrow">→</span><span>开发理解与实现</span><span class="arrow">→</span><span>测试 / 验收</span><span class="arrow">→</span><span>部署交付</span><span class="arrow">→</span><span>项目归档</span><span style="margin-left:auto;color:#f1c7aa;font-size:14px">多次交接与信息损耗</span></div>
@@ -408,6 +459,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-alt" id="asset5" data-title="项目资产传承" data-chapter="能力沉淀 / 资产传承" data-time="90">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
 <header class="hdr" style="margin-bottom:12px"><i class="stripe"></i><span class="eyebrow">04 / PROJECT ASSET INHERITANCE</span><span class="section-tag">不是几个 Skill，而是一整套可继承的工程能力</span></header>
 <h2 style="font-size:50px;line-height:1.14">项目资产传承：<span class="mint">让上一代经验成为下一代默认能力</span>。</h2>
 <p class="lead" style="font-size:19px;margin-top:8px">传承商城业务架构、研发 Skills、专业 MCP、工程规范、任务治理、测试验证与部署知识。</p>
@@ -434,6 +492,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-title="科技馆：产品先体验，开发交付可运行上下文" data-chapter="实践一 / 科技馆" data-time="56">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践一 / 科技馆</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>不必等所有图稿齐全，<br><span class="mint">先用可体验成果对齐关键需求</span>。</h2>
@@ -451,6 +516,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-blue" data-title="架构师：AI辅助架构与技术选型" data-chapter="负责人视角 / 决策" data-time="40">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">ARCHITECT / DECISION SUPPORT</span><span class="section-tag">少讲技术名词，多讲决策方法</span></header>
   <h2>AI 不是替代架构决策，<br>而是帮助把方案比较做得更充分。</h2>
   <div class="grid two" style="margin-top:43px;grid-template-columns:.9fr 1.1fr"><div class="panel reveal" data-step="0"><div class="caps mint">Super App 选型过程</div><div style="display:flex;gap:12px;align-items:center;margin-top:24px"><div class="node" style="flex:1"><b>H5 / Web</b><small>迭代速度、跨端可用</small></div><span class="thin-arrow">VS</span><div class="node" style="flex:1"><b>Flutter</b><small>移动交互、原生能力</small></div></div><p class="small" style="margin-top:27px">结合目标设备、已有资产、性能与长期维护，比较并收敛技术路线。</p></div><div class="panel reveal" data-step="1"><table class="compact-table"><tr><th>AI 辅助</th><th>负责人必须把关</th></tr><tr><td>梳理候选方案与约束</td><td>真实业务边界、平台现状</td></tr><tr><td>输出权衡矩阵与风险</td><td>技术债、成本、团队能力</td></tr><tr><td>生成架构与开发规范草稿</td><td>审核、试验、最终拍板</td></tr></table></div></div>
@@ -459,6 +531,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-blue" data-title="福州科技馆·福小科 APP：AI + MCP 跨端音视频联调" data-chapter="工程深度 / 福州科技馆·福小科 APP" data-time="70">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 福州科技馆 · 福小科 APP 音视频联调</span><span class="pill mint" style="margin-left:auto">跨端协作实战</span></header>
 
   <h2>福州科技馆·福小科 APP，<span class="mint">AI 协同六端排障</span>。</h2>
@@ -534,6 +613,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-title="从人与人到人主导多 AI 协同" data-chapter="协作理念 / 决策重心" data-time="45">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 协作理念 / 决策重心</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>三种协作模式的差异，<br>是<span class="mint">人的决策重心逐步上移</span>。</h2>
@@ -548,6 +634,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-alt" data-title="Super App：人管方向，Lead 统筹多 Agent" data-chapter="实践二 / 多Agent工程化" data-time="55">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践二 / 多Agent工程化</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>不是让多个 AI 各自写代码，<br>而是让它们<span class="mint">按同一套规则交付</span>。</h2>
@@ -571,6 +664,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-title="任务卡会话索引：精准回派原开发 Agent" data-chapter="实践二 / 上下文追溯" data-time="50">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践二 / 上下文追溯</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>任务卡不只是记录进度，<br>还是<span class="mint">跨 Agent 的上下文索引</span>。</h2>
@@ -601,6 +701,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-blue" data-title="从功能测试通过到产品验收达标" data-chapter="实践二 / 质量升级" data-time="65">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践二 / 质量升级</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>流程一直存在；升级的是<span class="mint">产品验收节点与证据链</span>。</h2>
@@ -628,6 +735,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-title="从代码到可交接的工程资产" data-chapter="负责人视角 / 交付管理" data-time="48">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 负责人视角 / 交付管理</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>项目交接，不是发一句“<span class="amber">我做完了</span>”。</h2>
@@ -645,6 +759,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-title="竞赛证据：三个研发环节的真实 AI 过程" data-chapter="评分映射 / 真实证据" data-time="44">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 评分映射 / 真实证据</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>不只看 AI 输出，更要看<span class="mint">人如何采纳与纠偏</span>。</h2>
@@ -660,6 +781,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-title="已实践、待完善、下一阶段，清楚区分" data-chapter="能力演进 / ROADMAP" data-time="40">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 能力演进 / ROADMAP</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>把现有成果转化为<span class="mint">更可复制的研发体系</span>。</h2>
@@ -674,6 +802,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-title="有价值的变化，是交接与验收更有依据" data-chapter="成果价值 / EVIDENCE" data-time="38">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 成果价值 / EVIDENCE</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
 
   <h2>不报虚构倍率，<span class="mint">先让结果可观察、可追踪</span>。</h2>
@@ -690,6 +825,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-soft" data-title="结论：让AI成为组织能力" data-chapter="结语" data-time="45">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">CLOSING / TAKEAWAY</span></header>
   <div style="margin-top:124px;max-width:1320px"><div class="reveal" data-step="0"><p class="caps cyan" style="margin-bottom:30px">真正的提效，不止于代码生成</p><h1 style="font-size:82px">让 AI <span class="highlight">减少重复沟通</span>，<br>让人专注高价值决策。</h1></div><div class="reveal" data-step="1"><p style="font-size:32px;color:#c2d9e3;margin-top:46px">以真实协作场景为起点，以多 Agent 工程实践为抓手，<br>逐步沉淀可管理、可复用、可推广的团队研发基础能力。</p><div style="display:flex;gap:14px;margin-top:42px"><span class="pill mint">共享上下文</span><span class="pill">过程可追溯</span><span class="pill">人工质量把关</span><span class="pill gold">团队持续复用</span></div></div></div>
   <div class="orbit" aria-hidden="true" style="top:170px;right:-100px;opacity:.75"></div><div class="bottom-brand">THANK YOU · AI COLLABORATION PRACTICE</div>
@@ -697,6 +839,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-alt" data-appendix="true" data-title="附录：数据来源与可信度" data-chapter="附录 / 数据" data-time="0">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX A / DATA PROVENANCE</span></header>
   <h2>量化数据，有哪些能说，哪些不能说？</h2>
   <div class="grid two" style="margin-top:33px"><div class="panel"><div class="caps mint">可复算的静态数据</div><table class="compact-table" style="margin-top:14px"><tr><td>Super App 看板任务卡</td><td><strong>67</strong></td></tr><tr><td>状态字段 done / blocked</td><td><strong>55 / 12</strong></td></tr><tr><td>任务过程日志</td><td><strong>263</strong></td></tr><tr><td>显式证据数组条目</td><td><strong>2</strong></td></tr><tr><td>商城任务卡（另一工程）</td><td><strong>74</strong></td></tr></table></div><div class="panel"><div class="caps amber">不可直接推断</div><table class="compact-table" style="margin-top:14px"><tr><td>67 张任务卡</td><td>≠ 67 项正式交付</td></tr><tr><td>55 个 done</td><td>≠ 55 项独立验收通过</td></tr><tr><td>历史仓库 Commit</td><td>≠ AI 完成任务数</td></tr><tr><td>测试文件数量</td><td>≠ 测试通过率</td></tr><tr><td>没有前后对照</td><td>不能声称节约 50% 工时</td></tr></table></div></div>
@@ -705,6 +854,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-blue" data-appendix="true" data-title="附录：评分合规与证据采集" data-chapter="附录 / 规则" data-time="0">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX B / COMPLIANCE</span></header>
   <h2>竞赛硬约束与正式提交前清单。</h2>
   <div class="grid two" style="margin-top:38px"><div class="panel"><div class="caps mint">规则原文要点</div><div class="col" style="margin-top:20px"><p class="small">• 15 分钟讲解，作品实物真实运行演示</p><p class="small">• 不少于 3 个不同环节的 AI 协作记录</p><p class="small">• 包含提示词、AI 输出、采纳或修改理由</p><p class="small">• 单人赛，AI 部分须说明个人贡献与协作者</p><p class="small">• 不展示未经脱敏的生产、客户、个人数据</p></div></div><div class="panel"><div class="caps amber">P0 / 补证顺序</div><div class="col" style="margin-top:20px"><p class="small">1. 补三段完整的原始 AI 会话与可追溯编号</p><p class="small">2. 科技馆产品人员真实操作/提交/自测记录</p><p class="small">3. Super App 现场运行、任务看板与测试输出</p><p class="small">4. Git Review / 规范体检跑通后保存实际报告</p><p class="small">5. 校对开源组件授权、本人增量与团队共创边界</p></div></div></div>
@@ -713,6 +869,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide" data-appendix="true" data-title="附录：未来提效指标怎么测" data-chapter="附录 / 衡量" data-time="0">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX C / MEASUREMENT</span></header>
   <h2>下一步真正证明“沟通成本降低”。</h2><p class="lead">选同类、相近复杂度的真实工单，以任务 ID 追踪需求到验收的全过程；基线与 AI 流程口径必须一致。</p>
   <div class="grid four" style="margin-top:51px"><div class="panel"><div class="caps mint">01 / 沟通</div><h3 style="margin:21px 0">沟通轮次</h3><p class="small">一次需求完成需要跨岗位反复确认多少次</p></div><div class="panel"><div class="caps mint">02 / 等待</div><h3 style="margin:21px 0">交接等待</h3><p class="small">从原型确认到开发可接手的等待分钟数</p></div><div class="panel"><div class="caps mint">03 / 返工</div><h3 style="margin:21px 0">理解偏差</h3><p class="small">需求歧义导致的二次开发或重测次数</p></div><div class="panel"><div class="caps mint">04 / 质量</div><h3 style="margin:21px 0">验收结果</h3><p class="small">实际执行的测试、缺陷、回退、人工采纳率</p></div></div>
@@ -721,6 +884,13 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-alt" data-appendix="true" data-title="附录：备答问题与边界" data-chapter="附录 / 备答" data-time="0">
+  <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
+    <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
+    <div class="deck46-header-logo" title="恒锋信息 Logo">
+      <span class="deck46-logo-fallback">恒锋信息</span>
+      <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
+    </div>
+  </div>
   <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX D / Q & A</span></header>
   <h2>评委可能会追问什么？</h2>
   <div class="grid two" style="margin-top:36px"><div class="panel"><h3>① “你做的与普通 AI 编码有什么不同？”</h3><p class="small" style="margin-top:12px">不是单点提速：让角色分工、共享文档、任务状态、测试与人工验收进入同一协作流程。</p></div><div class="panel"><h3>② “有多少人用过？节省多少时间？”</h3><p class="small" style="margin-top:12px">只说能证明的试点与记录。当前没有完整跨成员采纳统计和可比基线，不虚报效率百分比。</p></div><div class="panel"><h3>③ “Agent 自己说完成，怎么保证质量？”</h3><p class="small" style="margin-top:12px">看源码、实际退出码、截图/状态与人工验收；承认现有看板部分检查仍依赖日志关键字。</p></div><div class="panel"><h3>④ “是团队基础设施，还是你的个人环境？”</h3><p class="small" style="margin-top:12px">当前是共享规则/试点/工程化雏形；下一步用一键初始化、成员独立使用和跨项目采纳来证明团队化。</p></div></div>
