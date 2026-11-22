@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V3.7 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V3.8 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -236,20 +236,20 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
     <code><span>[2026-11-03 16:48:02.866][WARN][…] RTC error code=<b>4043(HttpsRead)</b>(Failed to read data from HTTPS stream)</span><span>… RTC: http_hooks_on_play : on_play [HTTPS URL 已脱敏] : http: on_play failed</span></code>
   </div>
 
-  <div class="srs-stage reveal" data-step="2" role="img" aria-label="福州科技馆福小科 APP 部署时的跨端音视频排障协同图：AI 借助 Playwright MCP、SSH MCP（含 SRS 日志分析）、数据库 MCP、ADB/Android 工具以及 GitHub MCP（检索 SRS 源码），围绕 H5、PC、Android、SRS、Java/达梦及 Nginx 组织跨端取证。">
+  <div class="srs-stage reveal" data-step="2" role="img" aria-label="福州科技馆福小科 APP 部署时的跨端音视频排障协同图：AI 借助 Playwright MCP、SSH MCP（含 SRS 日志分析）、数据库 MCP、ADB/Android 工具以及 GitHub MCP（检索 SRS 源码），AI 中心向 H5、PC、Android、SRS、Java/达梦及 Nginx 六端发起检查；六端的日志与测试结果再回传供 AI 关联分析。">
     <svg viewBox="0 0 1432 374" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="srsEdgeL" x1="0" x2="1"><stop offset="0" stop-color="#72b9df" stop-opacity=".48"/><stop offset="1" stop-color="#8eeac8" stop-opacity=".95"/></linearGradient>
         <linearGradient id="srsEdgeR" x1="0" x2="1"><stop offset="0" stop-color="#8eeac8" stop-opacity=".95"/><stop offset="1" stop-color="#72b9df" stop-opacity=".48"/></linearGradient>
-        <marker id="srsDot" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5"><circle cx="2.5" cy="2.5" r="2.1" fill="#9beccd"/></marker>
+        <marker id="srsOutboundArrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L10 6 L1 11 Z" fill="#9beccd"/></marker>
       </defs>
       <g fill="none" stroke-width="2.3" stroke-linecap="round" class="srs-lines">
-        <path d="M326 79 C419 79 422 142 493 150" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
-        <path d="M326 197 C407 197 423 196 493 196" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
-        <path d="M326 315 C419 315 422 255 493 244" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
-        <path d="M939 150 C1015 143 1026 79 1106 79" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
-        <path d="M939 196 C1018 196 1027 197 1106 197" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
-        <path d="M939 244 C1015 254 1026 315 1106 315" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
+        <path d="M493 150 C422 142 419 79 326 79" stroke="url(#srsEdgeL)" marker-end="url(#srsOutboundArrow)"/>
+        <path d="M493 196 C423 196 407 197 326 197" stroke="url(#srsEdgeL)" marker-end="url(#srsOutboundArrow)"/>
+        <path d="M493 244 C422 255 419 315 326 315" stroke="url(#srsEdgeL)" marker-end="url(#srsOutboundArrow)"/>
+        <path d="M939 150 C1015 143 1026 79 1106 79" stroke="url(#srsEdgeR)" marker-end="url(#srsOutboundArrow)"/>
+        <path d="M939 196 C1018 196 1027 197 1106 197" stroke="url(#srsEdgeR)" marker-end="url(#srsOutboundArrow)"/>
+        <path d="M939 244 C1015 254 1026 315 1106 315" stroke="url(#srsEdgeR)" marker-end="url(#srsOutboundArrow)"/>
       </g>
     </svg>
     <div class="srs-tool srs-left" style="top:33px"><span class="srs-tag">01 / H5</span><strong>WebRTC 测试页</strong><small>推拉流验证、请求与媒体状态</small></div>
@@ -267,7 +267,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
         <div class="srs-mcp-chip"><b>ADB / Android 工具</b><small>真机日志 / 设备调试</small></div>
         <div class="srs-mcp-chip srs-mcp-source"><b>GitHub MCP · SRS 源码</b><small>检索源代码，对照日志理解调用链与错误处理路径</small></div>
       </div>
-      <div class="srs-hub-bottom">症状 → 取证 → 关联分析 → 修复建议</div>
+      <div class="srs-hub-bottom">AI 发起排查 → 六端执行 · 证据回传 AI</div>
     </div>
 
     <div class="srs-tool srs-right" style="top:33px"><span class="srs-tag">04 / STREAMING</span><strong>SRS 独立控制台</strong><small>RTC 状态、流信息、Hook 日志</small></div>
@@ -297,7 +297,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       </div>
     </div>
   </div>
-  <template class="speaker-note">约70秒。本案例明确属于福州科技馆「福小科 APP」在部署过程中的音视频联调。现场表现为呼叫接通但无画面。本页按故障证据（第一步）→ AI 跨端排查（第二步）→ 实际修复结论（第三步）依次渐进展示；顶部深色日志条引用用户 2026-11-03 提供的原始 SRS WARN 日志，保留原始时间戳、4043(HttpsRead)、Failed to read data from HTTPS stream、http_hooks_on_play 与 on_play failed 等关键字，删去内部编号、真实 URL 与请求数据；该日志只能证明当时确实有 HTTPS Hook 读取失败现象，不能单独证明 SSE 配置即为唯一根因。讲解中心的专业能力映射：Playwright MCP 用于浏览器端 WebRTC 验证，SSH MCP 用于远程获取并分析 SRS 运行日志、核查 Nginx 配置；GitHub MCP 用于检索 SRS 源码、核对日志与错误处理路径；DB MCP 辅助达梦数据核对，ADB/Android 工具用于真机日志与操作；这些组合帮助串联 H5、PC、Android、SRS、Java/达梦和 Nginx/SSH 六类检查入口，辅助拆分任务与交叉验证。若要声称某个具体 MCP 服务在该次故障中真实执行，需核对工具调用日志，ADB 不必强称为 MCP。用户确认的实际排查结论：Nginx HTTPS 下 SSE 相关配置与 SRS 使用的 HTTPS 路径/行为发生干扰；曾在公共配置段使用的 proxy_buffering off;（关闭响应缓冲）与 proxy_cache off;（关闭代理缓存）被限定到 SSE 专属 location，SRS HTTPS 路径不再施加两项 SSE 专有设置，配置调整并跨端复测后画面恢复。页面 /sse/ 仅为脱敏示意，并非已证实的线上 URI；不得把用户口述的“chain”当作 Nginx 指令。当前没有原始 nginx.conf 完整 diff，不能断言是哪一条指令单独导致故障；现场应展示脱敏配置、日志及复测证据。突出人掌握最终变更、配置审查和复验，AI 主要承担跨系统证据组织与排查协调。隐去 IP、流 ID、token。</template>
+  <template class="speaker-note">约70秒。本案例明确属于福州科技馆「福小科 APP」在部署过程中的音视频联调。现场表现为呼叫接通但无画面。本页按故障证据（第一步）→ AI 跨端排查（第二步）→ 实际修复结论（第三步）依次渐进展示；顶部深色日志条引用用户 2026-11-03 提供的原始 SRS WARN 日志，保留原始时间戳、4043(HttpsRead)、Failed to read data from HTTPS stream、http_hooks_on_play 与 on_play failed 等关键字，删去内部编号、真实 URL 与请求数据；该日志只能证明当时确实有 HTTPS Hook 读取失败现象，不能单独证明 SSE 配置即为唯一根因。讲解中心的专业能力映射：Playwright MCP 用于浏览器端 WebRTC 验证，SSH MCP 用于远程获取并分析 SRS 运行日志、核查 Nginx 配置；GitHub MCP 用于检索 SRS 源码、核对日志与错误处理路径；DB MCP 辅助达梦数据核对，ADB/Android 工具用于真机日志与操作；这些组合帮助串联 H5、PC、Android、SRS、Java/达梦和 Nginx/SSH 六类检查入口，辅助拆分任务与交叉验证。若要声称某个具体 MCP 服务在该次故障中真实执行，需核对工具调用日志，ADB 不必强称为 MCP。用户确认的实际排查结论：Nginx HTTPS 下 SSE 相关配置与 SRS 使用的 HTTPS 路径/行为发生干扰；曾在公共配置段使用的 proxy_buffering off;（关闭响应缓冲）与 proxy_cache off;（关闭代理缓存）被限定到 SSE 专属 location，SRS HTTPS 路径不再施加两项 SSE 专有设置，配置调整并跨端复测后画面恢复。页面 /sse/ 仅为脱敏示意，并非已证实的线上 URI；不得把用户口述的“chain”当作 Nginx 指令。当前没有原始 nginx.conf 完整 diff，不能断言是哪一条指令单独导致故障；现场应展示脱敏配置、日志及复测证据。图中六根箭头统一从 AI 中心指向外部六端，表示 AI 主动派发/调用排查任务，而非媒体流传输方向；工具执行产生的日志、截图、配置及状态再返回给 AI，用于跨系统分析，因此真实调用是有请求也有反馈。突出人掌握最终变更、配置审查和复验，AI 主要承担跨系统证据组织与排查协调。隐去 IP、流 ID、token。</template>
 </section>
 
 <section class="slide" data-title="从人与人到人主导多 AI 协同" data-chapter="协作理念 / 决策重心" data-time="45">
