@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>AI 驱动的跨岗位协作实践｜V3.1 HTML 答辩</title>
+<style>
+:root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
+header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{height:2px;width:35px;background:var(--mint);box-shadow:0 0 24px var(--mint)}.eyebrow{font-size:17px;font-weight:720;letter-spacing:.19em;color:var(--mint)}.section-tag{margin-left:auto;font-size:14px;letter-spacing:.12em;color:var(--dim)}h1,h2,h3,p{margin:0}h1{font-size:92px;letter-spacing:-.062em;line-height:1.17;font-weight:780}h2{font-size:62px;letter-spacing:-.043em;line-height:1.15;font-weight:760;max-width:1390px}h3{font-size:30px;line-height:1.35;letter-spacing:-.025em}p{line-height:1.62}.lead{font-size:26px;color:#c0d5de;max-width:1230px;margin-top:19px;line-height:1.6}.small{font-size:19px;color:var(--dim);line-height:1.55}.micro{font-size:15px;color:var(--dim);line-height:1.45}.ul{margin:0;padding:0;list-style:none}.muted{color:var(--dim)}.mint{color:var(--mint)}.cyan{color:var(--cyan)}.amber{color:var(--amber)}.blue{color:var(--blue)}.quote{font-size:49px;line-height:1.42;letter-spacing:-.04em;font-weight:710}.caps{font-size:16px;letter-spacing:.15em;font-weight:780;color:var(--dim)}.bold{font-weight:750}.tinycaps{letter-spacing:.1em;text-transform:uppercase;font-size:14px;font-weight:700;color:var(--dim)}
+.row{display:flex;gap:22px}.col{display:flex;flex-direction:column;gap:18px}.grid{display:grid;gap:20px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}.panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:30px}.panel.flat{box-shadow:none}.panel.light{background:rgba(61,118,136,.19)}.panel .num{font-size:66px;letter-spacing:-.055em;font-weight:780;line-height:1}.panel .lbl{margin-top:10px;font-size:18px;color:var(--dim)}.panel h3{margin-bottom:11px}.pill{display:inline-flex;align-items:center;padding:9px 15px;border:1px solid rgba(160,213,228,.2);background:rgba(142,210,218,.09);border-radius:999px;font-size:17px;color:#d6ecf2;gap:9px;white-space:nowrap}.pill::before{content:"";width:7px;height:7px;border-radius:100%;background:var(--cyan)}.pill.gold{border-color:rgba(246,209,139,.27);color:var(--amber)}.pill.gold::before{background:var(--amber)}.pill.mint{color:var(--mint)}.pill.mint::before{background:var(--mint)}.pill.red{color:var(--red)}.pill.red::before{background:var(--red)}.pill.neutral::before{background:#94a6b8}
+.kpi{display:flex;align-items:end;gap:14px}.kpi strong{font-size:95px;letter-spacing:-.08em;line-height:.99}.kpi span{font-size:22px;color:var(--dim);padding-bottom:10px}.divider{width:100%;height:1px;background:var(--line);margin:21px 0}.rule{border-left:3px solid var(--mint);padding:6px 0 6px 22px;margin-top:22px;color:#cce0e8;font-size:22px}.small-rule{color:#a9c1cb;font-size:18px;margin-top:12px}.sidenote{position:absolute;bottom:68px;left:85px;color:#8aa6b8;font-size:15px;z-index:1;max-width:1270px}.chapter{font-size:16px;color:#a9c7d5;letter-spacing:.1em}
+.big-num{font-size:205px;line-height:.98;font-weight:800;letter-spacing:-.09em;color:rgba(133,232,207,.19)}.highlight{background:linear-gradient(90deg,var(--mint),var(--cyan));background-clip:text;-webkit-background-clip:text;color:transparent}.keyword{font-size:18px;color:#9fe6e3;background:rgba(85,190,181,.12);border:1px solid rgba(87,188,184,.21);display:inline-block;padding:8px 13px;border-radius:12px;margin:7px 7px 0 0}.step-card{padding:22px 24px;border:1px solid var(--line);border-radius:20px;background:rgba(19,46,67,.85);position:relative}.step-card .step-idx{font-size:15px;color:var(--mint);font-weight:740;letter-spacing:.12em;margin-bottom:8px}.step-card h3{font-size:24px;margin-bottom:7px}.step-card p{font-size:18px;color:#afc8d3}.arrow{font-size:36px;color:var(--mint);align-self:center;opacity:.8}.thin-arrow{font-size:27px;color:var(--mint)}
+.compact-table{width:100%;border-collapse:collapse;font-size:19px}.compact-table th{text-align:left;color:var(--mint);font-weight:700;font-size:16px;letter-spacing:.04em;padding:14px 19px;border-bottom:1px solid rgba(161,209,223,.28)}.compact-table td{padding:17px 19px;border-bottom:1px solid var(--line);color:#d4e4e9;vertical-align:top;line-height:1.48}.compact-table tr:last-child td{border-bottom:none}.compact-table strong{color:white}.metric-title{font-size:17px;letter-spacing:.08em;color:var(--dim);font-weight:700}.metric-value{font-size:74px;letter-spacing:-.075em;font-weight:800;line-height:1.13}.metric-sub{font-size:17px;color:var(--dim)}
+.flow-line{display:flex;align-items:stretch;gap:14px}.flow-line .fbox{flex:1;min-width:0;background:rgba(23,55,72,.88);border:1px solid var(--line);border-radius:19px;padding:18px}.flow-line .fbox b{display:block;font-size:23px;margin:6px 0}.flow-line .fbox small{font-size:17px;color:#9bb6c2}.flow-line .farr{align-self:center;font-size:30px;color:#8fe5d0}
+.node{border:1px solid var(--line);background:rgba(23,50,70,.95);border-radius:22px;padding:21px 26px;display:flex;flex-direction:column;gap:10px;justify-content:center}.node b{font-size:25px}.node small{font-size:18px;color:#a5c0cd;line-height:1.5}.node .icon{font-size:31px;width:59px;height:59px;display:grid;place-items:center;border-radius:17px;background:rgba(116,224,205,.11)}
+.progress-track{height:16px;background:rgba(154,175,204,.19);border-radius:99px;overflow:hidden;display:flex}.progress-track .done{width:82.0895%;background:linear-gradient(90deg,#41af9e,#9bebca)}.progress-track .blocked{flex:1;background:linear-gradient(90deg,#b28e5e,#efce94)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-top:26px}.timeline .item{padding:24px 20px;background:rgba(21,49,65,.82);border-top:3px solid var(--mint);border-radius:0 0 18px 18px}.timeline .item .i{font-size:17px;color:var(--mint);font-weight:700}.timeline .item b{font-size:25px;display:block;margin:10px 0}.timeline .item p{font-size:18px;color:#afc6cf}
+.orbit{position:absolute;width:620px;height:620px;right:25px;top:145px;border-radius:100%;border:1px solid rgba(122,216,227,.22);box-shadow:0 0 0 70px rgba(80,156,167,.035),0 0 0 140px rgba(80,156,167,.025)}.orbit::before{content:"";position:absolute;inset:60px;border-radius:100%;border:1px dashed rgba(127,230,213,.3);animation:spin 65s linear infinite}.orbit::after{content:"";position:absolute;inset:158px;border-radius:100%;background:radial-gradient(circle at 30% 25%,#315c69,#11263b 65%);box-shadow:0 0 55px rgba(100,236,210,.08)}@keyframes spin{to{transform:rotate(360deg)}}
+.role-map{position:relative;width:1430px;height:545px;margin:6px auto 0}.role-map svg{position:absolute;inset:0;width:100%;height:100%;opacity:.82}.role{position:absolute;width:248px;height:136px;padding:18px 20px;border:1px solid rgba(145,203,216,.31);border-radius:20px;background:linear-gradient(145deg,#19384c,#132a3e);box-shadow:0 16px 43px rgba(0,0,0,.23);display:flex;flex-direction:column;justify-content:center;gap:5px}.role strong{font-size:24px}.role small{font-size:16px;color:#aac3ce;line-height:1.35}.role .n{font-size:14px;color:var(--mint);font-weight:700;letter-spacing:.12em}.role.c{width:350px;height:166px;top:205px;left:540px;align-items:center;text-align:center;border-color:rgba(126,244,199,.55);background:linear-gradient(145deg,#205661,#133343);box-shadow:0 0 50px rgba(75,225,190,.14)}.role.c strong{font-size:26px;white-space:nowrap}.role.r1{left:60px;top:60px}.role.r2{left:465px;top:5px}.role.r3{right:60px;top:60px}.role.r4{left:60px;bottom:25px}.role.r5{left:465px;bottom:0}.role.r6{right:60px;bottom:25px}
+.mini-status{position:absolute;right:18px;top:18px;color:var(--mint);font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.reveal{opacity:0;transform:translateY(18px);filter:blur(4px);transition:opacity .46s var(--ease),transform .46s var(--ease),filter .5s var(--ease)}.reveal.visible{opacity:1;transform:translateY(0);filter:blur(0)}.slide:not(.active) .reveal{opacity:0;transform:translateY(18px)}
+.bottom-brand{position:absolute;right:84px;bottom:62px;display:flex;align-items:center;gap:13px;color:#7d9aac;font-size:14px;letter-spacing:.12em}.bottom-brand::before{content:"";width:20px;height:2px;background:var(--mint)}
+#chrome{position:fixed;z-index:40;left:0;right:0;bottom:0;height:50px;background:linear-gradient(0deg,rgba(4,10,18,.97),rgba(4,10,18,.86));display:flex;align-items:center;padding:0 20px;gap:12px;border-top:1px solid rgba(137,187,209,.13);user-select:none}#chrome .label{font-size:12px;letter-spacing:.08em;color:#a6bece;white-space:nowrap}#chrome button{border:1px solid rgba(152,184,199,.22);background:rgba(64,99,120,.15);color:#d6eaf3;font-size:12px;padding:7px 11px;border-radius:9px;cursor:pointer}#chrome button:hover{background:rgba(91,153,170,.28)}#chrome button:focus-visible{outline:2px solid var(--mint)}#chrome .sep{height:18px;width:1px;background:rgba(137,187,209,.22)}#slide-progress{height:3px;background:rgba(255,255,255,.1);flex:1;border-radius:99px;overflow:hidden}#slide-progress span{height:100%;display:block;background:linear-gradient(90deg,#68ddd6,#a9f0c7);transition:width .4s}#timer{font-size:13px;color:#95bac9;font-variant-numeric:tabular-nums;min-width:54px}#slidecounter{font-size:13px;color:#cbe0e8;min-width:62px;font-variant-numeric:tabular-nums;text-align:right}
+#notes{position:fixed;right:16px;bottom:65px;width:min(470px,90vw);max-height:min(590px,75vh);overflow:auto;border-radius:16px;padding:23px 25px;background:rgba(12,27,41,.97);color:#e3eef2;border:1px solid rgba(162,213,224,.33);box-shadow:0 22px 70px rgba(0,0,0,.55);z-index:60;display:none}#notes.show{display:block}#notes h4{font-size:15px;color:var(--mint);letter-spacing:.1em;margin:0 0 13px}#notes p{font-size:14px;line-height:1.65;white-space:pre-wrap}#overview{position:fixed;inset:0;background:rgba(4,11,21,.98);z-index:50;overflow:auto;display:none;padding:48px 55px 75px}#overview.show{display:block}#overview h2{font-size:37px;margin-bottom:25px}#overview .slides-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}#overview .ov-item{border:1px solid var(--line);border-radius:16px;padding:21px;background:#13293e;color:white;text-align:left;min-height:145px;cursor:pointer;transition:transform .2s,background .2s}#overview .ov-item:hover{transform:translateY(-4px);background:#1e3e55}#overview .ov-item.active{border-color:var(--mint)}#overview .ov-item b{display:block;font-size:17px;line-height:1.45;margin-top:14px}#overview .ov-item span{font-size:12px;color:var(--mint);letter-spacing:.12em}#overview .ov-back{position:fixed;right:45px;top:30px;border:1px solid var(--line);background:#163148;color:white;padding:11px 19px;border-radius:12px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.slide,.reveal,.orbit::before{animation:none!important;transition:none!important}}
+@media print{html,body{height:auto!important;overflow:visible!important;background:white!important}#frame{position:static!important;overflow:visible!important}#stage{position:static!important;transform:none!important;height:auto!important;width:auto!important}.slide{position:relative!important;visibility:visible!important;opacity:1!important;transform:none!important;page-break-after:always!important;width:1600px;height:900px;overflow:hidden!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}.reveal{opacity:1!important;transform:none!important;filter:none!important}#chrome,#notes,#overview{display:none!important}}
+
+/* SRS / 福小科：AI + MCP 六端协同排障图 */
+.srs-stage{height:394px;margin-top:25px;position:relative;border:1px solid rgba(130,216,221,.19);border-radius:25px;overflow:hidden;background:radial-gradient(540px 310px at 50% 50%,rgba(63,166,149,.13),transparent 73%),linear-gradient(120deg,rgba(13,43,65,.68),rgba(9,30,48,.8))}
+.srs-stage>svg{position:absolute;inset:0;width:100%;height:100%;opacity:.92}
+.srs-lines path{stroke-dasharray:8 9;animation:srsFlow 13s linear infinite}
+@keyframes srsFlow{to{stroke-dashoffset:-340}}
+.srs-tool{position:absolute;width:295px;height:93px;border:1px solid rgba(145,205,225,.31);border-radius:16px;background:linear-gradient(135deg,rgba(28,60,77,.98),rgba(15,39,59,.98));padding:10px 18px;display:flex;flex-direction:column;gap:1px;box-shadow:0 12px 28px rgba(0,0,0,.18)}
+.srs-left{left:31px}.srs-right{right:31px}
+.srs-tool .srs-tag{font-size:12px;line-height:17px;letter-spacing:.11em;color:var(--cyan);font-weight:700}
+.srs-tool strong{font-size:21px;line-height:28px;letter-spacing:-.02em}
+.srs-tool small{font-size:15px;line-height:21px;color:#a9c6d1;white-space:nowrap}
+.srs-hub{position:absolute;left:50%;top:91px;transform:translateX(-50%);width:446px;height:214px;border-radius:27px;border:1px solid rgba(137,245,203,.73);background:linear-gradient(145deg,rgba(33,99,99,.97),rgba(14,54,70,.98));box-shadow:0 0 64px rgba(96,233,189,.17),0 18px 30px rgba(0,0,0,.22);display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px}
+.srs-hub-tag{font-size:14px;font-weight:800;letter-spacing:.18em;color:#a3f5cf}
+.srs-hub h3{font-size:31px;margin:11px 0 9px}
+.srs-hub p{color:#d4eee8;font-size:18px;line-height:1.5}
+.srs-hub-bottom{border-top:1px solid rgba(180,241,225,.3);width:93%;margin-top:auto;padding:10px 0 2px;font-size:16px;letter-spacing:.03em;color:#a9f2d2}
+.srs-decisions{display:flex;gap:15px;align-items:center;justify-content:space-between;min-height:57px;margin-top:17px;padding:10px 17px;border:1px solid rgba(133,205,202,.21);border-radius:14px;background:rgba(20,52,65,.64)}
+.srs-decisions span{font-size:17px;color:#c9e3e7;white-space:nowrap}
+.srs-decisions b{font-size:19px}
+.srs-decisions .srs-chevron{font-size:27px;color:#8de7c5}
+@media (prefers-reduced-motion:reduce){.srs-lines path{animation:none}}
+
+</style>
+</head>
+<body>
+<div id="frame"><main id="stage" aria-label="AI团队研发协作答辩演示文稿">
+
+<section class="slide active bg-soft" data-title="从个人工具到团队研发基础设施" data-chapter="开场" data-time="35">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V3.0</span></header>
+  <div style="margin-top:110px;max-width:1060px"><div class="reveal" data-step="0"><p class="caps" style="margin-bottom:25px;color:var(--cyan)">从个体效率，走向组织协同</p><h1>从个人工具<br>到<span class="highlight">团队研发基础设施</span></h1></div><div class="reveal" data-step="1"><p style="margin-top:33px;font-size:33px;color:#d3e6ee">AI 驱动的跨岗位协作实践</p><div style="display:flex;gap:12px;margin-top:38px"><span class="pill mint">真实项目</span><span class="pill">多 Agent 工程实践</span><span class="pill gold">持续治理与复用</span></div></div></div>
+  <div class="orbit" aria-hidden="true" style="right:-140px;top:118px"></div><div class="sidenote">汇报视角：团队负责人 / 技术架构师　｜　主线：降低重复沟通、交接与返工成本</div>
+  <template class="speaker-note">35秒。不要开场就讲模型或代码。用一句话解释：我探索的不是AI替我写多少代码，而是AI如何让团队不同岗位围绕同一份可执行、可追溯的工程资产协作。随后交代案例有两条实践线：科技馆跨岗探索 + Super App多Agent工程化。</template>
+</section>
+
+<section class="slide" data-title="效率瓶颈：跨岗位的重复转译" data-chapter="问题 / WHY" data-time="45">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">01 / THE PROBLEM</span></header>
+  <h2>研发效率的损耗，<br>不只发生在写代码的时候。</h2>
+  <p class="lead">需求、设计、开发、测试、项目交付不断交接；每一次交接，<span class="mint">都有机会重复解释、等待确认、误解返工。</span></p>
+  <div class="grid four" style="margin-top:61px">
+    <div class="panel reveal" data-step="0"><div class="caps mint">01 / 理解</div><h3 style="margin-top:19px">需求反复解释</h3><p class="small">静态原型难表达交互与异常分支</p></div>
+    <div class="panel reveal" data-step="1"><div class="caps mint">02 / 交接</div><h3 style="margin-top:19px">信息来回转译</h3><p class="small">接口、素材与业务规则分散在聊天记录里</p></div>
+    <div class="panel reveal" data-step="2"><div class="caps mint">03 / 验证</div><h3 style="margin-top:19px">问题发现太晚</h3><p class="small">到测试阶段才暴露实现偏差</p></div>
+    <div class="panel reveal" data-step="3"><div class="caps mint">04 / 沉淀</div><h3 style="margin-top:19px">经验不能复用</h3><p class="small">同一类错误在下一项目再次发生</p></div>
+  </div>
+  <div class="rule reveal" data-step="4">核心命题：如何让<span class="bold" style="color:white">重复沟通 → 共享上下文，口头交接 → 工程资产</span>？</div>
+  <template class="speaker-note">45秒。此页是问题定义，不要捏造“浪费了40%时间”之类的数据。可以用一次原型理解偏差或一次测试前置修复的小故事。强调消除的是低价值重复沟通，不是取消必须的评审。</template>
+</section>
+
+<section class="slide bg-alt" data-title="六方协作：以AI共享工程上下文" data-chapter="协作全景 / WHO" data-time="55">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">02 / COOPERATION MAP</span><span class="section-tag">从团队视角看 AI</span></header>
+  <h2>AI 不应该只服务开发人员。</h2><p class="lead">让各岗位围绕统一的需求、设计、代码、文档和验收证据协作。</p>
+  <div class="role-map reveal" data-step="0">
+    <svg viewBox="0 0 1430 545" aria-hidden="true"><g stroke="#76d9c5" fill="none" stroke-width="2" stroke-dasharray="7 10" opacity=".62"><path d="M184 124 Q450 160 700 270"/><path d="M590 95 L715 263"/><path d="M1250 124 Q1000 164 730 280"/><path d="M184 446 Q438 410 700 311"/><path d="M590 500 L715 323"/><path d="M1250 446 Q997 403 730 311"/></g><circle cx="715" cy="290" r="198" fill="none" stroke="#63c4c5" opacity=".13" stroke-width="1.5"/><g fill="#8deccc"><circle cx="370" cy="175" r="5"/><circle cx="1060" cy="175" r="5"/><circle cx="365" cy="403" r="5"/><circle cx="1060" cy="406" r="5"/></g></svg>
+    <div class="role r1"><span class="n">PRODUCT</span><strong>产品</strong><small>需求 · 高保真交互原型</small></div>
+    <div class="role r2"><span class="n">DESIGN</span><strong>UI 设计</strong><small>设计方向 · 组件 · 视觉素材</small></div>
+    <div class="role r3"><span class="n">ARCHITECT</span><strong>技术负责人</strong><small>架构 · 技术选型 · 规范</small></div>
+    <div class="role c"><span class="n">SHARED CONTEXT</span><strong>AI 研发协作基础能力</strong><small>规则 / 原型 / 代码 / 任务 / 证据</small></div>
+    <div class="role r4"><span class="n">ENGINEERING</span><strong>开发</strong><small>前后端 · 接口 · 实现</small></div>
+    <div class="role r5"><span class="n">QUALITY</span><strong>测试</strong><small>回归 · 缺陷 · 验收</small></div>
+    <div class="role r6"><span class="n">DELIVERY</span><strong>项目经理</strong><small>进度 · 文档 · 交付</small></div>
+  </div>
+  <template class="speaker-note">55秒。围绕“我作为负责人跟谁协作”：产品、UI、开发、测试、项目经理。传统方式需一轮轮解释；目标是让AI先把过程产出结构化，成员依角色消费或修改。注意此页为目标协作模型，并非断言六岗位已经全部真实采用。</template>
+</section>
+
+<section class="slide bg-blue" data-title="从串行传话到资产化协作" data-chapter="协作模式 / HOW" data-time="50">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">03 / WORKFLOW REDESIGN</span></header>
+  <h2>从“人传给人”，<br>变成“人围绕同一份资产协作”。</h2>
+  <div style="margin-top:45px" class="reveal" data-step="0"><div class="caps">过去 / 多次转译的串行链路</div><div class="flow-line" style="margin-top:13px"><div class="fbox"><b>产品需求</b><small>口头 / 文档</small></div><div class="farr">→</div><div class="fbox"><b>UI 图稿</b><small>静态说明</small></div><div class="farr">→</div><div class="fbox"><b>开发理解</b><small>二次确认</small></div><div class="farr">→</div><div class="fbox"><b>测试接手</b><small>补充语义</small></div><div class="farr">→</div><div class="fbox"><b>项目归档</b><small>重新整理</small></div></div></div>
+  <div style="margin-top:48px" class="reveal" data-step="1"><div class="caps mint">探索中 / 共享、可执行的工程资产</div><div class="flow-line" style="margin-top:13px"><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>高保真 HTML</b><small>交互即需求</small></div><div class="farr">⇄</div><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>结构化任务</b><small>明确边界与验收</small></div><div class="farr">⇄</div><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>共享工程环境</b><small>Skills / 规范 / MCP</small></div><div class="farr">⇄</div><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>可追溯证据</b><small>代码 / 测试 / 结论</small></div></div></div>
+  <p class="rule reveal" data-step="2">变化的本质：不是减少必要的人，而是减少<span class="bold" style="color:white">信息损耗、反复确认与重复劳动</span>。</p>
+  <template class="speaker-note">50秒。强调“协作模式改变”是答辩第一层，再用后续两个项目证明。此图不是已经全员落地的现状图，应讲“我们正在形成的模式”。</template>
+</section>
+
+<section class="slide" data-title="产品与UI：让图稿变成可执行原型" data-chapter="实践一 / 产设协同" data-time="60">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">04 / PRODUCT × UI × AI</span><span class="pill gold" style="margin-left:auto">已有实践 + 持续探索</span></header>
+  <h2>UI 给出设计方向，<br>产品把方向变成可交互的原型。</h2><p class="lead">AI 参与素材扩展、页面还原与交互补全，让设计交接从“看图理解”走向“操作体验”。</p>
+  <div class="grid three" style="margin-top:43px">
+    <div class="panel reveal" data-step="0" style="min-height:310px"><div class="caps cyan">A / UI</div><div style="height:72px;display:flex;gap:12px;align-items:end;margin:12px 0 15px"><span style="height:39px;width:75px;background:#3a778d;border-radius:9px"></span><span style="height:61px;width:75px;background:#4c9eae;border-radius:9px"></span><span style="height:49px;width:75px;background:#91e0ce;border-radius:9px"></span></div><h3>样式基线</h3><p class="small">关键页面、色彩、组件、品牌视觉，确定方向</p></div>
+    <div class="panel reveal" data-step="1" style="min-height:310px"><div class="caps cyan">B / AI + 产品</div><div style="display:flex;gap:9px;margin:17px 0 20px"><span class="pill mint">素材补齐</span><span class="pill">页面生成</span></div><h3>高保真 HTML</h3><p class="small">基于图稿迭代交互、流程与异常分支</p></div>
+    <div class="panel reveal" data-step="2" style="min-height:310px"><div class="caps cyan">C / 开发</div><div style="margin:14px 0 17px;border:1px solid #407080;border-radius:12px;padding:16px;color:#a7ecd8;font-family:monospace;font-size:16px">&lt;prototype&gt;<br>&nbsp; clickable flow<br>&nbsp; state / action<br>&lt;/prototype&gt;</div><h3>可验证交接</h3><p class="small">围绕真实操作对齐功能，而不只靠图稿解释</p></div>
+  </div>
+  <p class="small-rule reveal" data-step="3">探索延伸：ChatGPT 辅助生成配套素材；Figma / 墨刀等设计接口可继续研究设计到原型的协同链路。尚未将所有工具链认定为已完整集成。</p>
+  <template class="speaker-note">60秒。举用户自己的场景：UI做基础图，前端遇到小素材缺失，不必每次让UI花半天重切，可在授权范围内用AI生成补充图片；高保真HTML由产品与AI共同完成。不要宣称Figma MCP/墨刀 MCP 已经在现有工程里打通，除非提供日志。</template>
+</section>
+
+<section class="slide" data-title="从文旅 Skill 到科技馆研发标准" data-chapter="实践一 / Skills复用" data-time="48">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践一 / Skills复用</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>把上个项目的经验，变成下个项目的<span class="mint">默认能力</span>。</h2>
+  <p class="lead">沈阳文旅沉淀前后端与框架 Skills，进入福州科技馆时，不再从零反复解释技术约束。</p>
+  <div class="grid four" style="margin-top:35px;gap:15px">
+    <div class="panel reveal" data-step="0"><div class="caps mint">01 / 沉淀</div><h3>文旅项目</h3><p class="small">前端组件 / 后端接口 / 基础框架 / 常见错误与约束</p></div>
+    <div class="panel reveal" data-step="1"><div class="caps cyan">02 / 复用</div><h3>工程规范</h3><p class="small">Skills、AGENTS.md、技术边界、接口契约及生成要求</p></div>
+    <div class="panel reveal" data-step="2"><div class="caps blue">03 / 初始化</div><h3>一键工程环境</h3><p class="small">docs、MCP、任务看板、测试脚本与部署变更记录</p></div>
+    <div class="panel reveal" data-step="3"><div class="caps mint">04 / 交接</div><h3>可执行资产</h3><p class="small">H5 调试示例、API 文档 Skill、源码与变更说明</p></div>
+  </div>
+  <div class="rule reveal" data-step="4" style="margin-top:35px">让新成员与新 Agent 从同一工程上下文开始，而不再反复追问“接口怎么调、组件怎么用、环境怎么跑”。</div>
+  <p class="small-rule">已实践：项目级规范及初始化资产；Super App 整套多 Agent 编排尚未并入该初始化流程。</p>
+
+  <template class="speaker-note">约48秒。强调业务复用和标准化，不把安装的第三方 Skill/MCP 都算自研成果；一键初始化文件目录存在与自动验收全部执行是两回事。现场可展示脱敏工程根目录和 AGENTS.md。</template>
+</section>
+
+<section class="slide" data-title="科技馆：产品先体验，开发交付可运行上下文" data-chapter="实践一 / 科技馆" data-time="56">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践一 / 科技馆</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>不必等所有图稿齐全，<br><span class="mint">先用可体验成果对齐关键需求</span>。</h2>
+  <p class="lead">已有商城经验与 Skills 支撑先做 V1，产品定方向、确认差异；后端用 AI 辅助 H5 联调，前端接收可运行示例。</p>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);gap:15px;margin-top:42px">
+    <div class="panel reveal" data-step="0"><div class="caps cyan">PRODUCT</div><h3>明确业务目标</h3><p class="small">关键功能、信息结构、体验要求与验收口径</p></div>
+    <div class="panel reveal" data-step="1"><div class="caps mint">DEV + AI</div><h3>快速形成 V1</h3><p class="small">沿用工程规范与现有模块，供产品直接操作反馈</p></div>
+    <div class="panel reveal" data-step="2"><div class="caps blue">API + H5</div><h3>自测业务闭环</h3><p class="small">页面调用接口，核对参数、返回值、异常与主要流程</p></div>
+    <div class="panel reveal" data-step="3"><div class="caps cyan">FRONTEND</div><h3>可运行交接</h3><p class="small">API 文档、H5 示例、交互反馈一起交付，前端完善体验</p></div>
+  </div>
+  <div class="rule reveal" data-step="4">另一个跨岗位实践：产品团队获得独立分支和 AI 开发环境，尝试自行推进部分功能；正式 QA、Review、发布仍需把关。</div>
+  <p class="small-rule">不是省略产品评审，而是减少不必要的串行等待。具体提效数据需同口径记录核实。</p>
+
+  <template class="speaker-note">约56秒。明确这是科技馆真实跨岗位实践，但产品自助开发和后端先做 V1 是两个互补场景。实物演示可选 H5 调试页与接口文档；不能宣称产品独立完成正式上线。</template>
+</section>
+
+<section class="slide bg-blue" data-title="架构师：AI辅助架构与技术选型" data-chapter="负责人视角 / 决策" data-time="40">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">06 / ARCHITECT’S WORK</span><span class="section-tag">少讲技术名词，多讲决策方法</span></header>
+  <h2>AI 不是替代架构决策，<br>而是帮助把方案比较做得更充分。</h2>
+  <div class="grid two" style="margin-top:43px;grid-template-columns:.9fr 1.1fr"><div class="panel reveal" data-step="0"><div class="caps mint">Super App 选型过程</div><div style="display:flex;gap:12px;align-items:center;margin-top:24px"><div class="node" style="flex:1"><b>H5 / Web</b><small>迭代速度、跨端可用</small></div><span class="thin-arrow">VS</span><div class="node" style="flex:1"><b>Flutter</b><small>移动交互、原生能力</small></div></div><p class="small" style="margin-top:27px">结合目标设备、已有资产、性能与长期维护，比较并收敛技术路线。</p></div><div class="panel reveal" data-step="1"><table class="compact-table"><tr><th>AI 辅助</th><th>负责人必须把关</th></tr><tr><td>梳理候选方案与约束</td><td>真实业务边界、平台现状</td></tr><tr><td>输出权衡矩阵与风险</td><td>技术债、成本、团队能力</td></tr><tr><td>生成架构与开发规范草稿</td><td>审核、试验、最终拍板</td></tr></table></div></div>
+  <p class="small-rule reveal" data-step="2">评委要看到的是：AI 如何参与方案评估 + 你为什么采纳或否定，而不是只展示模型给出的漂亮架构图。</p>
+  <template class="speaker-note">40秒。这里提到自己参与技术选型、架构评审的负责人职责即可。现场需出示一条原始“需求→AI方案→人工决定”的记录，才能作为三环节证据之一。不要凭空复述当时模型回答。</template>
+</section>
+
+<section class="slide bg-blue" data-title="SRS：AI + MCP 跨端音视频协同排障" data-chapter="工程深度 / 福小科音视频联调" data-time="60">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 工程深度 / 福小科音视频联调</span><span class="pill mint" style="margin-left:auto">跨端协作实战</span></header>
+
+  <h2>一次音视频联调，<span class="mint">AI 串起六类现场工具</span>。</h2>
+  <p class="lead reveal" data-step="0" style="margin-top:13px;max-width:1360px">真实场景：<b style="color:#f0f7fc">福小科 APP 呼叫已接通，却没有画面</b>。单看某一端日志无法解释整条链路，需要跨客户端、流媒体、业务和服务器逐层取证。</p>
+
+  <div class="srs-stage reveal" data-step="1" role="img" aria-label="福小科 APP 跨端音视频排障协同图：AI 通过 MCP 分别协调 H5 WebRTC 测试页、PC 客户端、Android 真机和 ADB、SRS 控制台、Java 与达梦数据库、Nginx 与 SSH 六类现场工具，收集信息并提出排查假设。">
+    <svg viewBox="0 0 1432 394" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="srsEdgeL" x1="0" x2="1"><stop offset="0" stop-color="#72b9df" stop-opacity=".48"/><stop offset="1" stop-color="#8eeac8" stop-opacity=".95"/></linearGradient>
+        <linearGradient id="srsEdgeR" x1="0" x2="1"><stop offset="0" stop-color="#8eeac8" stop-opacity=".95"/><stop offset="1" stop-color="#72b9df" stop-opacity=".48"/></linearGradient>
+        <marker id="srsDot" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5"><circle cx="2.5" cy="2.5" r="2.1" fill="#9beccd"/></marker>
+      </defs>
+      <g fill="none" stroke-width="2.3" stroke-linecap="round" class="srs-lines">
+        <path d="M326 79 C419 79 422 142 493 150" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
+        <path d="M326 197 C407 197 423 196 493 196" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
+        <path d="M326 315 C419 315 422 255 493 244" stroke="url(#srsEdgeL)" marker-start="url(#srsDot)"/>
+        <path d="M939 150 C1015 143 1026 79 1106 79" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
+        <path d="M939 196 C1018 196 1027 197 1106 197" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
+        <path d="M939 244 C1015 254 1026 315 1106 315" stroke="url(#srsEdgeR)" marker-end="url(#srsDot)"/>
+      </g>
+    </svg>
+    <div class="srs-tool srs-left" style="top:33px"><span class="srs-tag">01 / H5</span><strong>WebRTC 测试页</strong><small>推拉流验证、请求与媒体状态</small></div>
+    <div class="srs-tool srs-left" style="top:151px"><span class="srs-tag">02 / DESKTOP</span><strong>PC 客户端</strong><small>呼叫行为、端到端表现</small></div>
+    <div class="srs-tool srs-left" style="top:269px"><span class="srs-tag">03 / DEVICE</span><strong>Android 真机 / ADB</strong><small>设备日志、权限与网络状态</small></div>
+
+    <div class="srs-hub">
+      <div class="srs-hub-tag">AI AGENT × MCP TOOLS</div>
+      <h3>跨端排障协调中枢</h3>
+      <p>拆分排查任务 · 调用工具查询<br>汇总日志与配置 · 交叉验证假设</p>
+      <div class="srs-hub-bottom">症状 → 证据 → 假设 → 验证建议</div>
+    </div>
+
+    <div class="srs-tool srs-right" style="top:33px"><span class="srs-tag">04 / STREAMING</span><strong>SRS 独立控制台</strong><small>RTC 状态、流信息、Hook 日志</small></div>
+    <div class="srs-tool srs-right" style="top:151px"><span class="srs-tag">05 / BUSINESS</span><strong>Java / 达梦数据库</strong><small>接口回调、业务状态与数据核对</small></div>
+    <div class="srs-tool srs-right" style="top:269px"><span class="srs-tag">06 / SERVER</span><strong>Nginx / SSH</strong><small>反向代理、协议配置、服务器日志</small></div>
+  </div>
+
+  <div class="srs-decisions reveal" data-step="2">
+    <span><b class="cyan">人</b> 明确现象、排查范围和安全边界</span>
+    <span class="srs-chevron">→</span>
+    <span><b class="mint">AI + MCP</b> 协调多端检查、关联证据</span>
+    <span class="srs-chevron">→</span>
+    <span><b class="amber">人</b> 审核配置调整、决策修复并组织复验</span>
+  </div>
+  <p class="micro" style="margin-top:14px">排障线索示例：SRS on_play 回调 HttpsRead / 4043、Nginx/SSE 配置等；这些是检查点，不预设单一根因。完整修复记录与多端复验结果以脱敏原始证据为准。</p>
+  <template class="speaker-note">约60秒。先讲福小科 APP“呼叫接通却没画面”的跨端难题，再随动效出现 AI+MCP 与六类工具的协同图，最后强调人掌握优先级、安全边界、修复方案和最终复验。可以举 H5 测试页、PC、Android/ADB、SRS、Java/达梦、Nginx/SSH 分层验证的真实工作方式。4043/HttpsRead 与 Nginx/SSE 仅是排查线索，不能未经证实就说是最终根因；展示时需脱敏 IP、流 ID、token。</template>
+</section>
+
+<section class="slide" data-title="从人与人到人主导多 AI 协同" data-chapter="协作理念 / 决策重心" data-time="45">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 协作理念 / 决策重心</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>三种协作模式的差异，<br>是<span class="mint">人的决策重心逐步上移</span>。</h2>
+  <div class="grid three" style="margin-top:54px;gap:21px">
+    <div class="panel reveal" data-step="0"><div class="caps cyan">01 / HUMAN × HUMAN</div><h3>人与人协作</h3><p class="small">人讨论需求、设计、分工、实施、联调与验收；AI 降低信息传递成本。</p><div class="divider"></div><span class="pill">人直接参与执行</span></div>
+    <div class="panel reveal" data-step="1"><div class="caps blue">02 / HUMAN × AI</div><h3>人与 AI 协作</h3><p class="small">人设目标、约束和方案，AI 处理重复性研发，人在关键节点审核。</p><div class="divider"></div><span class="pill">人主导任务</span></div>
+    <div class="panel reveal" data-step="2"><div class="caps mint">03 / HUMAN × AGENT TEAM</div><h3>人主导多 AI 协同</h3><p class="small">人定义角色、架构边界和质量标准；Lead 统筹，多 Agent 执行和复验。</p><div class="divider"></div><span class="pill mint">人统筹关键决策</span></div>
+  </div>
+  <div class="rule reveal" data-step="3" style="margin-top:39px">人始终负责最终交付决策。升级的是组织方式，不是用“参与度减少百分比”来表示人的责任消失。</div>
+
+  <template class="speaker-note">约45秒。这页紧接场景实践、引出 Super App，不替换原版痛点开场。强调每一阶段人的职责和决策权限，第三阶段有关键介入与最终整体验收。</template>
+</section>
+
+<section class="slide bg-alt" data-title="Super App：人管方向，Lead 统筹多 Agent" data-chapter="实践二 / 多Agent工程化" data-time="55">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践二 / 多Agent工程化</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>不是让多个 AI 各自写代码，<br>而是让它们<span class="mint">按同一套规则交付</span>。</h2>
+  <p class="lead">高保真原型先经 AI 提炼架构、UI/UX/UE 与交互约束，再由总指挥分派任务。</p>
+  <div class="panel reveal" data-step="0" style="margin-top:25px;padding:16px 24px;text-align:center;background:rgba(40,120,110,.14)">
+    <div class="caps mint">HUMAN / 最终负责人</div><h3 style="margin:8px 0">目标、角色规范、技术边界、关键纠偏、最终整体验收</h3>
+  </div>
+  <div style="text-align:center;color:#91f0c3;font-size:27px">↓</div>
+  <div class="panel reveal" data-step="1" style="padding:13px 20px;text-align:center">
+    <div class="caps cyan">LEAD / 总指挥·架构师 Agent</div><b style="font-size:23px">拆解需求 → 分工派发 → 协调问题 → 汇总交付</b>
+  </div>
+  <div class="grid four" style="gap:14px;margin-top:13px">
+    <div class="node reveal" data-step="2"><div class="caps cyan">DESIGN</div><b>设计 Agent</b><small>提炼原型 / UI 样式与交互规范</small></div>
+    <div class="node reveal" data-step="2"><div class="caps cyan">ARCH</div><b>架构 Agent</b><small>技术边界、模块与实现约束</small></div>
+    <div class="node reveal" data-step="3"><div class="caps blue">DEV + QA</div><b>开发 / 测试 Agent</b><small>编码、用例、缺陷投递和复测</small></div>
+    <div class="node reveal" data-step="3"><div class="caps mint">ACCEPTANCE</div><b>产品验收 Agent</b><small>后期新增：原型一致性及证据核验</small></div>
+  </div>
+  <p class="small-rule reveal" data-step="4">已有团队章程、角色卡、派工回报规范及看板；7 类模板不等于 7 个永久并行的独立进程。</p>
+
+  <template class="speaker-note">约55秒。真实角色规范和看板均有静态证据。必须区分用户最初已有任务回派和后期新增产品验收节点。开发规范先由架构设计+UI/UX分析前置，最终开发由Lead分发；人不是消失而是关注最终验收。</template>
+</section>
+
+<section class="slide" data-title="任务卡会话索引：精准回派原开发 Agent" data-chapter="实践二 / 上下文追溯" data-time="50">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践二 / 上下文追溯</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>任务卡不只是记录进度，<br>还是<span class="mint">跨 Agent 的上下文索引</span>。</h2>
+  <div class="grid" style="grid-template-columns:.88fr 1.12fr;gap:26px;margin-top:34px">
+    <div class="panel reveal" data-step="0" style="padding:27px">
+      <div class="caps mint">TASK · 真实字段结构示意</div>
+      <div class="col" style="margin-top:14px;gap:12px">
+       <p class="small"><b>任务 ID / 功能点</b> · TASK-***</p>
+       <p class="small"><b>开发角色</b> · 会话 DEV-***</p>
+       <p class="small"><b>测试角色</b> · 会话 QA-***</p>
+       <p class="small"><b>验收角色</b> · 会话 ACC-***</p>
+       <p class="small"><b>过程记录</b> · 提交、缺陷、退回、复测</p>
+      </div>
+    </div>
+    <div class="panel reveal" data-step="1">
+      <div class="caps cyan">缺陷回派链路 / 原机制已具备</div>
+      <div class="timeline" style="grid-template-columns:1fr;margin-top:17px;gap:10px">
+       <div class="item" style="padding:12px 17px"><b style="font-size:20px">测试发现 Bug</b><p class="micro">关联同一功能点与前置会话</p></div>
+       <div class="item" style="padding:12px 17px"><b style="font-size:20px">定位原开发 Agent</b><p class="micro">复用历史上下文，不重新解释全部背景</p></div>
+       <div class="item" style="padding:12px 17px"><b style="font-size:20px">开发修复 → 复测 / 复验</b><p class="micro">记录任务状态、证据和最终决定</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="rule reveal" data-step="2">核心价值：功能由谁开发、测试、验收可追溯；发现偏差优先找最了解它的原开发会话。</div>
+  <p class="micro">统计快照：67 张卡、263 条日志（2026-11-20）；历史 done 字段不等于独立验收通过。会话标识为脱敏示例。</p>
+
+  <template class="speaker-note">约50秒。展示真实任务卡/角色ID/日志可证明任务流；用户描述精准回派实践，现场应选择已记录的真实Bug投递会话。切勿把示意会话 ID 当作真实会话原文。</template>
+</section>
+
+<section class="slide bg-blue" data-title="从功能测试通过到产品验收达标" data-chapter="实践二 / 质量升级" data-time="65">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 实践二 / 质量升级</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>流程一直存在；升级的是<span class="mint">产品验收节点与证据链</span>。</h2>
+  <p class="lead">真实触发：原流程已完成开发和测试，但人工点开应用，发现布局、字号、间距与交互偏离高保真原型。</p>
+  <div class="panel reveal" data-step="0" style="margin-top:25px;padding:17px 20px">
+   <div class="caps cyan">V1 / 已有流程（会话记录、Bug 回派同样已有）</div>
+   <div class="flow-line" style="margin-top:13px"><div class="fbox">设计</div><div class="farr">→</div><div class="fbox">开发</div><div class="farr">→</div><div class="fbox">功能测试</div><div class="farr">→</div><div class="fbox">完成</div></div>
+  </div>
+  <div class="panel reveal" data-step="1" style="margin-top:13px;padding:13px 20px;background:rgba(200,112,73,.10);border-color:rgba(238,165,174,.35)">
+   <span class="caps" style="color:#eea5ae">发现质量缺口：功能测试通过 ≠ 页面、样式、交互符合原型</span>
+  </div>
+  <div class="panel reveal" data-step="2" style="margin-top:13px;padding:17px 20px;border-color:rgba(145,240,195,.46)">
+   <div class="caps mint">V2 / 新增产品验收 Agent（后期升级）</div>
+   <div class="flow-line" style="margin-top:13px"><div class="fbox">设计</div><div class="farr">→</div><div class="fbox">开发</div><div class="farr">→</div><div class="fbox">功能测试</div><div class="farr">→</div><div class="fbox" style="border:2px solid #91f0c3">产品验收</div><div class="farr">→</div><div class="fbox">完成</div></div>
+  </div>
+  <div class="grid three reveal" data-step="3" style="margin-top:13px;gap:13px">
+    <div class="node"><b>原型源码</b><small>读取布局、CSS、字号、间距和交互细节</small></div>
+    <div class="node"><b>两端截图</b><small>原型画面与实现画面对比，标注差异</small></div>
+    <div class="node"><b>拒签与复验</b><small>重开任务 → 原开发 Agent 修复 → 再测再验</small></div>
+  </div>
+  <div class="rule reveal" data-step="4" style="margin-top:17px;padding:12px 19px">反复出现的偏差写回角色提示卡和质量规则；<b>最终由人整体验收</b>，目标是持续提升 AI 产出质量，而非宣称 100% 还原。</div>
+  <p class="micro reveal" data-step="5"><b>现场演示入口：</b>在此切换本地 Super App 工程，选择一项真实未实现的小功能，展示提示词 → 代码 diff → 检查结果 → 任务卡记录。原型与实现真实截图需现场补证，以上为流程示意。</p>
+
+  <template class="speaker-note">这页必须按点击分步讲：旧流程已具备→人工发现测试通过但视觉不一致→新增独立产品验收 Agent→源码和截图对照→任务拒签回派原开发会话→复验和规则优化。此时直接切 Super App 真实工程演示约3分钟，无需其他独立 LIVE 页。可选会话ID复制功能仅在现有工程未实现时使用；不得模拟测试通过。</template>
+</section>
+
+<section class="slide" data-title="从代码到可交接的工程资产" data-chapter="负责人视角 / 交付管理" data-time="48">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 负责人视角 / 交付管理</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>项目交接，不是发一句“<span class="amber">我做完了</span>”。</h2>
+  <p class="lead">一键初始化与日常变更记录把工程背景、规范、接口、运行方式和测试状态保留在项目里。</p>
+  <div class="grid four" style="margin-top:45px;gap:17px">
+    <div class="panel reveal" data-step="0"><div class="caps mint">AGENTS.md</div><h3>统一上下文</h3><p class="small">项目目标、架构、技术栈、运行方式及工程边界</p></div>
+    <div class="panel reveal" data-step="1"><div class="caps cyan">docs/</div><h3>变更与交接</h3><p class="small">需求、迭代、功能说明、部署、阶段进度与未决风险</p></div>
+    <div class="panel reveal" data-step="2"><div class="caps blue">Skills / MCP</div><h3>知识可调用</h3><p class="small">接口生成、文档同步、测试及辅助排障流程</p></div>
+    <div class="panel reveal" data-step="3"><div class="caps mint">GIT / QA</div><h3>有据可查</h3><p class="small">变更差异、任务角色、测试输出、验收依据和提交历史</p></div>
+  </div>
+  <div class="rule reveal" data-step="4">让新成员、新 Agent 能基于真实资料继续，而不是重新阅读所有聊天记录；项目经理仍负责核对与签发。</div>
+  <p class="small-rule">部署密码、生产地址与敏感数据不进入公开仓库；存在脚本不代表所有门禁已正式自动跑通。</p>
+
+  <template class="speaker-note">约48秒。用户实际已有项目初始化和 docs 规范；不要把 Super App 角色编排整合到科技馆说成已落地。可展示工程目录、自动生成文档样例与版本历史。</template>
+</section>
+
+<section class="slide" data-title="竞赛证据：三个研发环节的真实 AI 过程" data-chapter="评分映射 / 真实证据" data-time="44">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 评分映射 / 真实证据</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>不只看 AI 输出，更要看<span class="mint">人如何采纳与纠偏</span>。</h2>
+  <p class="lead">按竞赛要求展示至少三类环节：原始提示词、模型输出、人工取舍与可复核结果；这三类素材需以真实记录补齐。</p>
+  <div class="grid three" style="margin-top:43px;gap:20px">
+    <div class="panel reveal" data-step="0"><div class="caps cyan">A / 需求与设计</div><h3>高保真原型 / 规范</h3><p class="small">需求 → AI 架构、UI/UX 分析 → 人工定边界 → 开发规范</p><div class="divider"></div><span class="pill gold">原始提示词/文件待嵌入</span></div>
+    <div class="panel reveal" data-step="1"><div class="caps blue">B / 开发与联调</div><h3>Skills + H5 / API</h3><p class="small">任务卡 → 代码与 H5 联调 → 接口文档 → 人工验收</p><div class="divider"></div><span class="pill gold">真实 diff / 测试待核</span></div>
+    <div class="panel reveal" data-step="2"><div class="caps mint">C / 调试与质量</div><h3>SRS 排障 / 产品验收</h3><p class="small">异常日志 → AI 假设及 MCP 检查 → 人工判断 → 修复复验</p><div class="divider"></div><span class="pill gold">故障与截图证据待补</span></div>
+  </div>
+  <div class="rule reveal" data-step="3">现场演示已经在 Super App 质量升级页衔接真实工程；不能用这张 PPT 的流程图代替实际生成与运行。</div>
+
+  <template class="speaker-note">约44秒。三环节证据槽位不是已验证的完整原始 AI 会话。尽快以脱敏记录替换；竞赛不能编造协作记录，须展示AI输出与人工采纳/修改理由。</template>
+</section>
+
+<section class="slide" data-title="已实践、待完善、下一阶段，清楚区分" data-chapter="能力演进 / ROADMAP" data-time="40">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 能力演进 / ROADMAP</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>把现有成果转化为<span class="mint">更可复制的研发体系</span>。</h2>
+  <div class="grid three" style="margin-top:48px;gap:20px">
+    <div class="panel reveal" data-step="0"><div class="caps mint">已有实践</div><h3>规范化资产</h3><p class="small">文旅 Skills、科技馆一键初始化资料与 H5/API 联调、Super App 角色模板与任务流</p></div>
+    <div class="panel reveal" data-step="1"><div class="caps cyan">继续补齐</div><h3>质量证据门禁</h3><p class="small">原型/实现截图、会话追溯、真实测试日志、代码审查与规则迭代</p></div>
+    <div class="panel reveal" data-step="2"><div class="caps blue">下一阶段</div><h3>整合复用</h3><p class="small">将 Super App 多 Agent 编排与产品验收流程融入项目初始化 SOP，开展跨成员验证</p></div>
+  </div>
+  <div class="rule reveal" data-step="3">从“生成得快”到“协作得顺、验证得清、交付得稳”；团队推广和提效比例需要独立采样验证。</div>
+
+  <template class="speaker-note">约40秒。Super App 已独立实践，但整套 Agent 工作流整合进科技馆一键初始化属于规划；不要混淆。</template>
+</section>
+
+<section class="slide" data-title="有价值的变化，是交接与验收更有依据" data-chapter="成果价值 / EVIDENCE" data-time="38">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">AI SKILLS 2026 / 成果价值 / EVIDENCE</span><span class="pill mint" style="margin-left:auto">V3 · 原版增强</span></header>
+
+  <h2>不报虚构倍率，<span class="mint">先让结果可观察、可追踪</span>。</h2>
+  <div class="grid four" style="margin-top:48px;gap:19px">
+    <div class="panel reveal" data-step="0"><div class="caps cyan">11</div><h3>文旅 Skills</h3><p class="small">登记的项目技能数量，核对版本与原创部分</p></div>
+    <div class="panel reveal" data-step="1"><div class="caps blue">74</div><h3>商城微任务卡</h3><p class="small">用于任务拆解的历史工程记录</p></div>
+    <div class="panel reveal" data-step="2"><div class="caps mint">67</div><h3>Super App 任务</h3><p class="small">55 done / 12 blocked，仅为快照状态</p></div>
+    <div class="panel reveal" data-step="3"><div class="caps cyan">263</div><h3>任务日志</h3><p class="small">记录任务过程，不等于验收全部完成</p></div>
+  </div>
+  <div class="rule reveal" data-step="4">真正的收益方向：减少重复说明、保持上下文、缺陷精准回派、产品验收更严格。工时/返工降幅仍需真实样本。</div>
+  <p class="small-rule">口径：2026-11-20 静态盘点；本页数字不代表所有内容自研、正式交付或实际提效率。</p>
+
+  <template class="speaker-note">约38秒。讲过程证据，不把这些数字包装成已验收功能数。按竞赛规则需用真实任务和日志证明AI参与。</template>
+</section>
+
+<section class="slide bg-soft" data-title="结论：让AI成为组织能力" data-chapter="结语" data-time="45">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">14 / CLOSING</span></header>
+  <div style="margin-top:124px;max-width:1320px"><div class="reveal" data-step="0"><p class="caps cyan" style="margin-bottom:30px">真正的提效，不止于代码生成</p><h1 style="font-size:82px">让 AI <span class="highlight">减少重复沟通</span>，<br>让人专注高价值决策。</h1></div><div class="reveal" data-step="1"><p style="font-size:32px;color:#c2d9e3;margin-top:46px">以真实协作场景为起点，以多 Agent 工程实践为抓手，<br>逐步沉淀可管理、可复用、可推广的团队研发基础能力。</p><div style="display:flex;gap:14px;margin-top:42px"><span class="pill mint">共享上下文</span><span class="pill">过程可追溯</span><span class="pill">人工质量把关</span><span class="pill gold">团队持续复用</span></div></div></div>
+  <div class="orbit" aria-hidden="true" style="top:170px;right:-100px;opacity:.75"></div><div class="bottom-brand">THANK YOU · AI COLLABORATION PRACTICE</div>
+  <template class="speaker-note">45秒。最后回扣“个人工具→团队基础设施”：不是替代产品、开发、测试、项目经理，而是让他们少做反复解释、少丢信息、少等交接，把精力留给真正的判断。接受提问，附录备答。</template>
+</section>
+
+<section class="slide bg-alt" data-appendix="true" data-title="附录：数据来源与可信度" data-chapter="附录 / 数据" data-time="0">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX A / DATA PROVENANCE</span></header>
+  <h2>量化数据，有哪些能说，哪些不能说？</h2>
+  <div class="grid two" style="margin-top:33px"><div class="panel"><div class="caps mint">可复算的静态数据</div><table class="compact-table" style="margin-top:14px"><tr><td>Super App 看板任务卡</td><td><strong>67</strong></td></tr><tr><td>状态字段 done / blocked</td><td><strong>55 / 12</strong></td></tr><tr><td>任务过程日志</td><td><strong>263</strong></td></tr><tr><td>显式证据数组条目</td><td><strong>2</strong></td></tr><tr><td>商城任务卡（另一工程）</td><td><strong>74</strong></td></tr></table></div><div class="panel"><div class="caps amber">不可直接推断</div><table class="compact-table" style="margin-top:14px"><tr><td>67 张任务卡</td><td>≠ 67 项正式交付</td></tr><tr><td>55 个 done</td><td>≠ 55 项独立验收通过</td></tr><tr><td>历史仓库 Commit</td><td>≠ AI 完成任务数</td></tr><tr><td>测试文件数量</td><td>≠ 测试通过率</td></tr><tr><td>没有前后对照</td><td>不能声称节约 50% 工时</td></tr></table></div></div>
+  <p class="small-rule">来源：2026-11-20《03-AI研发平台与团队协作体系》《06-研发效能与量化数据》；Super App tasks.json 元数据与笔记日期存在口径差异。</p>
+  <template class="speaker-note">附录不计时。数据仅供答辩佐证规模与治理成熟度。为验证效率提升，需要相近复杂度任务的沟通次数/等待时间/返工次数和基线样本。</template>
+</section>
+
+<section class="slide bg-blue" data-appendix="true" data-title="附录：评分合规与证据采集" data-chapter="附录 / 规则" data-time="0">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX B / COMPLIANCE</span></header>
+  <h2>竞赛硬约束与正式提交前清单。</h2>
+  <div class="grid two" style="margin-top:38px"><div class="panel"><div class="caps mint">规则原文要点</div><div class="col" style="margin-top:20px"><p class="small">• 15 分钟讲解，作品实物真实运行演示</p><p class="small">• 不少于 3 个不同环节的 AI 协作记录</p><p class="small">• 包含提示词、AI 输出、采纳或修改理由</p><p class="small">• 单人赛，AI 部分须说明个人贡献与协作者</p><p class="small">• 不展示未经脱敏的生产、客户、个人数据</p></div></div><div class="panel"><div class="caps amber">P0 / 补证顺序</div><div class="col" style="margin-top:20px"><p class="small">1. 补三段完整的原始 AI 会话与可追溯编号</p><p class="small">2. 科技馆产品人员真实操作/提交/自测记录</p><p class="small">3. Super App 现场运行、任务看板与测试输出</p><p class="small">4. Git Review / 规范体检跑通后保存实际报告</p><p class="small">5. 校对开源组件授权、本人增量与团队共创边界</p></div></div></div>
+  <p class="small-rule">来源：《1.0 软件研发人员AI技能竞赛规则.docx》，第2、6、7节。已看到的是竞赛规则，不等同于独立的详细打分表。</p>
+  <template class="speaker-note">附录。不要现场上传未脱敏企业源码或客户信息到外部AI。必要时本地模型/脱敏测试数据完成演示。原始记录绝不能编造或事后补录冒充现场历史。</template>
+</section>
+
+<section class="slide" data-appendix="true" data-title="附录：未来提效指标怎么测" data-chapter="附录 / 衡量" data-time="0">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX C / MEASUREMENT</span></header>
+  <h2>下一步真正证明“沟通成本降低”。</h2><p class="lead">选同类、相近复杂度的真实工单，以任务 ID 追踪需求到验收的全过程；基线与 AI 流程口径必须一致。</p>
+  <div class="grid four" style="margin-top:51px"><div class="panel"><div class="caps mint">01 / 沟通</div><h3 style="margin:21px 0">沟通轮次</h3><p class="small">一次需求完成需要跨岗位反复确认多少次</p></div><div class="panel"><div class="caps mint">02 / 等待</div><h3 style="margin:21px 0">交接等待</h3><p class="small">从原型确认到开发可接手的等待分钟数</p></div><div class="panel"><div class="caps mint">03 / 返工</div><h3 style="margin:21px 0">理解偏差</h3><p class="small">需求歧义导致的二次开发或重测次数</p></div><div class="panel"><div class="caps mint">04 / 质量</div><h3 style="margin:21px 0">验收结果</h3><p class="small">实际执行的测试、缺陷、回退、人工采纳率</p></div></div>
+  <div class="rule" style="margin-top:45px">目前<span style="color:white;font-weight:750">没有可信的对照样本</span>，因此本版不输出“节省 X% 工时”等推断。基线采集本身就是团队治理的一部分。</div>
+  <template class="speaker-note">附录。衡量沟通成本的可行方案；用户特别希望量化数据。需要小心统计不同规模任务、失败重试、AI导致的额外返工，不能只呈现成功样本。</template>
+</section>
+
+<section class="slide bg-alt" data-appendix="true" data-title="附录：备答问题与边界" data-chapter="附录 / 备答" data-time="0">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">APPENDIX D / Q & A</span></header>
+  <h2>评委可能会追问什么？</h2>
+  <div class="grid two" style="margin-top:36px"><div class="panel"><h3>① “你做的与普通 AI 编码有什么不同？”</h3><p class="small" style="margin-top:12px">不是单点提速：让角色分工、共享文档、任务状态、测试与人工验收进入同一协作流程。</p></div><div class="panel"><h3>② “有多少人用过？节省多少时间？”</h3><p class="small" style="margin-top:12px">只说能证明的试点与记录。当前没有完整跨成员采纳统计和可比基线，不虚报效率百分比。</p></div><div class="panel"><h3>③ “Agent 自己说完成，怎么保证质量？”</h3><p class="small" style="margin-top:12px">看源码、实际退出码、截图/状态与人工验收；承认现有看板部分检查仍依赖日志关键字。</p></div><div class="panel"><h3>④ “是团队基础设施，还是你的个人环境？”</h3><p class="small" style="margin-top:12px">当前是共享规则/试点/工程化雏形；下一步用一键初始化、成员独立使用和跨项目采纳来证明团队化。</p></div></div>
+  <template class="speaker-note">备答，不计时。不要把系统框架图当部署现状，不要把科技馆与Super App表述为同一平台。未来规划 Git审查/规范体检如已完成实测，可替换成有证据的补充成果。</template>
+</section>
+
+</main></div>
+<div id="chrome" role="toolbar" aria-label="演示控制"><span class="label" id="currentChapter">开场</span><span class="sep"></span><button id="prev" aria-label="上一页或上一步">← 上一步</button><button id="next" aria-label="下一步或下一页">下一步 →</button><span class="sep"></span><button id="overviewBtn" title="按 O 查看全部页面">总览 O</button><button id="notesBtn" title="按 N 查看演讲备注">备注 N</button><button id="fullscreenBtn" title="按 F 全屏">全屏 F</button><div id="slide-progress"><span></span></div><span class="label" id="timeText">目标 15:00</span><span id="timer">00:00</span><span id="slidecounter">01 / 18</span></div>
+<div id="notes" aria-live="polite"><h4>演讲者备注</h4><p></p></div>
+<div id="overview"><button class="ov-back">返回演示 ×</button><h2>幻灯片总览 <span style="font-size:15px;color:#a4baca;vertical-align:middle">点击页面直接跳转 · 正文 18 页 / 附录 4 页</span></h2><div class="slides-list"></div></div>
+<script>
+(()=>{
+const stage=document.getElementById('stage');const slides=[...document.querySelectorAll('.slide')];const mainSlides=slides.filter(s=>!s.dataset.appendix);const n=mainSlides.length;let index=0,fragment=-1,overview=false;let started=Date.now();const progress=document.querySelector('#slide-progress span');const navC=document.getElementById('currentChapter');const counter=document.getElementById('slidecounter');const notesEl=document.getElementById('notes');
+function fit(){const w=window.innerWidth,h=window.innerHeight-50;const scale=Math.min(w/1600,h/900);const x=(w-1600*scale)/2,y=(h-900*scale)/2;stage.style.transform=`translate(${x}px,${y}px) scale(${scale})`;}window.addEventListener('resize',fit);fit();
+function steps(s){return [...new Set([...s.querySelectorAll('[data-step]')].map(e=>Number(e.dataset.step)))].sort((a,b)=>a-b)}
+function render(){slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.querySelectorAll('.reveal').forEach(e=>e.classList.toggle('visible',i===index&&Number(e.dataset.step)<=fragment));});const slide=slides[index];navC.textContent=slide.dataset.chapter||'正文';counter.textContent=`${String(index+1).padStart(2,'0')} / ${index<n?n:slides.length}${index>=n?'  附录':''}`;progress.style.width=`${Math.min((index+1)/n,1)*100}%`;const tmpl=slide.querySelector('template.speaker-note');notesEl.querySelector('p').textContent=tmpl?.content?.textContent?.trim()||'暂无备注';document.querySelectorAll('.ov-item').forEach((x,i)=>x.classList.toggle('active',i===index));document.title=`${slide.dataset.title}｜AI协作竞赛答辩`}
+function goto(i){if(i<0||i>=slides.length)return;index=i;fragment=-1;render()}
+function next(){const arr=steps(slides[index]);let nextFrag=arr.find(k=>k>fragment);if(nextFrag!==undefined){fragment=nextFrag;render()}else goto(index+1)}
+function prev(){const arr=steps(slides[index]);const earlier=arr.filter(k=>k<fragment);if(earlier.length){fragment=earlier[earlier.length-1];render()}else if(fragment>=0){fragment=-1;render()}else if(index>0){index--;const prevSteps=steps(slides[index]);fragment=prevSteps.length?prevSteps[prevSteps.length-1]:-1;render()}}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+function setOverview(v){overview=v;document.getElementById('overview').classList.toggle('show',v);if(v)fillOverview()}
+const list=document.querySelector('#overview .slides-list');function fillOverview(){list.innerHTML='';slides.forEach((s,i)=>{let b=document.createElement('button');b.className='ov-item'+(i===index?' active':'');b.innerHTML=`<span>${String(i+1).padStart(2,'0')} / ${s.dataset.appendix?'APPENDIX':s.dataset.chapter}</span><b>${s.dataset.title}</b>`;b.onclick=()=>{goto(i);setOverview(false)};list.appendChild(b)})}
+document.getElementById('overviewBtn').onclick=()=>setOverview(!overview);document.querySelector('.ov-back').onclick=()=>setOverview(false);document.getElementById('notesBtn').onclick=()=>notesEl.classList.toggle('show');
+document.getElementById('fullscreenBtn').onclick=()=>{if(document.fullscreenElement){document.exitFullscreen?.()}else{document.documentElement.requestFullscreen?.().catch(()=>{})}};
+window.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){if(!overview){e.preventDefault();next()}}else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){if(!overview){e.preventDefault();prev()}}else if(e.key.toLowerCase()==='o'){setOverview(!overview)}else if(e.key.toLowerCase()==='n'){notesEl.classList.toggle('show')}else if(e.key.toLowerCase()==='f'){document.getElementById('fullscreenBtn').click()}else if(e.key==='Escape'){setOverview(false);notesEl.classList.remove('show')}else if(e.key==='Home'){goto(0)}else if(e.key==='End'){goto(n-1)}});
+document.getElementById('frame').addEventListener('click',e=>{if(e.target.closest('button,a'))return;if(e.shiftKey)prev();else next()});let touchX=null;window.addEventListener('touchstart',e=>{touchX=e.changedTouches[0]?.screenX??null},{passive:true});window.addEventListener('touchend',e=>{if(touchX===null)return;let d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>65){if(d<0)next();else prev()}touchX=null},{passive:true});
+function formatTime(seconds){return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}setInterval(()=>{let t=Math.floor((Date.now()-started)/1000);document.getElementById('timer').textContent=formatTime(t);document.getElementById('timer').style.color=t>900?'#f6d18b':'#95bac9'},1000);
+window.deck={goto,next,prev,slides:slides.length,mainSlides:n};render();
+})();
+</script>
+</body></html>
