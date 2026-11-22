@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V3.9 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.0 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -120,13 +120,38 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 .srs-log-evidence code b{font-weight:800;color:#ffd29f}
 .srs-outcome{margin-top:7px}
 
+
+/* V4.0: Human decisions across five AI-enabled roles */
+#wf4 .wf4-past{display:flex;align-items:center;gap:12px;border:1px solid rgba(160,199,222,.2);border-radius:12px;padding:10px 15px;background:rgba(107,140,166,.13);color:#b5cbd4;font-size:16px;white-space:nowrap}
+#wf4 .wf4-past b{color:#e5f1f5;letter-spacing:.07em}
+#wf4 .wf4-past .arrow{font-size:17px;color:#8fb8c9}
+#wf4 .wf4-grid{display:grid;grid-template-columns:1fr 1fr 1.48fr 1fr 1fr;gap:12px;margin-top:10px}
+#wf4 .wf4-card{height:354px;padding:18px 17px 15px;border-radius:18px;border:1px solid rgba(151,196,213,.24);background:rgba(21,44,65,.91);display:flex;flex-direction:column;min-width:0}
+#wf4 .wf4-card.important{background:linear-gradient(150deg,rgba(35,100,99,.61),rgba(18,48,67,.96));border-color:rgba(145,240,195,.61)}
+#wf4 .wf4-kicker{color:var(--cyan);font-weight:770;font-size:12px;letter-spacing:.07em}
+#wf4 .wf4-card.important .wf4-kicker{color:var(--mint)}
+#wf4 .wf4-card h3{font-size:26px;line-height:1.2;margin:9px 0 12px}
+#wf4 .wf4-ai-label,#wf4 .wf4-human-label{font-size:13px;font-weight:770;line-height:1.3;letter-spacing:.04em}
+#wf4 .wf4-ai-label{color:#9ed1e7}
+#wf4 .wf4-human-label{color:var(--mint)}
+#wf4 .wf4-exec{color:#d6e6ec;font-size:16.5px;line-height:1.46;margin-top:5px}
+#wf4 .wf4-exec strong{color:#f6fffd}
+#wf4 .wf4-human{margin-top:auto;border-top:1px solid rgba(160,213,221,.25);padding-top:11px}
+#wf4 .wf4-human p{font-size:16px;line-height:1.43;margin-top:5px;color:#e7f1ea}
+#wf4 .wf4-asset{display:grid;grid-template-columns:170px minmax(0,1fr) 335px;gap:18px;align-items:center;margin-top:12px;padding:12px 19px;border-radius:15px;border:1px solid rgba(145,240,195,.42);background:linear-gradient(90deg,rgba(34,107,91,.29),rgba(15,52,72,.87))}
+#wf4 .wf4-asset b{font-size:20px}
+#wf4 .wf4-asset p{font-size:15.6px;line-height:1.44;color:#d5ece5}
+#wf4 .wf4-asset .wf4-human-asset{border-left:1px solid rgba(166,230,207,.27);padding-left:17px}
+#wf4 .wf4-demo{display:flex;align-items:center;gap:16px;padding:9px 15px;margin-top:8px;border-radius:11px;border:1px dashed rgba(151,198,211,.34);color:#bfd8e0;font-size:15px}
+#wf4 .wf4-demo b{color:var(--amber);font-size:14px;white-space:nowrap}
+
 </style>
 </head>
 <body>
 <div id="frame"><main id="stage" aria-label="AI团队研发协作答辩演示文稿">
 
 <section class="slide active bg-soft" data-title="从个人工具到团队研发基础设施" data-chapter="开场" data-time="35">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V3.9</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.0</span></header>
   <div style="margin-top:110px;max-width:1060px"><div class="reveal" data-step="0"><p class="caps" style="margin-bottom:25px;color:var(--cyan)">从个体效率，走向组织协同</p><h1>从个人工具<br>到<span class="highlight">团队研发基础设施</span></h1></div><div class="reveal" data-step="1"><p style="margin-top:33px;font-size:33px;color:#d3e6ee">AI 驱动的跨岗位协作实践</p><div style="display:flex;gap:12px;margin-top:38px"><span class="pill mint">真实项目</span><span class="pill">多 Agent 工程实践</span><span class="pill gold">持续治理与复用</span></div></div></div>
   <div class="orbit" aria-hidden="true" style="right:-140px;top:118px"></div><div class="sidenote">汇报视角：团队负责人 / 技术架构师　｜　主线：降低重复沟通、交接与返工成本</div>
   <template class="speaker-note">35秒。不要开场就讲模型或代码。用一句话解释：我探索的不是AI替我写多少代码，而是AI如何让团队不同岗位围绕同一份可执行、可追溯的工程资产协作。随后交代案例有两条实践线：科技馆跨岗探索 + Super App多Agent工程化。</template>
@@ -162,55 +187,21 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">55秒。围绕“我作为负责人跟谁协作”：产品、UI、开发、测试、项目经理。传统方式需一轮轮解释；目标是让AI先把过程产出结构化，成员依角色消费或修改。注意此页为目标协作模型，并非断言六岗位已经全部真实采用。</template>
 </section>
 
-<section class="slide bg-blue" data-title="从串行传话到可体验的协作资产" data-chapter="协作模式 / 产设研协同" data-time="70">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">03 / WORKFLOW REDESIGN</span><span class="pill gold" style="margin-left:auto">协作模式 × 真实实践</span></header>
-  <h2>从串行传话，到<span class="mint">可体验的协作资产</span>。</h2>
-  <p class="lead" style="font-size:23px;margin-top:13px;line-height:1.48">UI 定视觉基线，产品借助 AI 补齐素材与交互，开发围绕同一份原型实现与验证；减少反复转译，而不是减少必要的评审。</p>
-
-  <div class="reveal" data-step="0" style="margin-top:26px">
-    <div class="caps" style="font-size:14px">过去 / 串行交接 · 每一步都需要重新解释</div>
-    <div class="flow-line" style="margin-top:10px;gap:10px">
-      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">产品需求</b><small style="font-size:15px">文档 / 口头说明</small></div>
-      <div class="farr" style="font-size:26px">→</div>
-      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">UI 静态图稿</b><small style="font-size:15px">视觉难表达交互</small></div>
-      <div class="farr" style="font-size:26px">→</div>
-      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">开发理解</b><small style="font-size:15px">反复确认功能边界</small></div>
-      <div class="farr" style="font-size:26px">→</div>
-      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">测试 / 归档</b><small style="font-size:15px">补语义、整理证据</small></div>
-    </div>
+<section class="slide bg-blue" id="wf4" data-title="人主导的五岗位 AI 协同与资产沉淀" data-chapter="协作模式 / 全链路升级" data-time="85">
+  <header class="hdr" style="margin-bottom:15px"><i class="stripe"></i><span class="eyebrow">03 / HUMAN-LED AI COLLABORATION</span><span class="section-tag">从跨岗位转译，到人主导的协同闭环</span></header>
+  <h2 style="font-size:53px;line-height:1.13">五个岗位 × AI 协同，<span class="mint">每一步都有人决策</span>。</h2>
+  <div class="wf4-past reveal" data-step="0" style="margin-top:16px"><b>过去 · 串行交接</b><span>产品需求</span><span class="arrow">→</span><span>UI / UX 图稿</span><span class="arrow">→</span><span>开发理解与实现</span><span class="arrow">→</span><span>测试</span><span class="arrow">→</span><span>项目归档</span><span style="margin-left:auto;color:#f1c7aa;font-size:14px">反复转述、等待与交接损耗</span></div>
+  <div class="reveal" data-step="1" style="display:flex;justify-content:space-between;align-items:center;margin-top:15px"><div class="caps mint" style="font-size:15px">现在 / AI 辅助执行，人决定目标、取舍与质量门槛</div><span style="font-size:14px;color:#9db5c4">设计 → 产品 → 开发 → 测试 → 项目管理</span></div>
+  <div class="wf4-grid">
+    <div class="wf4-card reveal " data-step="1"><div class="wf4-kicker">01 / DESIGN × AI</div><h3>设计 × AI</h3><div class="wf4-ai-label">AI 做什么</div><p class="wf4-exec">辅助生成 <strong>UI / UE / UX</strong> 方案、角色形象、插画与界面素材，快速探索视觉风格。</p><div class="wf4-human"><div class="wf4-human-label">人决定什么</div><p>选择风格和品牌方向，审定人物形象、交互方案及最终视觉效果。</p></div></div>
+    <div class="wf4-card reveal " data-step="2"><div class="wf4-kicker">02 / PRODUCT × AI</div><h3>产品 × AI</h3><div class="wf4-ai-label">AI 做什么</div><p class="wf4-exec">将需求转为<strong>高保真可点击 HTML 原型</strong>，补齐页面流程、状态与交互细节。</p><div class="wf4-human"><div class="wf4-human-label">人决定什么</div><p>定义需求优先级，亲自操作体验，确认功能边界和验收标准。</p></div></div>
+    <div class="wf4-card reveal important" data-step="3"><div class="wf4-kicker">03 / DEVELOPMENT × AI · 重点实践</div><h3>开发 × AI</h3><div class="wf4-ai-label">AI 做什么</div><p class="wf4-exec"><strong>可视化一键初始化 Skill</strong> 搭建环境；Super App <strong>Lead 总指挥</strong>拆功能卡、协调设计/架构/开发/测试/产品验收 Agent；会话溯源、Bug 回派与复验。</p><div class="wf4-human"><div class="wf4-human-label">人决定什么</div><p>定架构、角色和质量规则，处理关键技术取舍与纠偏，最后整体验收。</p></div></div>
+    <div class="wf4-card reveal " data-step="4"><div class="wf4-kicker">04 / TEST × AI</div><h3>测试 × AI</h3><div class="wf4-ai-label">AI 做什么</div><p class="wf4-exec"><strong>Playwright / 浏览器 MCP</strong> 自动化回归，结合 <strong>ADB 真机</strong>检查；原型截图、源码与实现对照及缺陷回派。</p><div class="wf4-human"><div class="wf4-human-label">人决定什么</div><p>制定测试标准，判定缺陷影响，决定退回、复测与质量准入。</p></div></div>
+    <div class="wf4-card reveal " data-step="5"><div class="wf4-kicker">05 / PROJECT × AI</div><h3>项目管理 × AI</h3><div class="wf4-ai-label">AI 做什么</div><p class="wf4-exec">生成<strong>需求概述、数据库说明书、API 接口文档</strong>，整理任务进度、变更记录及交付清单。</p><div class="wf4-human"><div class="wf4-human-label">人决定什么</div><p>确定排期、里程碑和风险应对，审核文档，决定发布与签收。</p></div></div>
   </div>
-
-  <div style="margin-top:25px" class="reveal" data-step="1">
-    <div class="caps mint" style="font-size:14px">现在 / 以高保真原型为中心 · 产品 × UI × 开发协同</div>
-    <div style="margin-top:12px;display:grid;grid-template-columns:1fr 30px 1.12fr 30px 1fr;align-items:stretch;gap:10px">
-      <div class="panel flat" style="padding:18px 22px;min-height:170px">
-        <div class="caps cyan" style="font-size:14px">01 / UI · 设计</div>
-        <h3 style="font-size:26px;margin:7px 0">确定视觉方向</h3>
-        <p class="small" style="font-size:17px">关键页面、色彩、组件和品牌素材，形成可复用的样式基线。</p>
-        <div style="display:flex;gap:9px;margin-top:12px"><i style="width:49px;height:10px;background:#3a778d;border-radius:5px"></i><i style="width:49px;height:10px;background:#4c9eae;border-radius:5px"></i><i style="width:49px;height:10px;background:#91e0ce;border-radius:5px"></i></div>
-      </div>
-      <div style="align-self:center;text-align:center;color:var(--mint);font-size:28px">→</div>
-      <div class="panel flat" style="padding:18px 22px;min-height:170px;border-color:rgba(145,240,195,.59);background:rgba(41,113,100,.21)">
-        <div class="caps mint" style="font-size:14px">02 / 产品 × AI</div>
-        <h3 style="font-size:26px;margin:7px 0">生成可交互 HTML 原型</h3>
-        <p class="small" style="font-size:17px">AI 辅助补齐素材、页面、操作流程与异常分支；产品直接操作、反馈和确认。</p>
-        <div style="font-size:13px;color:var(--mint);margin-top:10px">高保真 · 可点击 · 可体验</div>
-      </div>
-      <div style="align-self:center;text-align:center;color:var(--mint);font-size:28px">→</div>
-      <div class="panel flat" style="padding:18px 22px;min-height:170px">
-        <div class="caps blue" style="font-size:14px">03 / 开发 × AI</div>
-        <h3 style="font-size:26px;margin:7px 0">依原型实现与验证</h3>
-        <p class="small" style="font-size:17px">统一功能边界、联调和验收口径，产出可追溯的代码、测试与交付记录。</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="reveal" data-step="2" style="margin-top:12px;padding:13px 20px;border:1px solid rgba(145,240,195,.35);background:rgba(34,101,94,.19);border-radius:15px;display:flex;align-items:center;gap:20px">
-    <span class="caps mint" style="font-size:14px;white-space:nowrap">共享工程资产</span>
-    <span style="font-size:17px;color:#d8eeeb">高保真 HTML　/　结构化任务　/　Skills · 规范 · MCP　/　代码 · 测试 · 验收证据</span>
-  </div>
-  <p class="small-rule reveal" data-step="3" style="font-size:17px;margin-top:12px">核心价值：<b style="color:white">从“看图猜需求”变成“用原型对齐需求”</b>。Figma / 墨刀接口属于后续探索，不表述为已完整集成。</p>
-  <template class="speaker-note">约70秒。原第4、5页合并。先讲旧流程中的产品需求、UI静态图、开发二次确认、测试与交接的串行损耗；再讲新协作方式：UI提供色彩、组件、关键页面和视觉样式基线；产品借助AI扩展素材、生成高保真HTML并直接体验交互和异常分支；开发围绕同一原型、结构化任务与共享工程环境落地、联调、测试。强调 Skills/MCP/规范和代码/测试记录形成共享资产；AI不是替代跨岗位的评审。举例：UI给出基础图，零散素材缺口可经授权用AI补齐，无需每次重新等待制图。ChatGPT辅助素材与原型实践已有探索；Figma或墨刀的MCP接口不得宣称已经完全打通，除非有真实日志证明。此页是协作模式和产设研案例结合，并不意味着团队全部岗位已全面落地。</template>
+  <div class="wf4-asset reveal" data-step="6"><div><div class="wf4-kicker" style="color:var(--mint)">06 / ASSET REUSE</div><b>沉淀 × 复用</b></div><div><p><strong style="color:#ecfef4">通用 Skills、MCP、角色提示卡、协作 SOP、项目全生命周期文档</strong>持续升级。</p><p style="margin-top:3px;color:#a9f0d2">文旅实践 → 科技馆 / 商城复用 → 反馈纠偏 → 跨项目再迭代</p></div><div class="wf4-human-asset"><div class="wf4-human-label">人决定什么</div><p style="margin-top:4px">筛选公共复用资产，审查安全与适配性，批准规范推广。</p></div></div>
+  <div class="wf4-demo reveal" data-step="7"><b>现场演示提示</b><span>可择重点展示：AI 设计素材、高保真 HTML、Super App 多 Agent 看板、自动化测试与文档产出。</span></div>
+  <template class="speaker-note">约85秒。这是全篇全链路协同总览，逐步展示：过去产品需求→UI/UX图稿→开发实现→测试→项目归档层层交接；现在将AI赋能于每个岗位，但必须同时说明人的决策。设计×AI：用户副业已实践通过AI生成UI/UE/UX方案、人物形象和素材，由人选择风格、定稿。产品×AI：需求生成高保真可交互HTML原型，产品负责人定义边界并实际体验、定验收标准。开发×AI：已有可视化一键初始化Skill；Super App独立实践由Lead统筹设计/架构/开发/测试/产品验收等Agent，拆标准化需求与功能任务卡、记录会话ID、Bug精准回派原开发Agent、复测复验；人设架构边界、角色规范和质量规则、关键纠偏并最终整体验收。测试×AI：浏览器Playwright MCP/ADB真机、自动化回归、原型截图和源码一致性核对、缺陷回派；人制定质量门槛并最终放行。产品验收Agent是后期加的质量升级节点，细节在后续专页。项目管理×AI：生成需求概述、数据库说明、接口文档和变更文档，人定排期、风险、发布签收。沉淀与跨项目复用：通用Skills、MCP、角色提示卡、研发协作SOP和全生命周期项目知识，文旅经验向福州科技馆及商城相关模块迁移再迭代；人审核资产通用性、敏感信息与是否进入公共库。注意副业UI实践、科技馆实际协作和Super App独立多Agent探索有场景差异，不能混成全面组织级部署。底部演示位仅提示，后续可从 Super App 页面切入现场真实工程。</template>
 </section>
 
 <section class="slide" data-title="从文旅 Skill 到科技馆研发标准" data-chapter="实践一 / Skills复用" data-time="48">
