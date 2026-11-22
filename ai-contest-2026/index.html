@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V3.8 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V3.9 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -126,7 +126,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 <div id="frame"><main id="stage" aria-label="AI团队研发协作答辩演示文稿">
 
 <section class="slide active bg-soft" data-title="从个人工具到团队研发基础设施" data-chapter="开场" data-time="35">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V3.0</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V3.9</span></header>
   <div style="margin-top:110px;max-width:1060px"><div class="reveal" data-step="0"><p class="caps" style="margin-bottom:25px;color:var(--cyan)">从个体效率，走向组织协同</p><h1>从个人工具<br>到<span class="highlight">团队研发基础设施</span></h1></div><div class="reveal" data-step="1"><p style="margin-top:33px;font-size:33px;color:#d3e6ee">AI 驱动的跨岗位协作实践</p><div style="display:flex;gap:12px;margin-top:38px"><span class="pill mint">真实项目</span><span class="pill">多 Agent 工程实践</span><span class="pill gold">持续治理与复用</span></div></div></div>
   <div class="orbit" aria-hidden="true" style="right:-140px;top:118px"></div><div class="sidenote">汇报视角：团队负责人 / 技术架构师　｜　主线：降低重复沟通、交接与返工成本</div>
   <template class="speaker-note">35秒。不要开场就讲模型或代码。用一句话解释：我探索的不是AI替我写多少代码，而是AI如何让团队不同岗位围绕同一份可执行、可追溯的工程资产协作。随后交代案例有两条实践线：科技馆跨岗探索 + Super App多Agent工程化。</template>
@@ -162,25 +162,55 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">55秒。围绕“我作为负责人跟谁协作”：产品、UI、开发、测试、项目经理。传统方式需一轮轮解释；目标是让AI先把过程产出结构化，成员依角色消费或修改。注意此页为目标协作模型，并非断言六岗位已经全部真实采用。</template>
 </section>
 
-<section class="slide bg-blue" data-title="从串行传话到资产化协作" data-chapter="协作模式 / HOW" data-time="50">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">03 / WORKFLOW REDESIGN</span></header>
-  <h2>从“人传给人”，<br>变成“人围绕同一份资产协作”。</h2>
-  <div style="margin-top:45px" class="reveal" data-step="0"><div class="caps">过去 / 多次转译的串行链路</div><div class="flow-line" style="margin-top:13px"><div class="fbox"><b>产品需求</b><small>口头 / 文档</small></div><div class="farr">→</div><div class="fbox"><b>UI 图稿</b><small>静态说明</small></div><div class="farr">→</div><div class="fbox"><b>开发理解</b><small>二次确认</small></div><div class="farr">→</div><div class="fbox"><b>测试接手</b><small>补充语义</small></div><div class="farr">→</div><div class="fbox"><b>项目归档</b><small>重新整理</small></div></div></div>
-  <div style="margin-top:48px" class="reveal" data-step="1"><div class="caps mint">探索中 / 共享、可执行的工程资产</div><div class="flow-line" style="margin-top:13px"><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>高保真 HTML</b><small>交互即需求</small></div><div class="farr">⇄</div><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>结构化任务</b><small>明确边界与验收</small></div><div class="farr">⇄</div><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>共享工程环境</b><small>Skills / 规范 / MCP</small></div><div class="farr">⇄</div><div class="fbox" style="border-color:rgba(140,232,197,.43)"><b>可追溯证据</b><small>代码 / 测试 / 结论</small></div></div></div>
-  <p class="rule reveal" data-step="2">变化的本质：不是减少必要的人，而是减少<span class="bold" style="color:white">信息损耗、反复确认与重复劳动</span>。</p>
-  <template class="speaker-note">50秒。强调“协作模式改变”是答辩第一层，再用后续两个项目证明。此图不是已经全员落地的现状图，应讲“我们正在形成的模式”。</template>
-</section>
+<section class="slide bg-blue" data-title="从串行传话到可体验的协作资产" data-chapter="协作模式 / 产设研协同" data-time="70">
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">03 / WORKFLOW REDESIGN</span><span class="pill gold" style="margin-left:auto">协作模式 × 真实实践</span></header>
+  <h2>从串行传话，到<span class="mint">可体验的协作资产</span>。</h2>
+  <p class="lead" style="font-size:23px;margin-top:13px;line-height:1.48">UI 定视觉基线，产品借助 AI 补齐素材与交互，开发围绕同一份原型实现与验证；减少反复转译，而不是减少必要的评审。</p>
 
-<section class="slide" data-title="产品与UI：让图稿变成可执行原型" data-chapter="实践一 / 产设协同" data-time="60">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">04 / PRODUCT × UI × AI</span><span class="pill gold" style="margin-left:auto">已有实践 + 持续探索</span></header>
-  <h2>UI 给出设计方向，<br>产品把方向变成可交互的原型。</h2><p class="lead">AI 参与素材扩展、页面还原与交互补全，让设计交接从“看图理解”走向“操作体验”。</p>
-  <div class="grid three" style="margin-top:43px">
-    <div class="panel reveal" data-step="0" style="min-height:310px"><div class="caps cyan">A / UI</div><div style="height:72px;display:flex;gap:12px;align-items:end;margin:12px 0 15px"><span style="height:39px;width:75px;background:#3a778d;border-radius:9px"></span><span style="height:61px;width:75px;background:#4c9eae;border-radius:9px"></span><span style="height:49px;width:75px;background:#91e0ce;border-radius:9px"></span></div><h3>样式基线</h3><p class="small">关键页面、色彩、组件、品牌视觉，确定方向</p></div>
-    <div class="panel reveal" data-step="1" style="min-height:310px"><div class="caps cyan">B / AI + 产品</div><div style="display:flex;gap:9px;margin:17px 0 20px"><span class="pill mint">素材补齐</span><span class="pill">页面生成</span></div><h3>高保真 HTML</h3><p class="small">基于图稿迭代交互、流程与异常分支</p></div>
-    <div class="panel reveal" data-step="2" style="min-height:310px"><div class="caps cyan">C / 开发</div><div style="margin:14px 0 17px;border:1px solid #407080;border-radius:12px;padding:16px;color:#a7ecd8;font-family:monospace;font-size:16px">&lt;prototype&gt;<br>&nbsp; clickable flow<br>&nbsp; state / action<br>&lt;/prototype&gt;</div><h3>可验证交接</h3><p class="small">围绕真实操作对齐功能，而不只靠图稿解释</p></div>
+  <div class="reveal" data-step="0" style="margin-top:26px">
+    <div class="caps" style="font-size:14px">过去 / 串行交接 · 每一步都需要重新解释</div>
+    <div class="flow-line" style="margin-top:10px;gap:10px">
+      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">产品需求</b><small style="font-size:15px">文档 / 口头说明</small></div>
+      <div class="farr" style="font-size:26px">→</div>
+      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">UI 静态图稿</b><small style="font-size:15px">视觉难表达交互</small></div>
+      <div class="farr" style="font-size:26px">→</div>
+      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">开发理解</b><small style="font-size:15px">反复确认功能边界</small></div>
+      <div class="farr" style="font-size:26px">→</div>
+      <div class="fbox" style="padding:12px 17px"><b style="font-size:20px;margin:3px 0">测试 / 归档</b><small style="font-size:15px">补语义、整理证据</small></div>
+    </div>
   </div>
-  <p class="small-rule reveal" data-step="3">探索延伸：ChatGPT 辅助生成配套素材；Figma / 墨刀等设计接口可继续研究设计到原型的协同链路。尚未将所有工具链认定为已完整集成。</p>
-  <template class="speaker-note">60秒。举用户自己的场景：UI做基础图，前端遇到小素材缺失，不必每次让UI花半天重切，可在授权范围内用AI生成补充图片；高保真HTML由产品与AI共同完成。不要宣称Figma MCP/墨刀 MCP 已经在现有工程里打通，除非提供日志。</template>
+
+  <div style="margin-top:25px" class="reveal" data-step="1">
+    <div class="caps mint" style="font-size:14px">现在 / 以高保真原型为中心 · 产品 × UI × 开发协同</div>
+    <div style="margin-top:12px;display:grid;grid-template-columns:1fr 30px 1.12fr 30px 1fr;align-items:stretch;gap:10px">
+      <div class="panel flat" style="padding:18px 22px;min-height:170px">
+        <div class="caps cyan" style="font-size:14px">01 / UI · 设计</div>
+        <h3 style="font-size:26px;margin:7px 0">确定视觉方向</h3>
+        <p class="small" style="font-size:17px">关键页面、色彩、组件和品牌素材，形成可复用的样式基线。</p>
+        <div style="display:flex;gap:9px;margin-top:12px"><i style="width:49px;height:10px;background:#3a778d;border-radius:5px"></i><i style="width:49px;height:10px;background:#4c9eae;border-radius:5px"></i><i style="width:49px;height:10px;background:#91e0ce;border-radius:5px"></i></div>
+      </div>
+      <div style="align-self:center;text-align:center;color:var(--mint);font-size:28px">→</div>
+      <div class="panel flat" style="padding:18px 22px;min-height:170px;border-color:rgba(145,240,195,.59);background:rgba(41,113,100,.21)">
+        <div class="caps mint" style="font-size:14px">02 / 产品 × AI</div>
+        <h3 style="font-size:26px;margin:7px 0">生成可交互 HTML 原型</h3>
+        <p class="small" style="font-size:17px">AI 辅助补齐素材、页面、操作流程与异常分支；产品直接操作、反馈和确认。</p>
+        <div style="font-size:13px;color:var(--mint);margin-top:10px">高保真 · 可点击 · 可体验</div>
+      </div>
+      <div style="align-self:center;text-align:center;color:var(--mint);font-size:28px">→</div>
+      <div class="panel flat" style="padding:18px 22px;min-height:170px">
+        <div class="caps blue" style="font-size:14px">03 / 开发 × AI</div>
+        <h3 style="font-size:26px;margin:7px 0">依原型实现与验证</h3>
+        <p class="small" style="font-size:17px">统一功能边界、联调和验收口径，产出可追溯的代码、测试与交付记录。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal" data-step="2" style="margin-top:12px;padding:13px 20px;border:1px solid rgba(145,240,195,.35);background:rgba(34,101,94,.19);border-radius:15px;display:flex;align-items:center;gap:20px">
+    <span class="caps mint" style="font-size:14px;white-space:nowrap">共享工程资产</span>
+    <span style="font-size:17px;color:#d8eeeb">高保真 HTML　/　结构化任务　/　Skills · 规范 · MCP　/　代码 · 测试 · 验收证据</span>
+  </div>
+  <p class="small-rule reveal" data-step="3" style="font-size:17px;margin-top:12px">核心价值：<b style="color:white">从“看图猜需求”变成“用原型对齐需求”</b>。Figma / 墨刀接口属于后续探索，不表述为已完整集成。</p>
+  <template class="speaker-note">约70秒。原第4、5页合并。先讲旧流程中的产品需求、UI静态图、开发二次确认、测试与交接的串行损耗；再讲新协作方式：UI提供色彩、组件、关键页面和视觉样式基线；产品借助AI扩展素材、生成高保真HTML并直接体验交互和异常分支；开发围绕同一原型、结构化任务与共享工程环境落地、联调、测试。强调 Skills/MCP/规范和代码/测试记录形成共享资产；AI不是替代跨岗位的评审。举例：UI给出基础图，零散素材缺口可经授权用AI补齐，无需每次重新等待制图。ChatGPT辅助素材与原型实践已有探索；Figma或墨刀的MCP接口不得宣称已经完全打通，除非有真实日志证明。此页是协作模式和产设研案例结合，并不意味着团队全部岗位已全面落地。</template>
 </section>
 
 <section class="slide" data-title="从文旅 Skill 到科技馆研发标准" data-chapter="实践一 / Skills复用" data-time="48">
@@ -218,7 +248,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-blue" data-title="架构师：AI辅助架构与技术选型" data-chapter="负责人视角 / 决策" data-time="40">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">06 / ARCHITECT’S WORK</span><span class="section-tag">少讲技术名词，多讲决策方法</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">ARCHITECT / DECISION SUPPORT</span><span class="section-tag">少讲技术名词，多讲决策方法</span></header>
   <h2>AI 不是替代架构决策，<br>而是帮助把方案比较做得更充分。</h2>
   <div class="grid two" style="margin-top:43px;grid-template-columns:.9fr 1.1fr"><div class="panel reveal" data-step="0"><div class="caps mint">Super App 选型过程</div><div style="display:flex;gap:12px;align-items:center;margin-top:24px"><div class="node" style="flex:1"><b>H5 / Web</b><small>迭代速度、跨端可用</small></div><span class="thin-arrow">VS</span><div class="node" style="flex:1"><b>Flutter</b><small>移动交互、原生能力</small></div></div><p class="small" style="margin-top:27px">结合目标设备、已有资产、性能与长期维护，比较并收敛技术路线。</p></div><div class="panel reveal" data-step="1"><table class="compact-table"><tr><th>AI 辅助</th><th>负责人必须把关</th></tr><tr><td>梳理候选方案与约束</td><td>真实业务边界、平台现状</td></tr><tr><td>输出权衡矩阵与风险</td><td>技术债、成本、团队能力</td></tr><tr><td>生成架构与开发规范草稿</td><td>审核、试验、最终拍板</td></tr></table></div></div>
   <p class="small-rule reveal" data-step="2">评委要看到的是：AI 如何参与方案评估 + 你为什么采纳或否定，而不是只展示模型给出的漂亮架构图。</p>
@@ -457,7 +487,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 <section class="slide bg-soft" data-title="结论：让AI成为组织能力" data-chapter="结语" data-time="45">
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">14 / CLOSING</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">CLOSING / TAKEAWAY</span></header>
   <div style="margin-top:124px;max-width:1320px"><div class="reveal" data-step="0"><p class="caps cyan" style="margin-bottom:30px">真正的提效，不止于代码生成</p><h1 style="font-size:82px">让 AI <span class="highlight">减少重复沟通</span>，<br>让人专注高价值决策。</h1></div><div class="reveal" data-step="1"><p style="font-size:32px;color:#c2d9e3;margin-top:46px">以真实协作场景为起点，以多 Agent 工程实践为抓手，<br>逐步沉淀可管理、可复用、可推广的团队研发基础能力。</p><div style="display:flex;gap:14px;margin-top:42px"><span class="pill mint">共享上下文</span><span class="pill">过程可追溯</span><span class="pill">人工质量把关</span><span class="pill gold">团队持续复用</span></div></div></div>
   <div class="orbit" aria-hidden="true" style="top:170px;right:-100px;opacity:.75"></div><div class="bottom-brand">THANK YOU · AI COLLABORATION PRACTICE</div>
   <template class="speaker-note">45秒。最后回扣“个人工具→团队基础设施”：不是替代产品、开发、测试、项目经理，而是让他们少做反复解释、少丢信息、少等交接，把精力留给真正的判断。接受提问，附录备答。</template>
@@ -495,9 +525,9 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 </section>
 
 </main></div>
-<div id="chrome" role="toolbar" aria-label="演示控制"><span class="label" id="currentChapter">开场</span><span class="sep"></span><button id="prev" aria-label="上一页或上一步">← 上一步</button><button id="next" aria-label="下一步或下一页">下一步 →</button><span class="sep"></span><button id="overviewBtn" title="按 O 查看全部页面">总览 O</button><button id="notesBtn" title="按 N 查看演讲备注">备注 N</button><button id="fullscreenBtn" title="按 F 全屏">全屏 F</button><div id="slide-progress"><span></span></div><span class="label" id="timeText">目标 15:00</span><span id="timer">00:00</span><span id="slidecounter">01 / 18</span></div>
+<div id="chrome" role="toolbar" aria-label="演示控制"><span class="label" id="currentChapter">开场</span><span class="sep"></span><button id="prev" aria-label="上一页或上一步">← 上一步</button><button id="next" aria-label="下一步或下一页">下一步 →</button><span class="sep"></span><button id="overviewBtn" title="按 O 查看全部页面">总览 O</button><button id="notesBtn" title="按 N 查看演讲备注">备注 N</button><button id="fullscreenBtn" title="按 F 全屏">全屏 F</button><div id="slide-progress"><span></span></div><span class="label" id="timeText">目标 15:00</span><span id="timer">00:00</span><span id="slidecounter">01 / 17</span></div>
 <div id="notes" aria-live="polite"><h4>演讲者备注</h4><p></p></div>
-<div id="overview"><button class="ov-back">返回演示 ×</button><h2>幻灯片总览 <span style="font-size:15px;color:#a4baca;vertical-align:middle">点击页面直接跳转 · 正文 18 页 / 附录 4 页</span></h2><div class="slides-list"></div></div>
+<div id="overview"><button class="ov-back">返回演示 ×</button><h2>幻灯片总览 <span style="font-size:15px;color:#a4baca;vertical-align:middle">点击页面直接跳转 · 正文 17 页 / 附录 4 页</span></h2><div class="slides-list"></div></div>
 <script>
 (()=>{
 const stage=document.getElementById('stage');const slides=[...document.querySelectorAll('.slide')];const mainSlides=slides.filter(s=>!s.dataset.appendix);const n=mainSlides.length;let index=0,fragment=-1,overview=false;let started=Date.now();const progress=document.querySelector('#slide-progress span');const navC=document.getElementById('currentChapter');const counter=document.getElementById('slidecounter');const notesEl=document.getElementById('notes');
