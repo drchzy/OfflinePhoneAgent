@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.18 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.19 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -985,6 +985,22 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 #practice49-super-flow .board52-footer span{font-size:14px;color:#dbeee8}
 #practice49-super-flow .board52-footer em{font-size:10.7px;color:#9bb9c0;font-style:normal;margin-left:auto;white-space:nowrap}
 
+
+/* V4.19: slide 14 updated to project / full-lifecycle / people, with a balanced two-column layout */
+#outcome17 .outcome17-lead{font-size:19px;line-height:1.4}
+#outcome17 .outcome17-stats{margin-top:16px;min-height:83px}
+#outcome17 .outcome17-body{margin-top:19px;gap:32px;grid-template-columns:1.03fr .97fr}
+#outcome17 .outcome17-current{padding-right:23px}
+#outcome17 .outcome17-colhead{margin-bottom:12px}
+#outcome17 .outcome17-colhead b{font-size:22px}
+#outcome17 .outcome17-item{padding-bottom:10px}
+#outcome17 .outcome17-item h3{font-size:21px}
+#outcome17 .outcome17-item p{font-size:15.7px;line-height:1.38}
+#outcome17 .outcome17-next{gap:13px}
+#outcome17 .outcome17-next h3{font-size:20px}
+#outcome17 .outcome17-next p{font-size:15.7px;line-height:1.38}
+#outcome17 .outcome17-takeaway{margin-top:17px}
+
 </style>
 </head>
 <body>
@@ -998,7 +1014,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.18</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.19</span></header>
   <div class="cover45-main">
     <div class="reveal" data-step="0">
       <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
@@ -1577,7 +1593,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">约43秒。按三列展示五个实践：实践、原始资料、能支持的结论。AI-SEED按照用户最新实际hf-ai-seed结构更新为47文件、9个Skills，不再用旧工程11个技能/新工程4份生成文件作为AI-SEED规模。商城有7个Maven子模块、74张微任务卡及历史联调记录；闸机权限有明确人工否决与代码定位；SRS有真实日志及用户回传的配置调整效果，但不能把未逐条复核的工具调用都当成自动执行记录；Super App有67卡、263日志、DSH会话、P2-07产品验收复测。这些数字是不同工程的过程规模而非真实节约工时。正式答辩应配合脱敏原始文档和现场项目演示。</template>
 </section>
 
-<section class="slide bg-blue" id="outcome17" data-title="从五个实践走向可复制的团队 AI 研发能力" data-chapter="能力进阶 / SCALE UP" data-time="54">
+<section class="slide bg-blue" id="outcome17" data-title="从五个实践走向可复制的团队 AI 研发能力" data-chapter="能力进阶 / SCALE UP" data-time="60">
   <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
     <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
     <div class="deck46-header-logo" title="恒锋信息 Logo">
@@ -1587,7 +1603,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   </div>
   <header class="hdr outcome17-hdr"><i class="stripe"></i><span class="eyebrow">13 / FROM PRACTICE TO TEAM CAPABILITY</span><span class="section-tag">实践成果 · 能力整合 · 团队复用</span></header>
   <h2 class="outcome17-title">从五个实践，走向<span class="mint">可复制的团队 AI 研发能力</span>。</h2>
-  <p class="outcome17-lead">AI 已参与项目初始化、真实业务研发、故障处理与协作治理。下一步让这些分散经验可继承、可验证、可推广。</p>
+  <p class="outcome17-lead">从 AI-SEED 项目种子、AI 全流程研发，到指导新成员上手；下一阶段聚焦 Super App 多 Agent 协作完善、量化对比与跨项目推广。</p>
   <div class="outcome17-stats reveal" data-step="0">
     <div><strong>47</strong><span>AI-SEED 文件</span></div>
     <div><strong>9</strong><span>研发 Skills</span></div>
@@ -1597,22 +1613,22 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   </div>
   <div class="outcome17-body">
     <div class="outcome17-current reveal" data-step="0">
-      <div class="outcome17-colhead"><span>NOW / 已有实践</span><b>三类可定位的工程能力</b></div>
-      <div class="outcome17-item"><small>工程上下文</small><h3>让规范进入新项目</h3><p>AI-SEED 整合工程规则、Skills、工具说明以及任务与变更模板。</p></div>
-      <div class="outcome17-item"><small>业务研发与运维</small><h3>AI 参与，人在关键处做决策</h3><p>商城依规范开发；闸机权限守住安全边界；SRS 排障串联多端证据。</p></div>
-      <div class="outcome17-item"><small>Agent 协作治理</small><h3>从派工到验收都有迹可循</h3><p>Super App 已实践 Lead 协调、任务看板、拒签回派与独立产品验收。</p></div>
+      <div class="outcome17-colhead"><span>NOW / 已有实践</span><b>项目、流程、人员三个维度</b></div>
+      <div class="outcome17-item"><small>项目能力 · AI-SEED</small><h3>AI-SEED 种子工程</h3><p>支持新项目初始化、历史项目接入、项目画像扫描与项目体检；将规范、Skills、MCP 和研发记录带入工程。</p></div>
+      <div class="outcome17-item"><small>研发能力 · 全流程协作</small><h3>AI 全流程开发</h3><p>覆盖需求梳理与原型设计、架构设计、功能开发、测试部署、文档交付；人负责需求取舍、质量和安全把关。</p></div>
+      <div class="outcome17-item"><small>人员能力 · 培训带教</small><h3>指导新成员快速使用 AI</h3><p>面向新加入的开发、产品人员，培训 AI 辅助需求、原型、开发、测试等工作流程，结合工程规范带教上手。</p></div>
     </div>
     <div class="outcome17-future reveal" data-step="0">
-      <div class="outcome17-colhead"><span>NEXT / 下一阶段</span><b>从项目经验走向团队复用</b></div>
+      <div class="outcome17-colhead"><span>NEXT / 下一阶段</span><b>完善项目实践以及团队复用</b></div>
       <div class="outcome17-next">
-        <div><span>01</span><div><h3>整合流程</h3><p>把 Super App 角色分工、任务回派和产品验收沉淀成 AI-SEED 的可选工作流。</p></div></div>
-        <div><span>02</span><div><h3>量化验证</h3><p>用同类工单对比交接等待、沟通轮次、返工次数及产品验收结果。</p></div></div>
-        <div><span>03</span><div><h3>跨项目推广</h3><p>验证不同成员能否独立初始化、遵守规范、使用工具并复现协作过程。</p></div></div>
+        <div><span>01</span><div><h3>完善 Super App 多 Agent 协作</h3><p>加强 Lead 派工、会话 ID 溯源、任务看板与独立产品验收签核，完善缺陷回派和复验闭环。</p></div></div>
+        <div><span>02</span><div><h3>量化对比多 Agent 协作</h3><p>选同类真实任务，对比多 Agent 与单 Agent / 常规协作的交付耗时、沟通轮次、返工及验收质量。</p></div></div>
+        <div><span>03</span><div><h3>跨项目推广</h3><p>走出文旅、福州科技馆，在其他业务项目试点 AI-SEED 与多 Agent 流程，验证成员独立使用和复用效果。</p></div></div>
       </div>
     </div>
   </div>
   <div class="outcome17-takeaway reveal" data-step="0"><b>真正有价值的变化</b><strong>规范可继承 · 过程可追溯 · 质量可把关</strong><span>组织级效率提升仍需同口径数据验证</span></div>
-  <template class="speaker-note">约54秒。吸收原第15页有依据的工程数字：47个AI-SEED文件、9个Skills、74张科技馆商城任务拆解卡、67张Super App任务卡与263条日志。数字分别来自用户当前工程盘点与历史静态审计，不等于任务交付数或提效百分比。当前有三类已实践：工程上下文资产、业务研发和跨端排障、Super App的角色协作与独立产品验收。后续计划才是整合Super App的多Agent任务/验收机制进AI-SEED，验证同类工单的工时/沟通/返工，并由不同成员在不同项目上独立使用。两套体系目前并未完整整合，不能把规划说成已经落地的团队基础设施。</template>
+  <template class="speaker-note">约60秒。用户指定第14页按“项目能力、研发流程、人员带教”三层展开已有实践：1）AI-SEED不只新项目初始化，还支持接入历史工程、项目画像扫描、“看看这个项目”和项目体检；其47个文件、9个Skills是当前项目库存口径，包含规范、工具说明与变更记录模板。2）AI贯穿需求梳理、原型设计、架构设计、功能开发、测试与部署、文档交付，但并不是每个项目的每个环节都已经形成完整独立验收；人主导安全和质量边界。3）指导新加入的开发和产品人员使用AI进行各自的研发环节，突出带教与快速上手，不报未核对培训人数和节时比例。下一阶段：完善Super App的Lead/多Agent任务协调、会话ID溯源、产品验收签字和Bug回派；做可比任务的多Agent vs 单Agent/常规协作量化对照；扩大到文旅与福州科技馆之外的其他工程，验证复用性。Super App与AI-SEED的完全整合仍属后续优化，不能表述为已经完成。页面数字来自不同工程、时间点的静态盘点，不代表效率百分比。</template>
 </section>
 
 <section class="slide bg-soft" data-title="结论：让AI成为组织能力" data-chapter="结语" data-time="45">
