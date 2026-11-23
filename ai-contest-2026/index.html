@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>AI 驱动的跨岗位协作实践｜V4.17 HTML 答辩</title>
+<title>AI 驱动的跨岗位协作实践｜V4.18 HTML 答辩</title>
 <style>
 :root{--bg:#081426;--bg2:#0d2135;--surface:#142c41;--panel:rgba(21,44,65,.82);--line:rgba(151,196,213,.19);--text:#f5f9fa;--dim:#9db5c4;--cyan:#7fe5ed;--mint:#91f0c3;--blue:#77aaf5;--amber:#f6d18b;--red:#eea5ae;--shadow:0 26px 70px rgba(0,0,0,.32);--ease:cubic-bezier(.2,.7,.15,1)}
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{background:#04101e;color:var(--text);font-family:Inter,"PingFang SC","Microsoft Yahei","Noto Sans CJK SC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}button{font:inherit}#frame{position:absolute;inset:0;overflow:hidden;background:#040d1a}#stage{width:1600px;height:900px;position:absolute;top:0;left:0;transform-origin:0 0;background:var(--bg)}.slide{position:absolute;inset:0;opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;padding:70px 84px 72px;background:radial-gradient(780px 620px at 96% -8%,rgba(34,131,159,.19),transparent 75%),radial-gradient(900px 700px at -10% 110%,rgba(43,71,131,.16),transparent 73%),#081426;transform:translateX(22px) scale(1.013);transition:opacity .43s var(--ease),transform .5s var(--ease),visibility .5s}.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1)}.slide::after{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;background-image:linear-gradient(rgba(168,218,234,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(168,218,234,.075) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(90deg,transparent 13%,black 100%)}.slide>*{position:relative;z-index:1}.slide.bg-alt{background:radial-gradient(780px 580px at 82% 25%,rgba(25,127,116,.15),transparent 68%),#0b1b28}.slide.bg-blue{background:radial-gradient(950px 680px at 76% 46%,rgba(67,118,190,.2),transparent 72%),#081526}.slide.bg-soft{background:radial-gradient(820px 680px at 80% 8%,rgba(61,148,146,.2),transparent 75%),#102338}
@@ -906,6 +906,85 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
 #outcome17 .outcome17-takeaway strong{font-size:20px;color:#effdf8;white-space:nowrap}
 #outcome17 .outcome17-takeaway span{font-size:13px;color:#b8cbd1;margin-left:auto}
 
+
+/* V4.18: focused Session ID task-card & traceback page (slide 11) */
+#practice49-super-flow .hdr{margin-bottom:10px}
+#practice49-super-flow .board51-title{font-size:52px;line-height:1.18}
+#practice49-super-flow .board52-metrics{display:flex;align-items:center;gap:15px;height:41px;border-bottom:1px solid rgba(129,221,196,.3);margin-top:9px;color:#c2dde1}
+#practice49-super-flow .board52-metrics>span{display:flex;align-items:baseline;gap:8px;font-size:15px;white-space:nowrap}
+#practice49-super-flow .board52-metrics b{font-size:26px;line-height:1;font-weight:850;color:#9decc8;letter-spacing:-.045em}
+#practice49-super-flow .board52-metrics small{font-size:11.4px;color:#95b2bd}
+#practice49-super-flow .board52-metrics>i{width:1px;height:19px;background:rgba(134,200,205,.24)}
+#practice49-super-flow .board52-metrics>em{font-style:normal;margin-left:auto;color:#8daeb9;font-size:11px}
+#practice49-super-flow .board52-workspace{height:188px;margin-top:12px;border:1px solid rgba(151,210,210,.3);border-radius:14px;overflow:hidden;background:rgba(12,35,52,.93)}
+#practice49-super-flow .board52-windowbar{height:31px;display:flex;align-items:center;gap:10px;padding:0 14px;background:#254155;border-bottom:1px solid rgba(137,197,207,.3)}
+#practice49-super-flow .board52-windowbar .board51-dots i{width:6px;height:6px}
+#practice49-super-flow .board52-windowbar>b{font-size:14px;color:#e7f4f5}
+#practice49-super-flow .board52-windowbar>span{margin-left:auto;color:#a7c4cc;font-size:11px}
+#practice49-super-flow .board52-columns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));height:157px;gap:1px;background:rgba(129,190,203,.24)}
+#practice49-super-flow .board52-col{padding:8px 13px 10px;background:rgba(17,45,64,.97);min-width:0}
+#practice49-super-flow .board52-colhead{display:flex;align-items:center;gap:9px;min-height:22px;color:#a9e6d3;font-weight:830;font-size:15px;letter-spacing:.035em}
+#practice49-super-flow .board52-colhead small{font-size:11px;color:#91b4bf;font-weight:600;letter-spacing:0}
+#practice49-super-flow .board52-colhead mark{background:rgba(245,182,99,.21);border:1px solid rgba(245,186,105,.53);border-radius:99px;padding:2px 6px;color:#ffe0ab;font-weight:820;font-size:10px;letter-spacing:0}
+#practice49-super-flow .board52-kanban-card{background:rgba(41,74,87,.69);border-left:3px solid rgba(142,203,215,.5);border-radius:7px;margin-top:8px;padding:9px 11px;min-height:102px;display:flex;flex-direction:column;gap:5px}
+#practice49-super-flow .board52-kanban-card b{font-size:15px;color:#e8f4f6}
+#practice49-super-flow .board52-kanban-card small{font-size:12px;color:#abc9d3}
+#practice49-super-flow .board52-kanban-card code{font:700 11.4px/1.25 ui-monospace,Consolas,monospace;color:#93e3d1;margin-top:auto;white-space:nowrap}
+#practice49-super-flow .board52-new{background:linear-gradient(160deg,rgba(89,65,53,.96),rgba(56,56,75,.98));box-shadow:inset 0 0 0 1px rgba(237,180,112,.45);position:relative}
+#practice49-super-flow .board52-new::after{content:"";position:absolute;inset:2px;border:1px dashed rgba(251,207,141,.36);pointer-events:none;border-radius:2px}
+#practice49-super-flow .board52-new .board52-colhead{color:#ffd69c}
+#practice49-super-flow .board52-new .board52-kanban-card{background:rgba(146,89,59,.26);border-left-color:#f1ba73}
+#practice49-super-flow .board52-new .board52-kanban-card code{color:#ffdea7}
+#practice49-super-flow .board52-detail{display:grid;grid-template-columns:1.38fr .83fr;gap:15px;margin-top:12px;height:306px;min-height:0}
+#practice49-super-flow .board52-taskcard{min-width:0;background:linear-gradient(140deg,rgba(22,56,76,.95),rgba(15,43,59,.95));border:1px solid rgba(131,208,208,.38);border-radius:15px;padding:14px 17px}
+#practice49-super-flow .board52-taskhead{display:flex;justify-content:space-between;align-items:start;gap:12px}
+#practice49-super-flow .board52-taskhead>div:first-child>small{font-size:11px;font-weight:800;letter-spacing:.11em;color:#98e7d1}
+#practice49-super-flow .board52-taskhead h3{font-size:25px;line-height:1.1;margin-top:4px}
+#practice49-super-flow .board52-taskhead h3 span{font-size:17px;font-weight:600;color:#d0e3e6;margin-left:7px}
+#practice49-super-flow .board52-taskid{display:flex;align-items:center;gap:8px;padding:5px 10px;background:rgba(61,133,124,.2);border:1px solid rgba(144,230,196,.23);border-radius:9px}
+#practice49-super-flow .board52-taskid span{font-size:10px;color:#9bb9c5}
+#practice49-super-flow .board52-taskid strong{font-size:10px;color:#a5f0cc;white-space:nowrap}
+#practice49-super-flow .board52-taskid b{font:800 15px ui-monospace,Consolas,monospace;color:#f0fff5}
+#practice49-super-flow .board52-meta{display:flex;align-items:center;gap:12px;margin-top:10px;padding-bottom:9px;border-bottom:1px solid rgba(153,201,209,.18)}
+#practice49-super-flow .board52-meta>span{font-size:12px;color:#d0e3e6;white-space:nowrap}
+#practice49-super-flow .board52-meta b{font-weight:800;color:#94c7cd;margin-right:6px}
+#practice49-super-flow .board52-sessiontitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}
+#practice49-super-flow .board52-sessiontitle b{font-size:14px;color:#aaf0cb}
+#practice49-super-flow .board52-sessiontitle small{font-size:10.2px;color:#9cbdc9}
+#practice49-super-flow .board52-sessions{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);gap:5px;align-items:center;margin-top:7px}
+#practice49-super-flow .board52-sessions>div{min-width:0;border-radius:8px;background:rgba(27,71,85,.8);border:1px solid rgba(138,206,212,.2);padding:8px 10px;display:flex;flex-direction:column;gap:4px}
+#practice49-super-flow .board52-sessions>div.board52-accsession{background:rgba(101,73,56,.35);border-color:rgba(240,180,122,.38)}
+#practice49-super-flow .board52-sessions small{font-size:11px;color:#b4d2dd;white-space:nowrap}
+#practice49-super-flow .board52-sessions code{font:800 13.6px/1.15 ui-monospace,Consolas,monospace;color:#91f0d8;white-space:nowrap}
+#practice49-super-flow .board52-accsession code{color:#ffcf96}
+#practice49-super-flow .board52-sessions span{font-size:10.8px;color:#a7c1ca;white-space:nowrap}
+#practice49-super-flow .board52-sessions>i{text-align:center;color:#a4efd1;font-style:normal;font-size:17px}
+#practice49-super-flow .board52-signatures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+#practice49-super-flow .board52-signatures>div{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-top:2px solid rgba(139,204,203,.37);background:rgba(11,35,50,.56)}
+#practice49-super-flow .board52-signatures>div.board52-signature-acc{border-top-color:#eab681;background:rgba(120,72,46,.21)}
+#practice49-super-flow .board52-signatures small{font-size:10px;color:#a6c3ca}
+#practice49-super-flow .board52-signatures small b{font-size:9px;color:#ffc991;border:1px solid rgba(235,184,120,.55);border-radius:5px;padding:0 3px}
+#practice49-super-flow .board52-signatures strong{font-size:13px;color:#e4f5f1;white-space:nowrap}
+#practice49-super-flow .board52-signatures span{font-size:10.5px;color:#a3c0c7;white-space:nowrap}
+#practice49-super-flow .board52-trace{min-width:0;padding:15px 17px;background:radial-gradient(270px 240px at 50% 45%,rgba(46,117,106,.13),transparent 82%),rgba(13,39,52,.82);border:1px solid rgba(140,216,199,.3);border-radius:15px}
+#practice49-super-flow .board52-trace-head>span{font-size:11px;color:#9deac9;letter-spacing:.1em;font-weight:850}
+#practice49-super-flow .board52-trace-head h3{font-size:21px;line-height:1.18;margin-top:5px}
+#practice49-super-flow .board52-trace-head h3 span{color:#9ef2c9}
+#practice49-super-flow .board52-trace-flow{margin-top:11px;display:flex;flex-direction:column;gap:1px}
+#practice49-super-flow .board52-trace-node{display:flex;align-items:center;gap:12px;min-height:44px}
+#practice49-super-flow .board52-node-number{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(122,216,187,.4);background:rgba(40,99,86,.3);font-size:12px;font-weight:820;color:#a2f0d0}
+#practice49-super-flow .board52-trace-node>div{min-width:0;display:flex;flex-direction:column;gap:3px}
+#practice49-super-flow .board52-trace-node b{font-size:14px;color:#edf8f5}
+#practice49-super-flow .board52-trace-node small{font-size:11.2px;color:#b0ccd2;line-height:1.23}
+#practice49-super-flow .board52-trace-node code{font:800 14px ui-monospace,Consolas,monospace;color:#a8f8d6}
+#practice49-super-flow .board52-trace-arrow{margin-left:12px;font-size:13px;color:#9becc8;display:flex;align-items:center;gap:9px;line-height:1.25}
+#practice49-super-flow .board52-trace-arrow small{font-size:10.2px;color:#91bdc5}
+#practice49-super-flow .board52-trace-node.board52-target{background:rgba(42,125,91,.19);border-left:2px solid #9ae7bf;padding:5px 7px;min-height:61px;margin:1px 0 1px -7px}
+#practice49-super-flow .board52-footer{display:flex;align-items:center;gap:13px;margin-top:11px;padding:10px 15px;border-left:3px solid #9ef2c9;background:rgba(34,98,85,.19)}
+#practice49-super-flow .board52-footer strong{font-size:14px;color:#b0f4d4;white-space:nowrap}
+#practice49-super-flow .board52-footer span{font-size:14px;color:#dbeee8}
+#practice49-super-flow .board52-footer em{font-size:10.7px;color:#9bb9c0;font-style:normal;margin-left:auto;white-space:nowrap}
+
 </style>
 </head>
 <body>
@@ -919,7 +998,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.17</span></header>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">2026 · 软件研发人员 AI 技能竞赛</span><span class="section-tag">KEYNOTE / V4.18</span></header>
   <div class="cover45-main">
     <div class="reveal" data-step="0">
       <p class="caps cover45-kicker">从个体效率，走向组织协同</p>
@@ -1375,7 +1454,7 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
   <template class="speaker-note">约70秒。案例5分三页：1/3项目与创新，2/3任务卡多Agent生命周期，3/3产品验收与纠偏。项目基于旧H5/Android工程资产，向Flutter跨端重构，UI原型和已有协议必须继承；多模块涉及登录、通讯录、消息、工作台、AI助手等。Lead担任协调者，真实有设计/架构/开发/独立QA/独立产品验收角色规范与派工记录，7类模板不等于7个恒定并行进程。三个创新：人定边界、AI Lead统筹；任务看板关联任务和历史会话；后增独立产品验收Agent。该Agent Team为Super App独立实践，未整体并入AI-SEED。</template>
 </section>
 
-<section class="slide bg-alt" id="practice49-super-flow" data-title="Super App：多 Agent 任务治理与全生命周期追溯" data-chapter="实践 05 / Super App · 2/3" data-time="76">
+<section class="slide bg-alt" id="practice49-super-flow" data-title="Super App：任务卡串联 Agent 会话与验收签字" data-chapter="实践 05 / Super App · 2/3" data-time="80">
   <div class="deck46-header" aria-label="汇报人：智慧城市事业部-黄宗耀；恒锋信息 Logo">
     <span class="deck46-header-name"><small>汇报人</small>智慧城市事业部 - 黄宗耀</span>
     <div class="deck46-header-logo" title="恒锋信息 Logo">
@@ -1383,30 +1462,60 @@ header.hdr{display:flex;gap:20px;align-items:center;margin-bottom:27px}.stripe{h
       <img src="https://www.i-hengfeng.com/view/name/p2gwvavCb7AahxJV6OsdVnBQBl0iIM1g%E8%B5%84%E6%BA%90%2010%201.png" loading="eager" decoding="async" alt="恒锋信息 Logo" onload="this.parentElement.classList.add('is-ready')" onerror="this.parentElement.classList.add('is-fallback')">
     </div>
   </div>
-  
-<header class="hdr"><i class="stripe"></i><span class="eyebrow">10 / PRACTICE 05 · 实践五 · SUPER APP / 2 OF 3</span><span class="section-tag">TASK CONTROL · 会话索引与任务治理</span></header>
-<h2 class="board51-title">一张任务卡，追溯<span class="mint">一个功能的全生命周期</span>。</h2>
-<div class="board51-statline reveal" data-step="0" aria-label="2026年11月20日任务审计快照">
-  <div><b>67</b><span>任务快照 <small>55 done / 12 blocked</small></span></div>
-  <div><b>263</b><span>过程日志 <small>不是交付数量</small></span></div>
-  <div class="alert"><b>16</b><span>历史回退待验收 <small>另一批次状态流事件</small></span></div>
-  <div class="board51-stat-caption">2026-11-20 静态审计</div>
-</div>
-<div class="board51-workspace reveal" data-step="0">
-  <div class="board51-windowbar"><div class="board51-dots"><i></i><i></i><i></i></div><strong>Super App · Agent 研发任务看板</strong><span>流程与字段示意 · 不是实时截图</span></div>
-  <div class="board51-columns">
-   <div class="board51-col"><div class="board51-colhead">TODO <small>任务拆解</small></div><div class="board51-item"><b>需求 / 原型</b><span>目标、边界、验收口径</span><em>任务 ID</em></div></div>
-   <div class="board51-col"><div class="board51-colhead">DEV <small>开发会话</small></div><div class="board51-item"><b>角色与 owner</b><span>DEV 会话 → Git diff</span><em>原上下文可找回</em></div></div>
-   <div class="board51-col"><div class="board51-colhead">QA <small>功能测试</small></div><div class="board51-item"><b>自动检查</b><span>退出码、网络、行为</span><em>不可仅靠绿勾</em></div></div>
-   <div class="board51-col highlighted"><div class="board51-colhead">ACCEPTANCE <small>产品验收</small></div><div class="board51-item board51-live"><b>P2-07 · 历史案例</b><span>截图 / 偏差 / 拒签 / 复验</span><em>证据可回溯</em></div></div>
-   <div class="board51-col"><div class="board51-colhead">DONE <small>有据收口</small></div><div class="board51-item"><b>人工确认</b><span>构建版本与交付结果</span><em>状态 ≠ 全部签收</em></div></div>
+  <header class="hdr"><i class="stripe"></i><span class="eyebrow">10 / PRACTICE 05 · 实践五 · SUPER APP / 2 OF 3</span><span class="section-tag">TASK × SESSION ID × ACCEPTANCE / 全链路追溯</span></header>
+  <h2 class="board51-title">以<span class="mint">会话 ID</span> 串联开发、测试、产品验收与 Bug 回派。</h2>
+  <div class="board52-metrics reveal" data-step="0" aria-label="Super App 静态审计记录">
+    <span><b>67</b> 张任务卡 <small>55 done / 12 blocked</small></span>
+    <i></i><span><b>263</b> 条过程日志</span>
+    <i></i><span><b>16</b> 张历史任务曾退回验收 <small>不同批次的状态记录</small></span>
+    <em>2026-11-20 盘点</em>
   </div>
-  <div class="board51-workspace-foot"><span>过程链：需求 → 开发会话 → 测试记录 → 产品验收 → 修复版本</span><b>任务 × Agent × 会话 × 证据</b></div>
-</div>
-<div class="board51-dispatch reveal" data-step="0"><span class="board51-dispatch-title">遇到 Bug 不重开上下文</span><strong>同一任务 ID</strong><i>→</i><strong>定位原 DEV 会话</strong><i>→</i><strong>精准回派</strong><i>→</i><strong>新构建复验</strong></div>
-<div class="board51-foot">看板可定位历史过程，但 55 done 只是任务状态；并非 55 项均有独立产品验收签字。</div>
 
-  <template class="speaker-note">约76秒。本页融合旧第10页Lead派工、旧第11页会话追溯及旧第13页工程交接。真实SuperApp盘点E04、E06、E07：67张静态任务卡，55 done、12 blocked，263日志；其中有一次16张状态由“完成”退回验收阶段。注意不要将不同时间的16与任务卡快照说成同一时间状态。看板可以按任务卡显示角色归属、原型截图与验收结果，但静态可见的 evidence 只有2条显式图引用等，不能宣称每张卡都有完整证据链。会话关联/定向回派机制与用户历史方案有支撑，真实案例尽量选P2-07，展示对应会话和新构建截图。</template>
+  <div class="board52-workspace reveal" data-step="0" role="group" aria-label="多 Agent 任务看板结构示意">
+    <div class="board52-windowbar"><div class="board51-dots"><i></i><i></i><i></i></div><b>Super App / Agent 任务看板</b><span>五段任务流 · 字段示意，并非实时页面截图</span></div>
+    <div class="board52-columns">
+      <div class="board52-col"><div class="board52-colhead">TODO <small>需求定义</small></div><div class="board52-kanban-card"><b>需求 / 原型</b><small>task_id → 功能卡</small><code>P2-07</code></div></div>
+      <div class="board52-col"><div class="board52-colhead">DEV <small>开发 Agent</small></div><div class="board52-kanban-card"><b>开发和提交</b><small>owner + session_id</small><code>DEV_SESSION_ID</code></div></div>
+      <div class="board52-col"><div class="board52-colhead">QA <small>测试 Agent</small></div><div class="board52-kanban-card"><b>运行与缺陷</b><small>日志 + QA 会话</small><code>QA_SESSION_ID</code></div></div>
+      <div class="board52-col board52-new"><div class="board52-colhead">ACCEPTANCE <mark>新增环节</mark></div><div class="board52-kanban-card"><b>独立产品验收</b><small>原型比对 · 可拒签</small><code>ACC_SESSION_ID</code></div></div>
+      <div class="board52-col"><div class="board52-colhead">DONE <small>完成归档</small></div><div class="board52-kanban-card"><b>人工签发</b><small>证据 / 构建 / 签字</small><code>RELEASE_RECORD</code></div></div>
+    </div>
+  </div>
+
+  <div class="board52-detail">
+    <div class="board52-taskcard reveal" data-step="0" role="group" aria-label="P2-07 任务卡结构及会话索引与签字示例">
+      <div class="board52-taskhead">
+        <div><small>FEATURE TASK / 任务卡格式示意</small><h3>P2-07 <span>消息气泡 · 原型一致性检查</span></h3></div>
+        <div class="board52-taskid"><span>主键</span><strong>TASK ID</strong><b>P2-07</b></div>
+      </div>
+      <div class="board52-meta"><span><b>关联资料</b>原型 HTML / 实现截图</span><span><b>责任人</b>原开发 Agent</span><span><b>状态</b>按验收结果流转</span></div>
+      <div class="board52-sessiontitle"><b>核心字段 · 会话 ID 贯穿一张任务卡</b><small>以下会话 ID 为字段占位符，非实际历史编号</small></div>
+      <div class="board52-sessions">
+        <div><small>01 / DEV · 开发</small><code>DEV_SESSION_ID</code><span>原开发会话 + 代码 diff</span></div>
+        <i>→</i>
+        <div><small>02 / QA · 测试</small><code>QA_SESSION_ID</code><span>测试记录 + Bug 证据</span></div>
+        <i>→</i>
+        <div class="board52-accsession"><small>03 / ACC · 验收</small><code>ACC_SESSION_ID</code><span>原型核验 + 签核结论</span></div>
+      </div>
+      <div class="board52-signatures">
+        <div><small>QA 签核</small><strong>功能检查记录</strong><span>会话 ID + 日志</span></div>
+        <div class="board52-signature-acc"><small>产品验收签字 <b>新增</b></small><strong>通过 / 拒签 / 撤签</strong><span>签核人 + 会话 ID + 证据</span></div>
+        <div><small>人工最终签发</small><strong>通过后签字归档</strong><span>版本 + 日期 + 负责人</span></div>
+      </div>
+    </div>
+    <div class="board52-trace reveal" data-step="0" role="group" aria-label="根据会话ID溯源缺陷并将问题回派给原开发Agent">
+      <div class="board52-trace-head"><span>BUG TRACEBACK / 会话溯源</span><h3>发现 Bug，找回<span>原开发 Agent</span></h3></div>
+      <div class="board52-trace-flow">
+        <div class="board52-trace-node"><span class="board52-node-number">01</span><div><b>产品验收发现偏差</b><small>P2-07 · 边线偏差 10px 的历史样本</small></div></div>
+        <div class="board52-trace-arrow">↓ <small>task_id → DEV 会话索引</small></div>
+        <div class="board52-trace-node board52-target"><span class="board52-node-number">02</span><div><b>精准定位原开发会话</b><code>DEV_SESSION_ID</code><small>沿用原代码与需求上下文，定向回派</small></div></div>
+        <div class="board52-trace-arrow">↓ <small>修复 diff / 新构建</small></div>
+        <div class="board52-trace-node"><span class="board52-node-number">03</span><div><b>QA 复测 → 产品复验</b><small>验收会话记录签字 / 拒签与构建版本</small></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="board52-footer reveal" data-step="0"><strong>关键创新</strong><span>同一 TASK ID 关联多个 SESSION ID，形成“开发 → 测试 → 验收 → 拒签回派”的可追溯链路。</span><em>示意卡片非实时系统截图</em></div>
+  <template class="speaker-note">约80秒。本页重点讲会话ID贯穿整个研发协作流程。上方保留缩小后的五列真实机制看板，并将“ACCEPTANCE 产品验收”用特别色标“新增环节”：旧流程有开发+测试，后来由人工发现原型一致性偏差，推动独立验收Agent及拒签机制。下方是一张任务卡字段格式示意：P2-07来自已有历史验收案例，消息气泡边线10px→0px的整改和之后异常渲染再拒签有历史证据；但DEV_SESSION_ID、QA_SESSION_ID、ACC_SESSION_ID只是用于说明结构的占位符，不是声称查到了真实历史会话ID。真实任务结构须用源码任务卡、看板字段及原始会话复核后才能替换。任务卡应包括task_id、来源原型、原开发owner、开发/测试/产品验收各自session_id、构建版本、代码diff、缺陷和复验材料、QA签核、独立产品验收签字、最终人工批准。签字区是建议/示意的字段格式，不能当作P2-07已经人工终签的证据。右侧显示一次典型Bug处理：产品验收发现偏差，按task_id找到原开发会话，Lead将Bug回派给原开发Agent，修复后QA复测与产品验收Agent复验；记录人最终决定。数字67任务卡/263日志与某批16张回退来自不同口径快照，不能理解为同一时点17个状态计数。新版保留全屏一次性显示和计时器，静态看板不宣称为截图。</template>
 </section>
 
 <section class="slide bg-blue" id="practice49-super-accept" data-title="Super App：独立产品验收与持续自我纠偏" data-chapter="实践 05 / Super App · 3/3" data-time="82">
